@@ -19,6 +19,7 @@ import org10x10.dam.game.Move;
 public class Player20 extends DraughtsPlayer {
     private static final Logger LOG = Logger.getLogger(DraughtsPlayer.class.getName());
     private boolean stopped = false;
+    private int value = 0;
     
     @Override
     public Move getMove(DraughtsState state) {
@@ -32,6 +33,7 @@ public class Player20 extends DraughtsPlayer {
             
         }
         
+        value = node.getValue();
         return node.getBestMove();
     }
 
@@ -43,6 +45,11 @@ public class Player20 extends DraughtsPlayer {
     @Override
     public String getName() {
         return "Player 20"; //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer getValue() {
+        return value;
     }
 
     @Override
@@ -83,11 +90,13 @@ public class Player20 extends DraughtsPlayer {
             if(maximize){
                 if(childResult > a){
                     a = childResult;
+                    node.setValue(a);
                     bestMove = move;
                 }
             } else {
                 if(childResult < b){
                     b = childResult;
+                    node.setValue(b);
                     bestMove = move;
                 }
             }
@@ -106,7 +115,7 @@ public class Player20 extends DraughtsPlayer {
         int[] pieces = state.getPieces();
         
         for(int piece : pieces){
-            if(piece == DraughtsState.WHITEFIELD || piece == DraughtsState.WHITEKING){
+            if(piece == DraughtsState.WHITEPIECE || piece == DraughtsState.WHITEKING){
                 computedValue++;
             }
         }
