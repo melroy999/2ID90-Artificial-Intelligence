@@ -16,6 +16,7 @@ import org10x10.dam.game.Move;
 public class GameNode {
     private final DraughtsState gameState;
     private Move bestMove;
+    private int value;
 
     public GameNode(DraughtsState gameState) {
         this.gameState = gameState;
@@ -31,5 +32,13 @@ public class GameNode {
 
     Move getBestMove() {
         return bestMove;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }
