@@ -29,7 +29,7 @@ public class Player20 extends DraughtsPlayer {
                 alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth, true);
             }
         } catch (AIStoppedException ex) {
-            LOG.log(Level.WARNING, "AIStoppedException thrown", ex);
+            
         }
         
         return node.getBestMove();
@@ -61,6 +61,11 @@ public class Player20 extends DraughtsPlayer {
         if(depthToGo == 0){
             return evaluate(state);
         }
+        
+        if(state.isEndState()){
+            return evaluate(state);
+        }
+        
         
         List<Move> moves = state.getMoves();
         
