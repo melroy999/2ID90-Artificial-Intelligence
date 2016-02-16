@@ -20,11 +20,12 @@ public class Player20 extends DraughtsPlayer {
     private static final Logger LOG = Logger.getLogger(DraughtsPlayer.class.getName());
     private boolean stopped = false;
     private int value = 0;
+    private boolean isWhite = false;
     
     @Override
     public Move getMove(DraughtsState state) {
+        isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state);
-        
         try {
             for (int maxDepth = 1; maxDepth < Integer.MAX_VALUE; maxDepth++) {
                 alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth, true);
@@ -39,12 +40,12 @@ public class Player20 extends DraughtsPlayer {
 
     @Override
     public boolean isHuman() {
-        return false; //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     @Override
     public String getName() {
-        return "Player 20"; //To change body of generated methods, choose Tools | Templates.
+        return "Player 20";
     }
 
     @Override
@@ -115,8 +116,20 @@ public class Player20 extends DraughtsPlayer {
         int[] pieces = state.getPieces();
         
         for(int piece : pieces){
-            if(piece == DraughtsState.WHITEPIECE || piece == DraughtsState.WHITEKING){
-                computedValue++;
+            if(isWhite){
+                switch(piece) {
+                    case DraughtsState.WHITEPIECE: computedValue += 1; break;
+                    case DraughtsState.WHITEKING: computedValue += 3; break;
+                    case DraughtsState.BLACKPIECE: computedValue -= 1; break;
+                    case DraughtsState.BLACKKING: computedValue -= 3; break;
+                } 
+            } else {
+                switch(piece) {
+                    case DraughtsState.BLACKPIECE: computedValue += 1; break;
+                    case DraughtsState.BLACKKING: computedValue += 3; break;
+                    case DraughtsState.WHITEPIECE: computedValue -= 1; break;
+                    case DraughtsState.WHITEKING: computedValue -= 3; break;
+                }
             }
         }
         
