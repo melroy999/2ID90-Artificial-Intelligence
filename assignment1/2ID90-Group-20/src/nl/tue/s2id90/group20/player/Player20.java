@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package nl.tue.s2id90.group20;
+package nl.tue.s2id90.group20.player;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.draughts.player.DraughtsPlayer;
+import nl.tue.s2id90.group20.AIStoppedException;
+import nl.tue.s2id90.group20.GameNode;
+import nl.tue.s2id90.group20.evaluation.CountPiecesEvaluation;
+import nl.tue.s2id90.group20.evaluation.IEvaluation;
 import org10x10.dam.game.Move;
 
 /**
@@ -17,10 +14,14 @@ import org10x10.dam.game.Move;
  * @author Melroy
  */
 public class Player20 extends DraughtsPlayer {
-    private static final Logger LOG = Logger.getLogger(DraughtsPlayer.class.getName());
     private boolean stopped = false;
     private int value = 0;
     private boolean isWhite = false;
+    private final IEvaluation evaluator;
+
+    public Player20() {
+        this.evaluator = new CountPiecesEvaluation();
+    }
     
     @Override
     public Move getMove(DraughtsState state) {
@@ -112,27 +113,7 @@ public class Player20 extends DraughtsPlayer {
     }
     
     int evaluate(DraughtsState state) {
-        int computedValue = 0;
         int[] pieces = state.getPieces();
-        
-        for(int piece : pieces){
-            if(isWhite){
-                switch(piece) {
-                    case DraughtsState.WHITEPIECE: computedValue += 1; break;
-                    case DraughtsState.WHITEKING: computedValue += 3; break;
-                    case DraughtsState.BLACKPIECE: computedValue -= 1; break;
-                    case DraughtsState.BLACKKING: computedValue -= 3; break;
-                } 
-            } else {
-                switch(piece) {
-                    case DraughtsState.BLACKPIECE: computedValue += 1; break;
-                    case DraughtsState.BLACKKING: computedValue += 3; break;
-                    case DraughtsState.WHITEPIECE: computedValue -= 1; break;
-                    case DraughtsState.WHITEKING: computedValue -= 3; break;
-                }
-            }
-        }
-        
-        return computedValue;
+        return evaluator.evaluate(pieces, isWhite);
     }
 }

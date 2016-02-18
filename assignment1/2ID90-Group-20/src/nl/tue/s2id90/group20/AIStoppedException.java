@@ -9,6 +9,6 @@ package nl.tue.s2id90.group20;
  *
  * @author Melroy
  */
-class AIStoppedException extends Exception {
+public class AIStoppedException extends Exception {
     
 }

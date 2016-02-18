@@ -29,7 +29,7 @@ public class GameNode {
         this.bestMove = move;
     }
 
-    Move getBestMove() {
+    public Move getBestMove() {
         return bestMove;
     }
 
