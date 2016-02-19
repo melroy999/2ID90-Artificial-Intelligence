@@ -9,8 +9,8 @@ public class BorderPiecesEvaluation extends AbstractEvaluation {
         for (int i = 1; i <= 4; i++) {
             evaluatePiece(pieces[i], count, isWhitePlayer);
             evaluatePiece(pieces[46 + i], count, isWhitePlayer);
-            evaluatePiece(pieces[5 + 10 * (1 - i)], count, isWhitePlayer);
-            evaluatePiece(pieces[6 + 10 * (1 - i)], count, isWhitePlayer);
+            evaluatePiece(pieces[5 + 10 * (i - 1)], count, isWhitePlayer);
+            evaluatePiece(pieces[6 + 10 * (i - 1)], count, isWhitePlayer);
         }
         
         evaluatePiece(pieces[45], count, isWhitePlayer);
