@@ -6,21 +6,27 @@ import nl.tue.s2id90.draughts.player.DraughtsPlayer;
 import nl.tue.s2id90.group20.AIStoppedException;
 import nl.tue.s2id90.group20.GameNode;
 import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
-import nl.tue.s2id90.group20.evaluation.CombinedPiecesEvaluation;
+import nl.tue.s2id90.group20.evaluation.BorderPiecesEvaluation;
+import nl.tue.s2id90.group20.evaluation.CountCrownPiecesEvaluation;
+import nl.tue.s2id90.group20.evaluation.CountPiecesEvaluation;
 import org10x10.dam.game.Move;
 
 /**
  * The player represented by group 20.
  */
-public class Player20 extends DraughtsPlayer {
+public class Player20Complete extends DraughtsPlayer {
 
     private boolean stopped = false;
     private int value = 0;
     private boolean isWhite = false;
-    private final AbstractEvaluation evaluator;//The evaluation method used by the player
+    private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
-    public Player20() {
-        this.evaluator = new CombinedPiecesEvaluation();
+    public Player20Complete() {
+        this.evaluators = new AbstractEvaluation[] {
+            new CountPiecesEvaluation(),
+            new CountCrownPiecesEvaluation(),
+            new BorderPiecesEvaluation()
+        };
     }
 
     @Override
@@ -30,13 +36,11 @@ public class Player20 extends DraughtsPlayer {
         try {
             //Do iterative deepening.
             for (int maxDepth = 1; maxDepth < Integer.MAX_VALUE; maxDepth++) {
-                alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth, true);
+                value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth, true);
             }
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
         }
-
-        value = node.getValue();
         return node.getBestMove();
     }
 
@@ -97,12 +101,10 @@ public class Player20 extends DraughtsPlayer {
             if (maximize) {
                 if (childResult > a) {
                     a = childResult;
-                    node.setValue(a);
                     bestMove = move;
                 }
             } else if (childResult < b) {
                 b = childResult;
-                node.setValue(b);
                 bestMove = move;
             }
 
@@ -115,6 +117,10 @@ public class Player20 extends DraughtsPlayer {
         return maximize ? a : b;
     }
 
+    public AbstractEvaluation[] getEvaluators() {
+        return evaluators;
+    }
+
     /**
      * Evaluate the state of the board.
      *
@@ -123,6 +129,10 @@ public class Player20 extends DraughtsPlayer {
      */
     int evaluate(DraughtsState state) {
         int[] pieces = state.getPieces();
-        return evaluator.evaluate(pieces, isWhite);
+        int result = 0;
+        for(AbstractEvaluation evaluator : getEvaluators()){
+            result += evaluator.evaluate(pieces, isWhite);
+        }
+        return result;
     }
 }

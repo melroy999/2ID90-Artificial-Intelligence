@@ -7,10 +7,12 @@ package nl.tue.s2id90.group20;
 import nl.tue.s2id90.group20.player.UninformedPlayer;
 import nl.tue.s2id90.group20.player.StupidPlayer;
 import nl.tue.s2id90.group20.player.OptimisticPlayer;
-import nl.tue.s2id90.group20.player.Player20;
+import nl.tue.s2id90.group20.player.Player20Complete;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 import nl.tue.s2id90.draughts.DraughtsPlayerProvider;
 import nl.tue.s2id90.draughts.DraughtsPlugin;
+import nl.tue.s2id90.group20.player.Player20CountAllPieces;
+import nl.tue.s2id90.group20.player.Player20CountBorderPieces;
 
 
 
@@ -25,6 +27,6 @@ public class MyDraughtsPlugin extends DraughtsPlayerProvider implements Draughts
         // During the final competition you should make only your 
         // best player available. For testing it might be handy
         // to make more than one player available.
-        super(new UninformedPlayer(), new OptimisticPlayer(), new StupidPlayer(), new Player20());
+        super(new UninformedPlayer(), new OptimisticPlayer(), new StupidPlayer(), new Player20Complete(), new Player20CountAllPieces(), new Player20CountBorderPieces());
     }
 }

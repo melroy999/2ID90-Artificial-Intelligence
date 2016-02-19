@@ -6,20 +6,18 @@ public class BorderPiecesEvaluation extends AbstractEvaluation {
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         int count = 0;
 
-        for (int i = 1; i <= 4; i++) {
-            evaluatePiece(pieces[i], count, isWhitePlayer);
-            evaluatePiece(pieces[46 + i], count, isWhitePlayer);
-            evaluatePiece(pieces[5 + 10 * (i - 1)], count, isWhitePlayer);
-            evaluatePiece(pieces[6 + 10 * (i - 1)], count, isWhitePlayer);
+        //top and bottom row of the playing board.
+        for (int i = 1; i <= 5; i++) {            
+            count += evaluateSide(pieces[i], isWhitePlayer, 2);
+            count += evaluateSide(pieces[45 + i], isWhitePlayer, 2);
         }
         
-        evaluatePiece(pieces[45], count, isWhitePlayer);
-        evaluatePiece(pieces[46], count, isWhitePlayer);
+        //other borders of the playing board.
+        for (int i = 1; i <= 4; i++) {   
+            count += evaluateSide(pieces[15 + 10 * (i - 1)], isWhitePlayer);
+            count += evaluateSide(pieces[6 + 10 * (i - 1)], isWhitePlayer);
+        }
 
         return count;
-    }
-
-    public void evaluatePiece(int piece, int count, boolean isWhitePlayer) {
-            count += evaluateSide(piece, isWhitePlayer);
     }
 }
