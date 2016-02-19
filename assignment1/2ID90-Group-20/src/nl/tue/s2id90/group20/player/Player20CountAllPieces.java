@@ -14,7 +14,7 @@ import nl.tue.s2id90.group20.evaluation.CountPiecesEvaluation;
  * @author Melroy
  */
 public class Player20CountAllPieces extends Player20Complete {
-    private AbstractEvaluation[] evaluators;
+    private final AbstractEvaluation[] evaluators;
 
     public Player20CountAllPieces() {
         evaluators = new AbstractEvaluation[] {

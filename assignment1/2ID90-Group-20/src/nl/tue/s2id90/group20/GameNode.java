@@ -11,7 +11,6 @@ public class GameNode {
 
     private final DraughtsState gameState;//state of the game in the current configuration.
     private Move bestMove;//best move to make.
-    private int value;//the evaluation value of the best option found.
 
     public GameNode(DraughtsState gameState) {
         this.gameState = gameState;

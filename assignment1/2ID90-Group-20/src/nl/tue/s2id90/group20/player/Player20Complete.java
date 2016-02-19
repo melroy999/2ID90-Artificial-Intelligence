@@ -1,6 +1,12 @@
 package nl.tue.s2id90.group20.player;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.draughts.player.DraughtsPlayer;
 import nl.tue.s2id90.group20.AIStoppedException;
@@ -22,7 +28,7 @@ public class Player20Complete extends DraughtsPlayer {
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
     public Player20Complete() {
-        this.evaluators = new AbstractEvaluation[] {
+        this.evaluators = new AbstractEvaluation[]{
             new CountPiecesEvaluation(),
             new CountCrownPiecesEvaluation(),
             new BorderPiecesEvaluation()
@@ -33,14 +39,17 @@ public class Player20Complete extends DraughtsPlayer {
     public Move getMove(DraughtsState state) {
         isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state);
+
         try {
             //Do iterative deepening.
             for (int maxDepth = 1; maxDepth < Integer.MAX_VALUE; maxDepth++) {
-                value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth, true);
+                value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
             }
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
+            System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
         }
+
         return node.getBestMove();
     }
 
@@ -66,16 +75,16 @@ public class Player20Complete extends DraughtsPlayer {
      * @return Best evaluative value found during search.
      * @throws AIStoppedException
      */
-    private int alphaBeta(GameNode node, int a, int b, int depthToGo, boolean maximize) throws AIStoppedException {
+    private int alphaBeta(GameNode node, int a, int b, int depth, int depthLimit, boolean maximize) throws AIStoppedException {
         if (stopped) {
             //if the stop sign has been given, throw an AI stopped exception.
             stopped = false;
-            throw new AIStoppedException();
+            throw new AIStoppedException(depth);
         }
 
         DraughtsState state = node.getGameState();
-
-        if (depthToGo == 0) {
+        
+        if (depth > depthLimit) {
             //We reached the depth limit set for this search round.
             return evaluate(state);
         }
@@ -94,7 +103,7 @@ public class Player20Complete extends DraughtsPlayer {
 
             //recursive boogaloo
             GameNode newNode = new GameNode(state);
-            int childResult = alphaBeta(newNode, a, b, depthToGo - 1, !maximize);
+            int childResult = alphaBeta(newNode, a, b, depth + 1, depthLimit, !maximize);
 
             state.undoMove(move);
 
@@ -130,7 +139,7 @@ public class Player20Complete extends DraughtsPlayer {
     int evaluate(DraughtsState state) {
         int[] pieces = state.getPieces();
         int result = 0;
-        for(AbstractEvaluation evaluator : getEvaluators()){
+        for (AbstractEvaluation evaluator : getEvaluators()) {
             result += evaluator.evaluate(pieces, isWhite);
         }
         return result;
