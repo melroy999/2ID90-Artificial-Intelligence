@@ -5,8 +5,8 @@ import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.draughts.player.DraughtsPlayer;
 import nl.tue.s2id90.group20.AIStoppedException;
 import nl.tue.s2id90.group20.GameNode;
-import nl.tue.s2id90.group20.evaluation.CountPiecesEvaluation;
-import nl.tue.s2id90.group20.evaluation.IEvaluation;
+import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
+import nl.tue.s2id90.group20.evaluation.CombinedPiecesEvaluation;
 import org10x10.dam.game.Move;
 
 /**
@@ -17,10 +17,10 @@ public class Player20 extends DraughtsPlayer {
     private boolean stopped = false;
     private int value = 0;
     private boolean isWhite = false;
-    private final IEvaluation evaluator;//The evaluation method used by the player
+    private final AbstractEvaluation evaluator;//The evaluation method used by the player
 
     public Player20() {
-        this.evaluator = new CountPiecesEvaluation();
+        this.evaluator = new CombinedPiecesEvaluation();
     }
 
     @Override
