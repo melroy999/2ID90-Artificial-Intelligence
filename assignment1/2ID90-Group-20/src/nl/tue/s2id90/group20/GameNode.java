@@ -11,9 +11,11 @@ public class GameNode {
 
     private final DraughtsState gameState;//state of the game in the current configuration.
     private Move bestMove;//best move to make.
+    private final int depth;
 
-    public GameNode(DraughtsState gameState) {
+    public GameNode(DraughtsState gameState, int depth) {
         this.gameState = gameState;
+        this.depth = depth;
     }
 
     public DraughtsState getGameState() {
@@ -27,4 +29,9 @@ public class GameNode {
     public Move getBestMove() {
         return bestMove;
     }
+
+    public int getDepth() {
+        return depth;
+    }
+    
 }

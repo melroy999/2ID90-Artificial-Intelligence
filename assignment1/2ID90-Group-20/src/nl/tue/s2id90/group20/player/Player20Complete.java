@@ -1,12 +1,7 @@
 package nl.tue.s2id90.group20.player;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.draughts.player.DraughtsPlayer;
 import nl.tue.s2id90.group20.AIStoppedException;
@@ -21,10 +16,9 @@ import org10x10.dam.game.Move;
  * The player represented by group 20.
  */
 public class Player20Complete extends DraughtsPlayer {
-
-    private boolean stopped = false;
-    private int value = 0;
-    private boolean isWhite = false;
+    protected boolean stopped = false;
+    protected int value = 0;
+    protected boolean isWhite = false;
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
     public Player20Complete() {
@@ -37,8 +31,9 @@ public class Player20Complete extends DraughtsPlayer {
 
     @Override
     public Move getMove(DraughtsState state) {
+      
         isWhite = state.isWhiteToMove();
-        GameNode node = new GameNode(state);
+        GameNode node = new GameNode(state, 0);
 
         try {
             //Do iterative deepening.
@@ -83,7 +78,7 @@ public class Player20Complete extends DraughtsPlayer {
         }
 
         DraughtsState state = node.getGameState();
-        
+
         if (depth > depthLimit) {
             //We reached the depth limit set for this search round.
             return evaluate(state);
@@ -102,7 +97,7 @@ public class Player20Complete extends DraughtsPlayer {
             state.doMove(move);
 
             //recursive boogaloo
-            GameNode newNode = new GameNode(state);
+            GameNode newNode = new GameNode(state, depth);
             int childResult = alphaBeta(newNode, a, b, depth + 1, depthLimit, !maximize);
 
             state.undoMove(move);
