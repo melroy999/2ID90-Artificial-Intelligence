@@ -12,7 +12,7 @@ import nl.tue.s2id90.group20.evaluation.BorderPiecesEvaluation;
  *
  * @author Melroy
  */
-public class Player20CountBorderPieces extends Player20Complete {
+public class Player20CountBorderPieces extends Player20Base {
     private final AbstractEvaluation[] evaluators;
 
     public Player20CountBorderPieces() {

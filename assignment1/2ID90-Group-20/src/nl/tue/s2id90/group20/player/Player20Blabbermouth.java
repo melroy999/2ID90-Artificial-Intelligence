@@ -108,7 +108,7 @@ public class Player20Blabbermouth extends Player20Complete {
      * @return Best evaluative value found during search.
      * @throws AIStoppedException
      */
-    private int alphaBeta(GameNode node, int a, int b, int depth, int depthLimit, boolean maximize) throws AIStoppedException {
+    protected int alphaBeta(GameNode node, int a, int b, int depth, int depthLimit, boolean maximize) throws AIStoppedException {
         if (stopped) {
             //if the stop sign has been given, throw an AI stopped exception.
             stopped = false;

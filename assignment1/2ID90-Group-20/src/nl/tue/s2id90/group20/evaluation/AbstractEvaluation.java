@@ -51,6 +51,11 @@ public abstract class AbstractEvaluation {
     }
     
     public static int evaluateSide(int piece, boolean isWhitePlayer, int score) {
-        return isWhitePlayer == isWhite(piece) ? score : -score;
+        if(isWhite(piece)){
+            return isWhitePlayer ? score : -score;
+        } else if(isBlack(piece)) {
+            return isWhitePlayer ? -score : score;
+        }
+        return 0;
     }
 }

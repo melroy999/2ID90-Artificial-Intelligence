@@ -8,14 +8,24 @@ import org10x10.dam.game.Move;
  * information.
  */
 public class GameNode {
-
     private final DraughtsState gameState;//state of the game in the current configuration.
     private Move bestMove;//best move to make.
+    private int value;
     private final int depth;
+    private final boolean isWhitePlaying;
 
     public GameNode(DraughtsState gameState, int depth) {
         this.gameState = gameState;
         this.depth = depth;
+        this.isWhitePlaying = gameState.isWhiteToMove();
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 
     public DraughtsState getGameState() {
@@ -33,5 +43,8 @@ public class GameNode {
     public int getDepth() {
         return depth;
     }
-    
+
+    public boolean isWhitePlaying() {
+        return isWhitePlaying;
+    }
 }

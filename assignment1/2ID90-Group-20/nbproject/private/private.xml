@@ -4,14 +4,19 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/AIStoppedException.java</file>
-            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/evaluation/CountCrownPiecesEvaluation.java</file>
-            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/player/Player20Complete.java</file>
             <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/player/Player20CountAllPieces.java</file>
-            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/MyDraughtsPlugin.java</file>
-            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/evaluation/CountPiecesEvaluation.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/player/Player20DetectDuplicate.java</file>
             <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/GameNode.java</file>
             <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/evaluation/AbstractEvaluation.java</file>
             <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/player/Player20CountBorderPieces.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/player/Player20Blabbermouth.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/DuplicateStateManager.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/evaluation/CountCrownPiecesEvaluation.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/player/Player20Complete.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/MyDraughtsPlugin.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/evaluation/CountPiecesEvaluation.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/player/Player20Base.java</file>
+            <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/evaluation/PrioritiseEndstateEvaluation.java</file>
             <file>file:/F:/desktop%20windows8.1/gitlab/2ID90-Artificial-Intelligence/assignment1/2ID90-Group-20/src/nl/tue/s2id90/group20/evaluation/BorderPiecesEvaluation.java</file>
         </group>
     </open-files>
