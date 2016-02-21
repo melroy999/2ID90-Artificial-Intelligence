@@ -5,7 +5,13 @@
  */
 package nl.tue.s2id90.group20.player;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.draughts.player.DraughtsPlayer;
 import nl.tue.s2id90.group20.AIStoppedException;
@@ -30,6 +36,7 @@ public abstract class Player20Base extends DraughtsPlayer {
     public Move getMove(DraughtsState state) {
         isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state, 0);
+        node.setBestMove(state.getMoves().get(0));
 
         try {
             //Do iterative deepening.
@@ -39,6 +46,14 @@ public abstract class Player20Base extends DraughtsPlayer {
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
+        }
+        
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\value_log.txt"), true));
+            writer.println(value);
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Player20DetectDuplicate.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return node.getBestMove();
@@ -110,6 +125,8 @@ public abstract class Player20Base extends DraughtsPlayer {
             }
 
             if (a >= b) {
+                //is calling best move here correct?
+                node.setBestMove(bestMove);
                 return maximize ? b : a;
             }
         }

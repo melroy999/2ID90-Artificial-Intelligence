@@ -57,7 +57,7 @@ public class Player20Blabbermouth extends Player20Complete {
                             duplicateStateCount += value;
                         }
                     }
-                    writer.println(maxDepth);
+                    writer.println("Max depth for this iteration: " + maxDepth);
 
                     writer.println("Duplicate states: " + i);
                     writer.println("Total states: " + countMap.size());
@@ -67,7 +67,7 @@ public class Player20Blabbermouth extends Player20Complete {
                     writer.println("Total #states: " + totalStateCount);
                     writer.println("Percentile (#states): " + ((double) duplicateStateCount / (double) totalStateCount));
                     
-                    writer.println("Value: " + value);
+                    writer.println("Evaluation in this state: " + value);
 
                     writer.println("");
                 }

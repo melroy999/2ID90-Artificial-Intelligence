@@ -1,5 +1,11 @@
 package nl.tue.s2id90.group20.player;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
 import nl.tue.s2id90.group20.evaluation.BorderPiecesEvaluation;

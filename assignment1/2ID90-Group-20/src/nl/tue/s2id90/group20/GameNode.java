@@ -11,7 +11,7 @@ public class GameNode {
     private final DraughtsState gameState;//state of the game in the current configuration.
     private Move bestMove;//best move to make.
     private int value;
-    private final int depth;
+    private final int depth;//how much deeper it has to go
     private final boolean isWhitePlaying;
 
     public GameNode(DraughtsState gameState, int depth) {

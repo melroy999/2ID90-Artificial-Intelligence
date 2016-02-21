@@ -75,8 +75,12 @@ public class DuplicateStateManager {
             HashMap<Long,GameNode> intermediate2 = intermediate.get(key[1]);
             if(intermediate2 != null){
                 GameNode foundNode = intermediate2.get(key[2]);
-                if(foundNode != null && foundNode.getDepth() <= node.getDepth()){
-                    //only return a node if the node is higher in the tree as the current node.
+                if(foundNode != null && foundNode.getDepth() >= node.getDepth()){
+                    // only return a node if you reach the max depth with the subtree
+                    // that the node creates. As getDepth returns the remaining depth 
+                    // that has to be traversed, only return the foundNode if 
+                    // its remaining depth is larger as the given node, as it would
+                    // go deeper than the maximum depth.
                     return foundNode;
                 }
             } 
