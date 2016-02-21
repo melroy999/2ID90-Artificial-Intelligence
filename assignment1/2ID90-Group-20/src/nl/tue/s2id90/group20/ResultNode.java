@@ -10,28 +10,22 @@ package nl.tue.s2id90.group20;
  * @author Melroy
  */
 public class ResultNode {
-    private int evaluativeValue = 0;
+    private int value = 0;
     private final int subTreeDepth;
-    private final boolean isWhiteTurn;
 
-    public ResultNode(int subTreeDepth, boolean isWhiteTurn) {
+    public ResultNode(int subTreeDepth) {
         this.subTreeDepth = subTreeDepth;
-        this.isWhiteTurn = isWhiteTurn;
     }
 
-    public int getEvaluativeValue() {
-        return evaluativeValue;
+    public int getValue() {
+        return value;
     }
 
-    public void setEvaluativeValue(int evaluativeValue) {
-        this.evaluativeValue = evaluativeValue;
+    public void setValue(int value) {
+        this.value = value;
     }
 
     public int getSubTreeDepth() {
         return subTreeDepth;
-    }
-
-    public boolean isIsWhiteTurn() {
-        return isWhiteTurn;
     }
 }

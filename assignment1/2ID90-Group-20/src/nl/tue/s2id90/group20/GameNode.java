@@ -10,22 +10,25 @@ import org10x10.dam.game.Move;
 public class GameNode {
     private final DraughtsState gameState;//state of the game in the current configuration.
     private Move bestMove;//best move to make.
-    private int value;
-    private final int depth;//how much deeper it has to go
+    private final ResultNode resultParameters;
     private final boolean isWhitePlaying;
 
     public GameNode(DraughtsState gameState, int depth) {
         this.gameState = gameState;
-        this.depth = depth;
-        this.isWhitePlaying = gameState.isWhiteToMove();
+        resultParameters = new ResultNode(depth);
+        isWhitePlaying = gameState.isWhiteToMove();
+    }
+
+    public ResultNode getResultParameters() {
+        return resultParameters;
     }
 
     public int getValue() {
-        return value;
+        return resultParameters.getValue();
     }
 
     public void setValue(int value) {
-        this.value = value;
+        this.resultParameters.setValue(value);
     }
 
     public DraughtsState getGameState() {
@@ -41,7 +44,7 @@ public class GameNode {
     }
 
     public int getDepth() {
-        return depth;
+        return resultParameters.getSubTreeDepth();
     }
 
     public boolean isWhitePlaying() {

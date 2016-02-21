@@ -35,7 +35,7 @@ public abstract class Player20Base extends DraughtsPlayer {
     @Override
     public Move getMove(DraughtsState state) {
         isWhite = state.isWhiteToMove();
-        GameNode node = new GameNode(state, 0);
+        GameNode node = new GameNode(state, -1);
         node.setBestMove(state.getMoves().get(0));
 
         try {
@@ -109,7 +109,7 @@ public abstract class Player20Base extends DraughtsPlayer {
             state.doMove(move);
 
             //recursive boogaloo
-            GameNode newNode = new GameNode(state, depth);
+            GameNode newNode = new GameNode(state, depthLimit - depth);
             int childResult = alphaBeta(newNode, a, b, depth + 1, depthLimit, !maximize);
 
             state.undoMove(move);
