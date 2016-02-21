@@ -16,6 +16,7 @@ import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.group20.AIStoppedException;
 import nl.tue.s2id90.group20.DuplicateStateManager;
 import nl.tue.s2id90.group20.GameNode;
+import nl.tue.s2id90.group20.ResultNode;
 import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
 import nl.tue.s2id90.group20.evaluation.BorderPiecesEvaluation;
 import nl.tue.s2id90.group20.evaluation.CountCrownPiecesEvaluation;
@@ -46,26 +47,31 @@ public class Player20DetectDuplicate extends Player20Base {
         isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state, -1);
         node.setBestMove(state.getMoves().get(0));
+        dsm = new DuplicateStateManager();
 
         try {
             //Do iterative deepening.
-            for (int maxDepth = 1; maxDepth < Integer.MAX_VALUE; maxDepth++) {
+            for (int maxDepth = 1; maxDepth < 100; maxDepth++) {
                 alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
+                dsm.clear();
             }
+            System.out.println(this.getClass().toString() + " reached end state.");
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
         }
         
+        
+        
         value = node.getValue();
         
-        try {
-            PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\value_log.txt"), true));
+        /*try {
+            PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\player20_duplicate_value_log.txt"), true));
             writer.println(value);
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(Player20DetectDuplicate.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
         return node.getBestMove();
     }
 
@@ -89,6 +95,13 @@ public class Player20DetectDuplicate extends Player20Base {
             stopped = false;
             throw new AIStoppedException(depth);
         }
+        
+        ResultNode resultNode = dsm.getResultNode(node);
+        if(resultNode != null) {
+            int evaluation = resultNode.getValue();
+            node.setValue(evaluation);
+            return evaluation;
+        }
 
         DraughtsState state = node.getGameState();
 
@@ -97,6 +110,7 @@ public class Player20DetectDuplicate extends Player20Base {
             //Or we are at the end of the game.
             int evaluation = evaluate(state);
             node.setValue(evaluation);
+            dsm.storeGameNode(node);
             return evaluation;
         }
 
@@ -126,12 +140,14 @@ public class Player20DetectDuplicate extends Player20Base {
             if (a >= b) {
                 node.setValue(maximize ? b : a);
                 node.setBestMove(bestMove);
+                dsm.storeGameNode(node);
                 return maximize ? b : a;
             }
         }
         
         node.setValue(maximize ? a : b);
         node.setBestMove(bestMove);
+        dsm.storeGameNode(node);
         return maximize ? a : b;
     }
 

@@ -28,4 +28,15 @@ public class ResultNode {
     public int getSubTreeDepth() {
         return subTreeDepth;
     }
+    
+    public ResultNode clone(){
+        ResultNode clone = new ResultNode(subTreeDepth);
+        clone.setValue(value);
+        return clone;
+    }
+
+    @Override
+    public String toString() {
+        return "ResultNode{" + "value=" + value + ", subTreeDepth=" + subTreeDepth + '}';
+    }
 }

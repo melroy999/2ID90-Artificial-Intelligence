@@ -40,7 +40,7 @@ public abstract class Player20Base extends DraughtsPlayer {
 
         try {
             //Do iterative deepening.
-            for (int maxDepth = 1; maxDepth < Integer.MAX_VALUE; maxDepth++) {
+            for (int maxDepth = 1; maxDepth < 100; maxDepth++) {
                 value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
             }
         } catch (AIStoppedException ex) {
@@ -48,13 +48,13 @@ public abstract class Player20Base extends DraughtsPlayer {
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
         }
         
-        try {
+        /*try {
             PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\value_log.txt"), true));
             writer.println(value);
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(Player20DetectDuplicate.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
 
         return node.getBestMove();
     }
