@@ -98,7 +98,12 @@ public class DuplicateStateManager {
             HashMap<Long, ResultNode> intermediate2 = intermediate.get(key[1]);
             if (intermediate2 != null) {
                 ResultNode resultNode = intermediate2.get(key[2]);
-                if (resultNode != null && resultNode.getSubTreeDepth() >= node.getDepth()) {
+                
+                if (resultNode != null) {
+                    if(resultNode.getSubTreeDepth() >= node.getSubTreeDepth()){
+                        return resultNode;    
+                    }
+                    
                     /*try {
                         PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\duplicate_log.txt"), true));
                         writer.println(printindex++);
@@ -117,7 +122,6 @@ public class DuplicateStateManager {
                     // that has to be traversed, only return the foundNode if 
                     // its remaining depth is larger as the given node, as it would
                     // go deeper than the maximum depth.
-                    return resultNode;
                 }
             }
         }

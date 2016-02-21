@@ -12,11 +12,13 @@ public class GameNode {
     private Move bestMove;//best move to make.
     private final ResultNode resultParameters;
     private final boolean isWhitePlaying;
+    private final int depth;
 
-    public GameNode(DraughtsState gameState, int depth) {
+    public GameNode(DraughtsState gameState, int depth, int maxDepth) {
         this.gameState = gameState;
-        resultParameters = new ResultNode(depth);
+        resultParameters = new ResultNode(maxDepth - depth);
         isWhitePlaying = gameState.isWhiteToMove();
+        this.depth = depth;
     }
 
     public ResultNode getResultParameters() {
@@ -43,8 +45,12 @@ public class GameNode {
         return bestMove;
     }
 
-    public int getDepth() {
+    public int getSubTreeDepth() {
         return resultParameters.getSubTreeDepth();
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     public boolean isWhitePlaying() {

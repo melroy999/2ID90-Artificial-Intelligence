@@ -45,7 +45,7 @@ public class Player20DetectDuplicate extends Player20Base {
     @Override
     public Move getMove(DraughtsState state) {
         isWhite = state.isWhiteToMove();
-        GameNode node = new GameNode(state, -1);
+        GameNode node = new GameNode(state, 0, -1);
         node.setBestMove(state.getMoves().get(0));
         dsm = new DuplicateStateManager();
 
@@ -53,7 +53,6 @@ public class Player20DetectDuplicate extends Player20Base {
             //Do iterative deepening.
             for (int maxDepth = 1; maxDepth < 100; maxDepth++) {
                 alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
-                dsm.clear();
             }
             System.out.println(this.getClass().toString() + " reached end state.");
         } catch (AIStoppedException ex) {
@@ -61,7 +60,7 @@ public class Player20DetectDuplicate extends Player20Base {
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
         }
         
-        
+        dsm.clear();
         
         value = node.getValue();
         
@@ -97,7 +96,7 @@ public class Player20DetectDuplicate extends Player20Base {
         }
         
         ResultNode resultNode = dsm.getResultNode(node);
-        if(resultNode != null) {
+        if(resultNode != null && depth != 1) {
             int evaluation = resultNode.getValue();
             node.setValue(evaluation);
             return evaluation;
@@ -122,7 +121,7 @@ public class Player20DetectDuplicate extends Player20Base {
             state.doMove(move);
 
             //recursive boogaloo
-            GameNode newNode = new GameNode(state, depthLimit - depth);
+            GameNode newNode = new GameNode(state, depth, depthLimit);
             int childResult = alphaBeta(newNode, a, b, depth + 1, depthLimit, !maximize);
 
             state.undoMove(move);

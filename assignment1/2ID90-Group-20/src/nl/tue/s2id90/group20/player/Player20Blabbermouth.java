@@ -33,7 +33,7 @@ public class Player20Blabbermouth extends Player20Complete {
     @Override
     public Move getMove(DraughtsState state) {
         isWhite = state.isWhiteToMove();
-        GameNode node = new GameNode(state, 0);
+        GameNode node = new GameNode(state, 0, -1);
 
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\blabbermouth.txt"), true));
@@ -140,7 +140,7 @@ public class Player20Blabbermouth extends Player20Complete {
             state.doMove(move);
 
             //recursive boogaloo
-            GameNode newNode = new GameNode(state, depth);
+            GameNode newNode = new GameNode(state, depth, depthLimit);
             int childResult = alphaBeta(newNode, a, b, depth + 1, depthLimit, !maximize);
 
             state.undoMove(move);
