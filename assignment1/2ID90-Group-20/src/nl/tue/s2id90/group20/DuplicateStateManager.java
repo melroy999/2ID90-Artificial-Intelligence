@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
+import nl.tue.s2id90.group20.player.Player20DetectDuplicate;
 
 /**
  *
@@ -20,7 +21,9 @@ import nl.tue.s2id90.draughts.DraughtsState;
  */
 public class DuplicateStateManager {
     
-    int printindex = 0;
+    int callCount = 0;
+    int fetchCount = 0;
+    int storeCount = 0;
 
     private final HashMap<Long, HashMap<Long, HashMap<Long, ResultNode>>> processedNodes;
 
@@ -80,6 +83,8 @@ public class DuplicateStateManager {
         intermediate2.put(key[2], node.getResultParameters().clone());
         intermediate.put(key[1], intermediate2);
         processedNodes.put(key[0], intermediate);
+        
+        storeCount++;
     }
 
     /**
@@ -91,6 +96,7 @@ public class DuplicateStateManager {
      * returns null.
      */
     public ResultNode getResultNode(GameNode node) {
+        callCount++;
         long[] key = convertBoardState(node.getGameState());
 
         HashMap<Long, HashMap<Long, ResultNode>> intermediate = processedNodes.get(key[0]);
@@ -101,6 +107,7 @@ public class DuplicateStateManager {
                 
                 if (resultNode != null) {
                     if(resultNode.getSubTreeDepth() >= node.getSubTreeDepth()){
+                        fetchCount++;
                         return resultNode;    
                     }
                     
@@ -130,5 +137,20 @@ public class DuplicateStateManager {
 
     public void clear(){
         processedNodes.clear();
+    }
+    
+    public void reportData(){
+        /*try {
+            PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\player20_duplicate_callCount_logs.csv"), true));
+            writer.println(this.toString());
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DuplicateStateManager.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+    }
+
+    @Override
+    public String toString() {
+        return callCount + ";" + fetchCount + ";" + storeCount;
     }
 }

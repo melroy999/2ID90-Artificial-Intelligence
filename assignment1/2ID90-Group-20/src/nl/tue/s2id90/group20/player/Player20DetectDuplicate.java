@@ -60,6 +60,7 @@ public class Player20DetectDuplicate extends Player20Base {
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
         }
         
+        dsm.reportData();
         dsm.clear();
         
         value = node.getValue();

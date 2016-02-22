@@ -27,6 +27,7 @@ public abstract class Player20Base extends DraughtsPlayer {
     protected boolean stopped = false;
     protected int value = 0;
     protected boolean isWhite = false;
+    int callCount = 0;
 
     public Player20Base() {
 
@@ -37,6 +38,8 @@ public abstract class Player20Base extends DraughtsPlayer {
         isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state, 0, -1);
         node.setBestMove(state.getMoves().get(0));
+        
+        callCount = 0;
 
         try {
             //Do iterative deepening.
@@ -47,6 +50,14 @@ public abstract class Player20Base extends DraughtsPlayer {
             //Stop iterative deepening when exception is thrown.
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
         }
+        
+        /*try {
+            PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\player20_complete_callCount_logs.csv"), true));
+            writer.println(callCount);
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
         
         /*try {
             PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\value_log.txt"), true));
@@ -88,6 +99,7 @@ public abstract class Player20Base extends DraughtsPlayer {
             stopped = false;
             throw new AIStoppedException(depth);
         }
+        callCount++;
 
         DraughtsState state = node.getGameState();
 
