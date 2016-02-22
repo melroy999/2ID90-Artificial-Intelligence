@@ -8,7 +8,7 @@ public class CountCrownPiecesEvaluation extends AbstractEvaluation {
         
         for (int piece : pieces) {
             if(isKing(piece)){
-                count += evaluateSide(piece, isWhitePlayer, 5);
+                count += evaluateSide(piece, isWhitePlayer, 100);
             }
         }
        

@@ -18,8 +18,11 @@ import nl.tue.s2id90.group20.player.players.Player20_CP;
 import nl.tue.s2id90.group20.player.players.Player20_CP_BP;
 import nl.tue.s2id90.group20.player.players.Player20_CP_CCP;
 import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP;
+import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_CE_PE;
 import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_PE;
 import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE;
+import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE_CE;
+import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE_CE_PE;
 import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE_PE;
 import nl.tue.s2id90.group20.player.players.Player20_TE;
 
@@ -47,8 +50,11 @@ public class MyDraughtsPlugin extends DraughtsPlayerProvider implements Draughts
                 new Player20_CP_CCP(), 
                 new Player20_CP_CCP_BP(), 
                 new Player20_CP_CCP_BP_PE(), 
+                new Player20_CP_CCP_BP_CE_PE(), 
                 new Player20_CP_CCP_BP_TE(),
+                new Player20_CP_CCP_BP_TE_CE(),
                 new Player20_CP_CCP_BP_TE_PE(),
+                new Player20_CP_CCP_BP_TE_CE_PE(),
                 new Player20DetectDuplicate());
     }
 }

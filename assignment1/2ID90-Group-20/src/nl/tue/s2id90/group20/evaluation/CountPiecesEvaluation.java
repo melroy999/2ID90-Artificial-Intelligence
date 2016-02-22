@@ -21,7 +21,7 @@ public class CountPiecesEvaluation extends AbstractEvaluation {
         int count = 0;
         
         for (int piece : pieces) {
-            count += evaluateSide(piece, isWhitePlayer, 3);
+            count += evaluateSide(piece, isWhitePlayer, 25);
         }
        
         return count;

@@ -76,7 +76,7 @@ public class TandemEvaluation extends AbstractEvaluation {
     private int evaluateNeighbour(int neighbour, boolean isWhitePiece, int piece, boolean isWhitePlayer) {
         if (neighbour != DraughtsState.EMPTY && isWhitePiece == isWhite(neighbour)) {
             //if the piece is of the same color as the target.
-            return evaluateSide(piece, isWhitePlayer, 1);
+            return evaluateSide(piece, isWhitePlayer, 10);
         }
         return 0;
     }
