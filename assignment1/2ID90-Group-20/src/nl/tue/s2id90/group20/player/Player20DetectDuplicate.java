@@ -157,7 +157,7 @@ public class Player20DetectDuplicate extends Player20Base {
     }
 
     @Override
-    int evaluate(DraughtsState state) {
+    public int evaluate(DraughtsState state) {
         return extraEvaluator.evaluate(state, isWhite) + super.evaluate(state);
     }
 }

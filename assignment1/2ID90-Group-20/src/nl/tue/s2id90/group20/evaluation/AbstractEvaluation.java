@@ -27,7 +27,7 @@ public abstract class AbstractEvaluation {
     }
 
     public static boolean isWhite(int piece) {
-        return isWhitePiece(piece) || isWhiteKing(piece);
+        return DraughtsState.EMPTY != piece && (isWhitePiece(piece) || isWhiteKing(piece));
     }
 
     public static boolean isBlackPiece(int piece) {
@@ -39,7 +39,7 @@ public abstract class AbstractEvaluation {
     }
     
     public static boolean isBlack(int piece) {
-        return isBlackPiece(piece) || isBlackKing(piece);
+        return DraughtsState.EMPTY != piece && (isBlackPiece(piece) || isBlackKing(piece));
     }
     
     public static boolean isKing(int piece){

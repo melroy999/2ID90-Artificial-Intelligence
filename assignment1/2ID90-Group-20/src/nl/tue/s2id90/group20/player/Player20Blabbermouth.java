@@ -165,7 +165,7 @@ public class Player20Blabbermouth extends Player20Complete {
     }
 
     @Override
-    int evaluate(DraughtsState state) {
+    public int evaluate(DraughtsState state) {
         return extraEvaluator.evaluate(state, isWhite) + super.evaluate(state);
     }  
 }

@@ -1,34 +1,36 @@
-package nl.tue.s2id90.group20.player;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package nl.tue.s2id90.group20.player.players;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
 import nl.tue.s2id90.group20.evaluation.BorderPiecesEvaluation;
 import nl.tue.s2id90.group20.evaluation.CountCrownPiecesEvaluation;
 import nl.tue.s2id90.group20.evaluation.CountPiecesEvaluation;
 import nl.tue.s2id90.group20.evaluation.PrioritiseEndstateEvaluation;
-import org10x10.dam.game.Move;
+import nl.tue.s2id90.group20.evaluation.TandemEvaluation;
+import nl.tue.s2id90.group20.player.Player20Base;
 
 /**
- * The player represented by group 20.
+ *
+ * @author Melroy
  */
-public class Player20Complete extends Player20Base {
+public class Player20_CP_CCP_BP_TE_PE extends Player20Base {
     private final PrioritiseEndstateEvaluation extraEvaluator = new PrioritiseEndstateEvaluation();
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
-    public Player20Complete() {
+    public Player20_CP_CCP_BP_TE_PE() {
         this.evaluators = new AbstractEvaluation[]{
             new CountPiecesEvaluation(),
             new CountCrownPiecesEvaluation(),
-            new BorderPiecesEvaluation()
+            new BorderPiecesEvaluation(),
+            new TandemEvaluation()
         };
     }
-
+    
     @Override
     public AbstractEvaluation[] getEvaluators() {
         return evaluators;
@@ -38,5 +40,4 @@ public class Player20Complete extends Player20Base {
     public int evaluate(DraughtsState state) {
         return extraEvaluator.evaluate(state, isWhite) + super.evaluate(state);
     }
-    
 }

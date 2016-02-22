@@ -3,20 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.tue.s2id90.group20.player;
+package nl.tue.s2id90.group20.player.players;
 
 import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
 import nl.tue.s2id90.group20.evaluation.BorderPiecesEvaluation;
+import nl.tue.s2id90.group20.evaluation.CountCrownPiecesEvaluation;
+import nl.tue.s2id90.group20.evaluation.CountPiecesEvaluation;
+import nl.tue.s2id90.group20.player.Player20Base;
 
 /**
  *
  * @author Melroy
  */
-public class Player20CountBorderPieces extends Player20Base {
-    private final AbstractEvaluation[] evaluators;
+public class Player20_CP_BP extends Player20Base {
+    private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
-    public Player20CountBorderPieces() {
-        evaluators = new AbstractEvaluation[] {
+    public Player20_CP_BP() {
+        this.evaluators = new AbstractEvaluation[]{
+            new CountPiecesEvaluation(),
             new BorderPiecesEvaluation()
         };
     }
