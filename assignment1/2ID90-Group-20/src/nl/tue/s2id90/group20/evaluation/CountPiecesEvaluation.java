@@ -4,7 +4,8 @@ package nl.tue.s2id90.group20.evaluation;
  * Holds the evaluation based on piece counting.
  */
 public class CountPiecesEvaluation extends AbstractEvaluation {
-
+    private final int pieceWeight = 25;
+    
     /**
      * Evaluate the current state of the board by counting the amount of pieces
      * on the board.
@@ -21,7 +22,7 @@ public class CountPiecesEvaluation extends AbstractEvaluation {
         int count = 0;
         
         for (int piece : pieces) {
-            count += evaluateSide(piece, isWhitePlayer, 25);
+            count += evaluateSide(piece, isWhitePlayer, pieceWeight);
         }
        
         return count;

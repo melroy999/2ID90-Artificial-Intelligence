@@ -12,6 +12,8 @@ import nl.tue.s2id90.draughts.DraughtsState;
  * @author Melroy
  */
 public class PrioritiseEndstateEvaluation extends AbstractEvaluation {
+    private final int winWeight = 1000;
+    
     @Override
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -20,9 +22,9 @@ public class PrioritiseEndstateEvaluation extends AbstractEvaluation {
     public int evaluate(DraughtsState state, boolean isWhitePlayer) {
         if(state.isEndState()){
             if(state.isWhiteToMove() == isWhitePlayer){
-                return -1000;
+                return -winWeight;
             } else {
-                return 1000;
+                return winWeight;
             }
         }
         return 0;

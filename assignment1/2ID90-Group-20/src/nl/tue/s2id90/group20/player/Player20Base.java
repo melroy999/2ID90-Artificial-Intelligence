@@ -103,18 +103,12 @@ public abstract class Player20Base extends DraughtsPlayer {
 
         DraughtsState state = node.getGameState();
 
-        if (depth > depthLimit) {
-            //We reached the depth limit set for this search round.
-            return evaluate(state);
-        }
-
-        if (state.isEndState()) {
+        if (depth > depthLimit || state.isEndState()) {
             //No more moves exist, one player has won.
             return evaluate(state);
         }
 
         List<Move> moves = state.getMoves();
-
         Move bestMove = moves.get(0);
 
         for (Move move : moves) {
