@@ -13,11 +13,13 @@ public class TranspositionEntry {
     /*private final TranspositionType type;*/
     private final int depth;
     private final int value;
+    private final int nodes;
 
-    public TranspositionEntry(/*TranspositionType type, */int depth, int value) {
+    public TranspositionEntry(int depth, int value, int nodes) {
         /*this.type = type;*/
         this.depth = depth;
         this.value = value;
+        this.nodes = nodes;
     }
 
     /*public TranspositionType getType() {
@@ -31,5 +33,8 @@ public class TranspositionEntry {
     public int getValue() {
         return value;
     }
-    
+
+    public int getNodes() {
+        return nodes;
+    }
 }

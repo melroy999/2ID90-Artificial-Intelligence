@@ -84,7 +84,7 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
             throw new AIStoppedException();
         }
         
-        callCount++;
+        
         
         //get the entry that is stored in the transposition table.
         long key = node.getKey();
@@ -94,19 +94,23 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
         //if the depth remaining is within reach for the entry.
         if (entry != null && entry.getDepth() >= depthLimit - depth) {
             fetchCount++;
+            callCount += entry.getNodes();
             return entry.getValue();
         }
+        
+        callCount++;
 
         DraughtsState state = node.getGameState();
 
         if (depth == depthLimit || state.isEndState()) {
             int result = evaluate(state);
-            TranspositionEntry resultEntry = new TranspositionEntry(depthLimit - depth, result);
+            TranspositionEntry resultEntry = new TranspositionEntry(depthLimit - depth, result, 1);
             transpositionTable.storeEntry(key, resultEntry);
             storeCount++;
             return result;
         }
 
+        int subTreeNodeCountStart = callCount;
         List<Move> moves = state.getMoves();
         Move bestMove = moves.get(0);
         for (Move move : moves) {
@@ -129,17 +133,19 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
             }
 
             if (a >= b) {
+                int subTreeDepth = callCount - subTreeNodeCountStart;
                 //is calling best move here correct?
                 node.setBestMove(bestMove);
-                TranspositionEntry resultEntry = new TranspositionEntry(depthLimit - depth, maximize ? b : a);
+                TranspositionEntry resultEntry = new TranspositionEntry(depthLimit - depth, maximize ? b : a, subTreeDepth);
                 transpositionTable.storeEntry(key, resultEntry);
                 storeCount++;
                 return maximize ? b : a;
             }
         }
-
+        
+        int subTreeDepth = callCount - subTreeNodeCountStart;
         node.setBestMove(bestMove);
-        TranspositionEntry resultEntry = new TranspositionEntry(depthLimit - depth, maximize ? a : b);
+        TranspositionEntry resultEntry = new TranspositionEntry(depthLimit - depth, maximize ? a : b, subTreeDepth);
         transpositionTable.storeEntry(key, resultEntry);
         storeCount++;
         return maximize ? a : b;
