@@ -95,7 +95,7 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
         
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(new File("player20_tr_asp_" + pruningWindow + "_callCount_logs.csv"), true));
-            writer.println(callCount + ";" + fetchCount + ";" + storeCount + ";" + pruneCount + ";" + maxDepth);
+            writer.println(callCount + "," + fetchCount + "," + storeCount + "," + pruneCount + "," + maxDepth);
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(Player20_CP_CCP_BP_TE_CE_PE_TR.class.getName()).log(Level.SEVERE, null, ex);
