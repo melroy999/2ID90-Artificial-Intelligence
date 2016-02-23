@@ -27,11 +27,14 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
     private int callCount = 0;
     private int fetchCount = 0;
     private int storeCount = 0;
+    private int pruneCount = 0;
     
     /**
      * Table holding already analysed nodes.
      */
     private final TranspositionTable transpositionTable = new TranspositionTable();
+    
+    int pruningWindow = 25;
 
     @Override
     public Move getMove(DraughtsState state) {
@@ -39,6 +42,7 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
         callCount = 0;
         fetchCount = 0;
         storeCount = 0;
+        pruneCount = 0;
 
         long key = TranspositionTable.getZobristKey(state);
 
@@ -49,13 +53,40 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
         int maxDepth = 2;
         try {
             //Do iterative deepening.
-            for (maxDepth = 2; maxDepth < 100; maxDepth++) {
-                value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
+            //we use aspiration techniques to determine the starting alpha and beta.
+            
+            int alpha = -20000;
+            int beta = 20000;
+            
+            while(maxDepth < 100){
+                value = alphaBeta(node, alpha, beta, 1, maxDepth, true);
+                
+                //if the evaluation is not between alpha and beta.
+                if(value <= alpha || value >= beta){
+                    //set to starting values for alpha and beta, and proceed to
+                    //the next iteration of the while loop without incrementing
+                    //the maximum depth.
+                    alpha = -20000;
+                    beta = 20000;
+                    System.out.println("Failed to aspirate. Setting a=" + alpha + ", b=" + beta);
+                    System.out.println(pruneCount);
+                    continue;
+                }
+                
+                //we are within the specified window. set the new window
+                //for the next iteration.
+                
+                alpha = value - pruningWindow;
+                beta = value + pruningWindow;
+                maxDepth++;
+                System.out.println("Setting a=" + alpha + ", b=" + beta);
+                System.out.println(pruneCount);
                 
                 //as the starting gameNode is altered during runtime,
                 //a half completed iteration could mess things up.
                 bestMove = node.getBestMove();
             }
+            
             System.out.println(this.getClass().toString() + " reached end state. Total of " + callCount + " nodes, of which we fetched " + fetchCount + " and stored " + storeCount + ".");
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
@@ -63,8 +94,8 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
         }
         
         try {
-            PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\player20_transposition_callCount_logs.csv"), true));
-            writer.println(callCount + ";" + fetchCount + ";" + maxDepth);
+            PrintWriter writer = new PrintWriter(new FileWriter(new File("player20_tr_asp_" + pruningWindow + "_callCount_logs.csv"), true));
+            writer.println(callCount + ";" + fetchCount + ";" + storeCount + ";" + pruneCount + ";" + maxDepth);
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(Player20_CP_CCP_BP_TE_CE_PE_TR.class.getName()).log(Level.SEVERE, null, ex);
@@ -139,6 +170,7 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
                 TranspositionEntry resultEntry = new TranspositionEntry(depthLimit - depth, maximize ? b : a, subTreeDepth);
                 transpositionTable.storeEntry(key, resultEntry);
                 storeCount++;
+                pruneCount++;
                 return maximize ? b : a;
             }
         }
