@@ -10,7 +10,6 @@ import nl.tue.s2id90.group20.player.OptimisticPlayer;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 import nl.tue.s2id90.draughts.DraughtsPlayerProvider;
 import nl.tue.s2id90.draughts.DraughtsPlugin;
-import nl.tue.s2id90.group20.player.Player20DetectDuplicate;
 import nl.tue.s2id90.group20.player.players.Player20_BP;
 import nl.tue.s2id90.group20.player.players.Player20_CCP;
 import nl.tue.s2id90.group20.player.players.Player20_CP;
@@ -55,7 +54,7 @@ public class MyDraughtsPlugin extends DraughtsPlayerProvider implements Draughts
                 new Player20_CP_CCP_BP_TE_CE(),
                 new Player20_CP_CCP_BP_TE_PE(),
                 new Player20_CP_CCP_BP_TE_CE_PE(),
-                new Player20_CP_CCP_BP_TE_CE_PE_TR(),
-                new Player20DetectDuplicate());
+                new Player20_CP_CCP_BP_TE_CE_PE_TR()
+        );
     }
 }

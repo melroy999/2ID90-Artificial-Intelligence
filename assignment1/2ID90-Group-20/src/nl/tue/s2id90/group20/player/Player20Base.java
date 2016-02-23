@@ -40,6 +40,8 @@ public abstract class Player20Base extends DraughtsPlayer {
         GameNode node = new GameNode(state, 0, -1);
         node.setBestMove(state.getMoves().get(0));
         
+        Move bestMove = node.getBestMove();
+        
         callCount = 0;
         int maxDepth = 2;
 
@@ -47,11 +49,15 @@ public abstract class Player20Base extends DraughtsPlayer {
             //Do iterative deepening.
             for (maxDepth = 2; maxDepth < 100; maxDepth++) {
                 value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
+                
+                //as the starting gameNode is altered during runtime,
+                //a half completed iteration could mess things up.
+                bestMove = node.getBestMove();
             }
-            System.out.println(this.getClass().toString() + " reached end state.");
+            System.out.println(this.getClass().toString() + " reached end state. Total of " + callCount + " nodes.");
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
-            System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
+            System.out.println(this.getClass().toString() + " reached depth " + maxDepth + " with " + callCount + " nodes.");
         }
         
         try {
@@ -70,7 +76,7 @@ public abstract class Player20Base extends DraughtsPlayer {
             Logger.getLogger(Player20DetectDuplicate.class.getName()).log(Level.SEVERE, null, ex);
         }*/
 
-        return node.getBestMove();
+        return bestMove;
     }
 
     @Override
@@ -100,7 +106,7 @@ public abstract class Player20Base extends DraughtsPlayer {
         if (stopped) {
             //if the stop sign has been given, throw an AI stopped exception.
             stopped = false;
-            throw new AIStoppedException(depth);
+            throw new AIStoppedException();
         }
         callCount++;
 
