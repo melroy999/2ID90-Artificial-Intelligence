@@ -1,6 +1,7 @@
 package nl.tue.s2id90.group20;
 
 import nl.tue.s2id90.draughts.DraughtsState;
+import nl.tue.s2id90.group20.transposition.TranspositionEntry;
 import org10x10.dam.game.Move;
 
 /**
@@ -13,12 +14,22 @@ public class GameNode {
     private final ResultNode resultParameters;
     private final boolean isWhitePlaying;
     private final int depth;
+    private final long key;
 
     public GameNode(DraughtsState gameState, int depth, int maxDepth) {
         this.gameState = gameState;
-        resultParameters = new ResultNode(maxDepth - depth);
-        isWhitePlaying = gameState.isWhiteToMove();
+        this.resultParameters = new ResultNode(maxDepth - depth);
+        this.isWhitePlaying = gameState.isWhiteToMove();
         this.depth = depth;
+        this.key = 0;
+    }
+
+    public GameNode(DraughtsState gameState, int depth, int maxDepth, long key) {
+        this.gameState = gameState;
+        this.resultParameters = new ResultNode(maxDepth - depth);
+        this.isWhitePlaying = gameState.isWhiteToMove();
+        this.depth = depth;
+        this.key = key;
     }
 
     public ResultNode getResultParameters() {
@@ -55,5 +66,9 @@ public class GameNode {
 
     public boolean isWhitePlaying() {
         return isWhitePlaying;
+    }
+
+    public long getKey() {
+        return key;
     }
 }

@@ -36,6 +36,7 @@ public abstract class Player20Base extends DraughtsPlayer {
     @Override
     public Move getMove(DraughtsState state) {
         isWhite = state.isWhiteToMove();
+        
         GameNode node = new GameNode(state, 0, -1);
         node.setBestMove(state.getMoves().get(0));
         
@@ -43,9 +44,10 @@ public abstract class Player20Base extends DraughtsPlayer {
 
         try {
             //Do iterative deepening.
-            for (int maxDepth = 1; maxDepth < 100; maxDepth++) {
+            for (int maxDepth = 2; maxDepth < 100; maxDepth++) {
                 value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
             }
+            System.out.println(this.getClass().toString() + " reached end state.");
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
