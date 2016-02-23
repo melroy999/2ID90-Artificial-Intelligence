@@ -27,9 +27,9 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
     @Override
     public Move getMove(DraughtsState state) {
         isWhite = state.isWhiteToMove();
-        
+
         long key = TranspositionTable.getZobristKey(state);
-        
+
         GameNode node = new GameNode(state, 0, Integer.MAX_VALUE, key);
         node.setBestMove(state.getMoves().get(0));
 
@@ -43,7 +43,7 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
             //Stop iterative deepening when exception is thrown.
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
         }
-        
+
         //clear the table, so that we cannot cheat by using previous results in next iteration.
         transpositionTable.clear();
 
@@ -52,14 +52,19 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20_CP_CCP_BP_TE_CE_PE 
 
     @Override
     protected int alphaBeta(GameNode node, int a, int b, int depth, int depthLimit, boolean maximize) throws AIStoppedException {
-
+        if (stopped) {
+            //if the stop sign has been given, throw an AI stopped exception.
+            stopped = false;
+            throw new AIStoppedException(depth);
+        }
+        
         //get the entry that is stored in the transposition table.
         long key = node.getKey();
         TranspositionEntry entry = transpositionTable.fetchEntry(key);
 
         //if the entry is not null.
         //if the depth remaining is within reach for the entry.
-        if (entry != null && entry.getDepth() <= depthLimit - depth) {
+        if (entry != null && entry.getDepth() >= depthLimit - depth) {
             return entry.getValue();
         }
 
