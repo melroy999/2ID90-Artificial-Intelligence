@@ -41,10 +41,11 @@ public abstract class Player20Base extends DraughtsPlayer {
         node.setBestMove(state.getMoves().get(0));
         
         callCount = 0;
+        int maxDepth = 2;
 
         try {
             //Do iterative deepening.
-            for (int maxDepth = 2; maxDepth < 100; maxDepth++) {
+            for (maxDepth = 2; maxDepth < 100; maxDepth++) {
                 value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
             }
             System.out.println(this.getClass().toString() + " reached end state.");
@@ -53,13 +54,13 @@ public abstract class Player20Base extends DraughtsPlayer {
             System.out.println(this.getClass().toString() + " reached depth " + ex.depth);
         }
         
-        /*try {
+        try {
             PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\player20_complete_callCount_logs.csv"), true));
-            writer.println(callCount);
+            writer.println(callCount + ";" + maxDepth);
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
         
         /*try {
             PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\value_log.txt"), true));

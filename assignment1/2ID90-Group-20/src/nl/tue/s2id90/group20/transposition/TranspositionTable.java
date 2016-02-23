@@ -43,8 +43,8 @@ public class TranspositionTable {
      * @param move: The move made.
      * @return The key of the state where the move was made.
      */
-    public static long doMove(long key, Move move) {
-        return keyManager.doMove(key, move);
+    public static long doMove(long key, Move move, boolean isWhiteMove) {
+        return keyManager.doMove(key, move, isWhiteMove);
     }
 
     /**
@@ -54,8 +54,8 @@ public class TranspositionTable {
      * @param move: The move made.
      * @return The key of the state where the move was made.
      */
-    public static long undoMove(long key, Move move) {
-        return keyManager.undoMove(key, move);
+    public static long undoMove(long key, Move move, boolean isWhiteMove) {
+        return keyManager.undoMove(key, move, isWhiteMove);
     }
 
     /**
