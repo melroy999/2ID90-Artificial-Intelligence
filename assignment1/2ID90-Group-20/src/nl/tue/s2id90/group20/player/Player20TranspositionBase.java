@@ -39,7 +39,7 @@ public abstract class Player20TranspositionBase extends Player20Base {
      */
     private final TranspositionTable transpositionTable = new TranspositionTable();
     
-    int pruningWindow = 15;
+    int pruningWindow = 10;
 
     public Player20TranspositionBase(String name) {
         super(name + "_TR");
@@ -47,32 +47,23 @@ public abstract class Player20TranspositionBase extends Player20Base {
 
     @Override
     public Move getMove(DraughtsState state) {
-        if (!resultFile.exists()) {
-            try {
-                //create result file for this player.
-                PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
-                writer.println("PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,#WP,#BP,#WK,#BK,EvaluationValues");
-                writer.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        Move bestMove = super.getMove(state);
 
-        isWhite = state.isWhiteToMove();
+        //clear the table, so that we cannot cheat by using previous results in next iteration.
+        transpositionTable.clear();
 
-        nodeCount = 0;
-        fetchCount = 0;
-        pruneCount = 0;
-
-        Stack<Integer> values = new Stack<>();
-
+        return bestMove;
+    }
+    
+    @Override
+    protected Move iterativeDeepening(DraughtsState state) {
         long key = TranspositionTable.getZobristKey(state);
-
+        isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state.clone(), 0, Integer.MAX_VALUE, key);
         node.setBestMove(state.getMoves().get(0));
         Move bestMove = node.getBestMove();
 
-        int maxDepth = 2;
+        maxDepth = 2;
         try {
             //Do iterative deepening.
             //we use aspiration techniques to determine the starting alpha and beta.
@@ -88,8 +79,12 @@ public abstract class Player20TranspositionBase extends Player20Base {
                     //set to starting values for alpha and beta, and proceed to
                     //the next iteration of the while loop without incrementing
                     //the maximum depth.
-                    alpha = -20000;
-                    beta = 20000;
+                    if (value <= alpha) {
+                        alpha = -20000;
+                    } else if (value >= beta) {
+                        beta = 20000;
+                    }
+
                     System.out.println("Failed to aspirate. Setting a=" + alpha + ", b=" + beta);
                     System.out.println("Pruned: " + pruneCount);
                     continue;
@@ -115,58 +110,7 @@ public abstract class Player20TranspositionBase extends Player20Base {
             //Stop iterative deepening when exception is thrown.
             System.out.println(this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");
         }
-
-        String playerSide = isWhite ? "White" : "Black";
-
-        int countWhite = 0;
-        int countBlack = 0;
-        int countWhiteKing = 0;
-        int countBlackKing = 0;
-
-        for (int piece : state.getPieces()) {
-            if (AbstractEvaluation.isWhite(piece)) {
-                countWhite++;
-                if (AbstractEvaluation.isWhiteKing(piece)) {
-                    countWhiteKing++;
-                }
-            } else if(AbstractEvaluation.isBlack(piece)) {
-                countBlack++;
-                if (AbstractEvaluation.isBlackKing(piece)) {
-                    countBlackKing++;
-                }
-            }
-        }
-
-        //get the evaluation results
-        String evaluationValues = "";
-        while (!values.empty()) {
-            evaluationValues = values.pop() + " " + evaluationValues;
-        }
-
-        try {
-            PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
-            //Player Side, Move, Traversed Nodes, Fetched Nodes, Subtrees Pruned, Search Depth, #WP, #BP, #WK, #BK, Evaluation Values
-            writer.println(
-                    playerSide + ","
-                    + bestMove.toString() + ","
-                    + nodeCount + ","
-                    + fetchCount + "," //we do not store in ordinary version.
-                    + pruneCount + ","
-                    + (maxDepth - 1) + ","
-                    + countWhite + ","
-                    + countBlack + ","
-                    + countWhiteKing + ","
-                    + countBlackKing + ","
-                    + evaluationValues
-            );
-            writer.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //clear the table, so that we cannot cheat by using previous results in next iteration.
-        transpositionTable.clear();
-
+        
         return bestMove;
     }
 

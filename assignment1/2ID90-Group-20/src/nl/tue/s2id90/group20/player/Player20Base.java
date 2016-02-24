@@ -37,6 +37,8 @@ public abstract class Player20Base extends DraughtsPlayer {
     protected int nodeCount = 0;
     protected int fetchCount = 0;
     protected int pruneCount = 0;
+    protected Stack<Integer> values;
+    protected int maxDepth;
 
     public Player20Base(String name) {
         if (timestamp == -1) {
@@ -47,30 +49,21 @@ public abstract class Player20Base extends DraughtsPlayer {
 
     @Override
     public Move getMove(DraughtsState state) {
-        if (!resultFile.exists()) {
-            try {
-                //create result file for this player.
-                PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
-                writer.println("PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,#WP,#BP,#WK,#BK,EvaluationValues");
-                writer.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        initializeFile();
 
+        values = resetResultLoggingValues();
+
+        Move bestMove = iterativeDeepening(state);
+
+        writeResultsToFile(state, values, bestMove, maxDepth);
+        return bestMove;
+    }
+
+    protected Move iterativeDeepening(DraughtsState state) {
         isWhite = state.isWhiteToMove();
-
         GameNode node = new GameNode(state.clone(), 0, -1);
         node.setBestMove(state.getMoves().get(0));
-
         Move bestMove = node.getBestMove();
-
-        nodeCount = 0;
-        pruneCount = 0;
-        fetchCount = 0;
-        Stack<Integer> values = new Stack<>();
-
-        int maxDepth = 2;
 
         try {
             //Do iterative deepening.
@@ -87,7 +80,19 @@ public abstract class Player20Base extends DraughtsPlayer {
             //Stop iterative deepening when exception is thrown.
             System.out.println(this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");
         }
+        
+        return bestMove;
+    }
 
+    protected Stack<Integer> resetResultLoggingValues() {
+        nodeCount = 0;
+        pruneCount = 0;
+        fetchCount = 0;
+        Stack<Integer> values = new Stack<>();
+        return values;
+    }
+
+    protected void writeResultsToFile(DraughtsState state, Stack<Integer> values, Move bestMove, int maxDepth) {
         String playerSide = isWhite ? "White" : "Black";
 
         int countWhite = 0;
@@ -101,7 +106,7 @@ public abstract class Player20Base extends DraughtsPlayer {
                 if (AbstractEvaluation.isWhiteKing(piece)) {
                     countWhiteKing++;
                 }
-            } else if(AbstractEvaluation.isBlack(piece)) {
+            } else if (AbstractEvaluation.isBlack(piece)) {
                 countBlack++;
                 if (AbstractEvaluation.isBlackKing(piece)) {
                     countBlackKing++;
@@ -135,15 +140,19 @@ public abstract class Player20Base extends DraughtsPlayer {
         } catch (IOException ex) {
             Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
-        /*try {
-            PrintWriter writer = new PrintWriter(new FileWriter(new File("F:\\desktop windows8.1\\gitlab\\2ID90-Artificial-Intelligence\\assignment1\\value_log.txt"), true));
-            writer.println(value);
-            writer.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Player20DetectDuplicate.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        return bestMove;
+    protected void initializeFile() {
+        if (!resultFile.exists()) {
+            try {
+                //create result file for this player.
+                PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
+                writer.println("PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,#WP,#BP,#WK,#BK,EvaluationValues");
+                writer.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override
