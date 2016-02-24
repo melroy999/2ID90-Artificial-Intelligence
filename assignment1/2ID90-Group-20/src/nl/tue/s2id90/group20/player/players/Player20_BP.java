@@ -19,6 +19,7 @@ public class Player20_BP extends Player20Base {
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
     public Player20_BP() {
+        super("Player20_BP");
         this.evaluators = new AbstractEvaluation[]{
             new BorderPiecesEvaluation()
         };

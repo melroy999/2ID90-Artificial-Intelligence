@@ -20,6 +20,7 @@ public class Player20_TE extends Player20Base {
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
     public Player20_TE() {
+        super("Player20_TE");
         this.evaluators = new AbstractEvaluation[]{
             new TandemEvaluation()
         };

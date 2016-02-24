@@ -21,6 +21,7 @@ public class Player20_CP_CCP_BP_TE_CE extends Player20Base {
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
     public Player20_CP_CCP_BP_TE_CE() {
+        super("Player20_CP_CCP_BP_TE_CE");
         this.evaluators = new AbstractEvaluation[]{
             new CountPiecesEvaluation(),
             new CountCrownPiecesEvaluation(),
