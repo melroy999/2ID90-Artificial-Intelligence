@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.tue.s2id90.group20.player.players;
+package nl.tue.s2id90.group20.player;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,26 +32,17 @@ import org10x10.dam.game.Move;
  *
  * @author Melroy
  */
-public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20Base {
+public abstract class Player20TranspositionBase extends Player20Base {
 
     /**
      * Table holding already analyzed nodes.
      */
     private final TranspositionTable transpositionTable = new TranspositionTable();
-    private final PrioritiseEndstateEvaluation extraEvaluator = new PrioritiseEndstateEvaluation();
+    
+    int pruningWindow = 15;
 
-    int pruningWindow = 25;
-    private final AbstractEvaluation[] evaluators;
-
-    public Player20_CP_CCP_BP_TE_CE_PE_TR() {
-        super("Player20_CP_CCP_BP_TE_CE_PE_TR");
-        this.evaluators = new AbstractEvaluation[]{
-            new CountPiecesEvaluation(),
-            new CountCrownPiecesEvaluation(),
-            new BorderPiecesEvaluation(),
-            new TandemEvaluation(),
-            new CenterEvaluation()
-        };
+    public Player20TranspositionBase(String name) {
+        super(name + "_TR");
     }
 
     @Override
@@ -258,15 +249,5 @@ public class Player20_CP_CCP_BP_TE_CE_PE_TR extends Player20Base {
     public long undoMove(DraughtsState state, Move move, long key) {
         state.undoMove(move);
         return TranspositionTable.undoMove(key, move, state.isWhiteToMove());
-    }
-
-    @Override
-    public AbstractEvaluation[] getEvaluators() {
-        return evaluators;
-    }
-
-    @Override
-    public int evaluate(DraughtsState state) {
-        return extraEvaluator.evaluate(state, isWhite) + super.evaluate(state);
     }
 }

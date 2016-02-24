@@ -10,20 +10,8 @@ import nl.tue.s2id90.group20.player.OptimisticPlayer;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 import nl.tue.s2id90.draughts.DraughtsPlayerProvider;
 import nl.tue.s2id90.draughts.DraughtsPlugin;
-import nl.tue.s2id90.group20.player.players.Player20_BP;
-import nl.tue.s2id90.group20.player.players.Player20_CCP;
-import nl.tue.s2id90.group20.player.players.Player20_CP;
-import nl.tue.s2id90.group20.player.players.Player20_CP_BP;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_CE_PE;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_PE;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE_CE;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE_CE_PE;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE_CE_PE_TR;
-import nl.tue.s2id90.group20.player.players.Player20_CP_CCP_BP_TE_PE;
-import nl.tue.s2id90.group20.player.players.Player20_TE;
+import nl.tue.s2id90.group20.player.players.*;
+import nl.tue.s2id90.group20.player.transposition.*;
 
 /**
  *
@@ -54,6 +42,18 @@ public class MyDraughtsPlugin extends DraughtsPlayerProvider implements Draughts
                 new Player20_CP_CCP_BP_TE_CE(),
                 new Player20_CP_CCP_BP_TE_PE(),
                 new Player20_CP_CCP_BP_TE_CE_PE(),
+                new Player20_CP_TR(), 
+                new Player20_CCP_TR(), 
+                new Player20_BP_TR(), 
+                new Player20_TE_TR(),
+                new Player20_CP_BP_TR(), 
+                new Player20_CP_CCP_TR(), 
+                new Player20_CP_CCP_BP_TR(), 
+                new Player20_CP_CCP_BP_PE_TR(), 
+                new Player20_CP_CCP_BP_CE_PE_TR(), 
+                new Player20_CP_CCP_BP_TE_TR(),
+                new Player20_CP_CCP_BP_TE_CE_TR(),
+                new Player20_CP_CCP_BP_TE_PE_TR(),
                 new Player20_CP_CCP_BP_TE_CE_PE_TR()
         );
     }
