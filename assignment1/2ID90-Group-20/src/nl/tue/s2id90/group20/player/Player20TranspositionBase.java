@@ -39,7 +39,7 @@ public abstract class Player20TranspositionBase extends Player20Base {
      */
     private final TranspositionTable transpositionTable = new TranspositionTable();
 
-    protected int pruningWindow = 5;
+    protected int pruningWindow = 10;
     protected int bounds = 20000;
     protected int[][] historyHeuristic;
     protected int[][][] killHeuristic;
@@ -157,18 +157,18 @@ public abstract class Player20TranspositionBase extends Player20Base {
         Move bestMove;
 
         //no ordering
-        /*List<Move> moves = state.getMoves();
-         bestMove = moves.get(0);*/
+        List<Move> moves = state.getMoves();
+        bestMove = moves.get(0);
         //complete ordering
         /*List<Move> unorderedMoves = state.getMoves();
          Move[] moves = MoveMergeSort.sort(unorderedMoves, historyHeuristic);
          bestMove = moves[0];*/
         //first two nodes ordering
-        List<Move> unorderedMoves = state.getMoves();
+        /*List<Move> unorderedMoves = state.getMoves();
         Move[] moves = unorderedMoves.toArray(new Move[unorderedMoves.size()]);
-        bestMove = moves[0];
+        bestMove = moves[0];*/
 
-        if (moves.length > 1) {
+        /*if (moves.length > 1) {
             int eval0 = killHeuristic[depth][moves[0].getBeginField()][moves[0].getEndField()];
             for (int i = 1; i < unorderedMoves.size(); i++) {
                 int evali = killHeuristic[depth][moves[i].getBeginField()][moves[i].getEndField()];
@@ -191,7 +191,7 @@ public abstract class Player20TranspositionBase extends Player20Base {
                     moves[1] = temp;
                 }
             }
-        }
+        }*/
         //get best local move
 
         for (Move move : moves) {
@@ -302,5 +302,10 @@ public abstract class Player20TranspositionBase extends Player20Base {
                 i++;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "pruningWindow=" + pruningWindow + " bounds=" + bounds;
     }
 }

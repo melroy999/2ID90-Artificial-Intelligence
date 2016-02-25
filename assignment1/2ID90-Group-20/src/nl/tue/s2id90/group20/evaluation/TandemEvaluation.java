@@ -12,7 +12,8 @@ import nl.tue.s2id90.draughts.DraughtsState;
  * @author Melroy
  */
 public class TandemEvaluation extends AbstractEvaluation {
-
+    private final int tandemWeight = 5;
+    
     @Override
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         //check neighbouring fields for friendly pieces.
@@ -76,9 +77,14 @@ public class TandemEvaluation extends AbstractEvaluation {
     private int evaluateNeighbour(int neighbour, boolean isWhitePiece, int piece, boolean isWhitePlayer) {
         if (neighbour != DraughtsState.EMPTY && isWhitePiece == isWhite(neighbour)) {
             //if the piece is of the same color as the target.
-            return evaluateSide(piece, isWhitePlayer, 5);
+            return evaluateSide(piece, isWhitePlayer, tandemWeight);
         }
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "tandemWeight=" + tandemWeight + " ";
     }
 
 }

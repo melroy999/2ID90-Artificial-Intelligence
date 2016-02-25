@@ -19,7 +19,6 @@ import nl.tue.s2id90.group20.player.Player20TranspositionBase;
  * @author Melroy
  */
 public class Player20_CP_CCP_PE_TR extends Player20TranspositionBase {
-    private final PrioritiseEndstateEvaluation extraEvaluator = new PrioritiseEndstateEvaluation();
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
     public Player20_CP_CCP_PE_TR() {
@@ -28,6 +27,7 @@ public class Player20_CP_CCP_PE_TR extends Player20TranspositionBase {
             new CountPiecesEvaluation(),
             new CountCrownPiecesEvaluation()
         };
+        extraEvaluator = new PrioritiseEndstateEvaluation();
     }
     
     @Override

@@ -28,4 +28,9 @@ public class CountPiecesEvaluation extends AbstractEvaluation {
         return count;
     }
 
+    @Override
+    public String toString() {
+        return "pieceWeight=" + pieceWeight + " ";
+    }
+
 }

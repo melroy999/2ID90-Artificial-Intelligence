@@ -58,4 +58,7 @@ public abstract class AbstractEvaluation {
         }
         return 0;
     }
+
+    @Override
+    public abstract String toString();
 }

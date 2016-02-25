@@ -22,4 +22,9 @@ public class BorderPiecesEvaluation extends AbstractEvaluation {
 
         return count;
     }
+
+    @Override
+    public String toString() {
+        return "sideWeight=" + sideWeight + " kingLaneWeight=" + kingLaneWeight + " ";
+    }
 }

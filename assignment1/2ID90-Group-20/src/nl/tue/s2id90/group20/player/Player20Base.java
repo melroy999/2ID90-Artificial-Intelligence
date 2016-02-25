@@ -18,6 +18,7 @@ import nl.tue.s2id90.draughts.player.DraughtsPlayer;
 import nl.tue.s2id90.group20.AIStoppedException;
 import nl.tue.s2id90.group20.GameNode;
 import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
+import nl.tue.s2id90.group20.evaluation.PrioritiseEndstateEvaluation;
 import org10x10.dam.game.Move;
 
 /**
@@ -25,7 +26,8 @@ import org10x10.dam.game.Move;
  * @author Melroy
  */
 public abstract class Player20Base extends DraughtsPlayer {
-
+    protected PrioritiseEndstateEvaluation extraEvaluator;
+    
     protected boolean stopped = false;
     protected boolean isWhite = false;
 
@@ -134,7 +136,7 @@ public abstract class Player20Base extends DraughtsPlayer {
                     + countBlack + ","
                     + countWhiteKing + ","
                     + countBlackKing + ","
-                    + evaluationValues
+                    + "[" + evaluationValues + "]"
             );
             writer.close();
         } catch (IOException ex) {
@@ -148,6 +150,7 @@ public abstract class Player20Base extends DraughtsPlayer {
                 //create result file for this player.
                 PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
                 writer.println("sep=,");
+                writer.println(this.toString());
                 writer.println("PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,#WP,#BP,#WK,#BK,EvaluationValues");
                 writer.close();
             } catch (IOException ex) {
@@ -243,5 +246,15 @@ public abstract class Player20Base extends DraughtsPlayer {
             result += evaluator.evaluate(pieces, isWhite);
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        String evaluationSettings = "";
+        for(AbstractEvaluation evaluator : getEvaluators()){
+            evaluationSettings += evaluator.toString();
+        }
+        String endStateEvaluation = extraEvaluator == null ? "" : extraEvaluator.toString() + " ";
+        return evaluationSettings + endStateEvaluation;
     }
 }

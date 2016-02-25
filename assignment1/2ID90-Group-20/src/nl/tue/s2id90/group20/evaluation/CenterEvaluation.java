@@ -25,5 +25,12 @@ public class CenterEvaluation extends AbstractEvaluation {
         
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "centerWeight=" + centerWeight + " ";
+    }
+    
+    
     
 }

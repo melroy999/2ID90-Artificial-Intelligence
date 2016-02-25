@@ -41,4 +41,8 @@ public class CountPiecesExponentialEvaluation extends AbstractEvaluation {
         return isWhitePlayer ? white - black : black - white;
     }
 
+    @Override
+    public String toString() {
+        return "CountPiecesSomething";
+    }
 }

@@ -15,5 +15,10 @@ public class CountCrownPiecesEvaluation extends AbstractEvaluation {
        
         return count;
     }
+
+    @Override
+    public String toString() {
+        return "crownWeight=" + crownWeight + " ";
+    }
     
 }

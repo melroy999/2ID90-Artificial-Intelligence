@@ -29,5 +29,12 @@ public class PrioritiseEndstateEvaluation extends AbstractEvaluation {
         }
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "winWeight=" + winWeight + " ";
+    }
+    
+    
     
 }

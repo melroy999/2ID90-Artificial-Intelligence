@@ -18,7 +18,6 @@ import nl.tue.s2id90.group20.player.Player20Base;
  * @author Melroy
  */
 public class Player20_CP_CCP_BP_PE extends Player20Base {
-    private final PrioritiseEndstateEvaluation extraEvaluator = new PrioritiseEndstateEvaluation();
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
     public Player20_CP_CCP_BP_PE() {
@@ -28,6 +27,7 @@ public class Player20_CP_CCP_BP_PE extends Player20Base {
             new CountCrownPiecesEvaluation(),
             new BorderPiecesEvaluation()
         };
+        extraEvaluator = new PrioritiseEndstateEvaluation();
     }
     
     @Override

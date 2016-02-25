@@ -20,7 +20,6 @@ import nl.tue.s2id90.group20.player.Player20Base;
  * @author Melroy
  */
 public class Player20_CP_CCP_BP_TE_CE_PE extends Player20Base {
-    private final PrioritiseEndstateEvaluation extraEvaluator = new PrioritiseEndstateEvaluation();
     private final AbstractEvaluation[] evaluators;//The evaluation method used by the player
 
     public Player20_CP_CCP_BP_TE_CE_PE() {
@@ -32,6 +31,7 @@ public class Player20_CP_CCP_BP_TE_CE_PE extends Player20Base {
             new TandemEvaluation(),
             new CenterEvaluation()
         };
+        extraEvaluator = new PrioritiseEndstateEvaluation();
     }
     
     @Override
