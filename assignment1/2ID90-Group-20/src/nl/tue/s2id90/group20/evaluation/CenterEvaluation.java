@@ -10,19 +10,24 @@ package nl.tue.s2id90.group20.evaluation;
  * @author Melroy
  */
 public class CenterEvaluation extends AbstractEvaluation {
-    private final int centerWeight = 10;
-    
+
+    private final int centerWeight;
+
+    public CenterEvaluation(int centerWeight) {
+        this.centerWeight = centerWeight;
+    }
+
     @Override
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         int value = 0;
-        
+
         value += evaluateSide(pieces[22], isWhitePlayer, centerWeight);
         value += evaluateSide(pieces[23], isWhitePlayer, centerWeight);
         value += evaluateSide(pieces[24], isWhitePlayer, centerWeight);
         value += evaluateSide(pieces[27], isWhitePlayer, centerWeight);
         value += evaluateSide(pieces[28], isWhitePlayer, centerWeight);
         value += evaluateSide(pieces[29], isWhitePlayer, centerWeight);
-        
+
         return value;
     }
 
@@ -30,7 +35,5 @@ public class CenterEvaluation extends AbstractEvaluation {
     public String toString() {
         return "centerWeight=" + centerWeight + " ";
     }
-    
-    
-    
+
 }

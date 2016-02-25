@@ -4,14 +4,14 @@
  */
 package nl.tue.s2id90.group20;
 
-import nl.tue.s2id90.group20.player.UninformedPlayer;
-import nl.tue.s2id90.group20.player.StupidPlayer;
-import nl.tue.s2id90.group20.player.OptimisticPlayer;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 import nl.tue.s2id90.draughts.DraughtsPlayerProvider;
 import nl.tue.s2id90.draughts.DraughtsPlugin;
-import nl.tue.s2id90.group20.player.players.*;
-import nl.tue.s2id90.group20.player.transposition.*;
+import nl.tue.s2id90.group20.player.OptimisticPlayer;
+import nl.tue.s2id90.group20.player.Player20Base;
+import nl.tue.s2id90.group20.player.Player20TranspositionBase;
+import nl.tue.s2id90.group20.player.StupidPlayer;
+import nl.tue.s2id90.group20.player.UninformedPlayer;
 
 /**
  *
@@ -26,37 +26,15 @@ public class MyDraughtsPlugin extends DraughtsPlayerProvider implements Draughts
         // best player available. For testing it might be handy
         // to make more than one player available.
         super(
-                new UninformedPlayer(), 
-                new OptimisticPlayer(), 
+                new UninformedPlayer(),
+                new OptimisticPlayer(),
                 new StupidPlayer(),
-                new Player20_CP(), 
-                new Player20_CCP(), 
-                new Player20_BP(), 
-                new Player20_TE(),
-                new Player20_CP_BP(), 
-                new Player20_CP_CCP(), 
-                new Player20_CP_CCP_BP(), 
-                new Player20_CP_CCP_BP_PE(), 
-                new Player20_CP_CCP_BP_CE_PE(), 
-                new Player20_CP_CCP_BP_TE(),
-                new Player20_CP_CCP_BP_TE_CE(),
-                new Player20_CP_CCP_BP_TE_PE(),
-                new Player20_CP_CCP_BP_TE_CE_PE(),
-                new Player20_CP_TR(), 
-                new Player20_CPE_TR(), 
-                new Player20_CCP_TR(), 
-                new Player20_BP_TR(), 
-                new Player20_TE_TR(),
-                new Player20_CP_BP_TR(), 
-                new Player20_CP_CCP_TR(),
-                new Player20_CP_CCP_PE_TR(),
-                new Player20_CP_CCP_BP_TR(), 
-                new Player20_CP_CCP_BP_PE_TR(), 
-                new Player20_CP_CCP_BP_CE_PE_TR(), 
-                new Player20_CP_CCP_BP_TE_TR(),
-                new Player20_CP_CCP_BP_TE_CE_TR(),
-                new Player20_CP_CCP_BP_TE_PE_TR(),
-                new Player20_CP_CCP_BP_TE_CE_PE_TR()
+                /*String name, int pieceWeight, int kingWeight, int sideWeight, 
+                 int kingLaneWeight, int tandemWeight, int centerWeight, 
+                 int endStateWeight*/
+                new Player20Base(25, 125, 25, 75, 5, 10, 1000),
+                new Player20Base(25, 125, 25, 75, 5, 10, 1000),
+                new Player20TranspositionBase(10, 20000, 25, 125, 25, 75, 5, 10, 1000)
         );
     }
 }

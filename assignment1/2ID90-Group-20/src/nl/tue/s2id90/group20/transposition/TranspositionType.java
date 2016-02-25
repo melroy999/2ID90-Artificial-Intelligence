@@ -10,5 +10,6 @@ package nl.tue.s2id90.group20.transposition;
  * @author Melroy
  */
 public enum TranspositionType {
+
     EXACT, LOWERBOUND, UPPERBOUND;
 }

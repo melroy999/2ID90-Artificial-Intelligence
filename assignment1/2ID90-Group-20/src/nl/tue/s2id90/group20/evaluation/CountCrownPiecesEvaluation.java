@@ -1,18 +1,23 @@
 package nl.tue.s2id90.group20.evaluation;
 
 public class CountCrownPiecesEvaluation extends AbstractEvaluation {
-    private final int crownWeight = 125;
-    
+
+    private final int crownWeight;
+
+    public CountCrownPiecesEvaluation(int crownWeight) {
+        this.crownWeight = crownWeight;
+    }
+
     @Override
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         int count = 0;
-        
+
         for (int piece : pieces) {
-            if(isKing(piece)){
+            if (isKing(piece)) {
                 count += evaluateSide(piece, isWhitePlayer, crownWeight);
             }
         }
-       
+
         return count;
     }
 
@@ -20,5 +25,5 @@ public class CountCrownPiecesEvaluation extends AbstractEvaluation {
     public String toString() {
         return "crownWeight=" + crownWeight + " ";
     }
-    
+
 }

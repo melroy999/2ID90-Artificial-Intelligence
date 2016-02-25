@@ -17,6 +17,10 @@ public abstract class AbstractEvaluation {
      * @return Evaluative value for the current state of the board.
      */
     public abstract int evaluate(int[] pieces, boolean isWhitePlayer);
+    
+    public int evaluate(DraughtsState state, boolean isWhitePlayer) {
+        return this.evaluate(state.getPieces(), isWhitePlayer);
+    }
 
     public static boolean isWhitePiece(int piece) {
         return piece == DraughtsState.WHITEPIECE;
@@ -37,23 +41,23 @@ public abstract class AbstractEvaluation {
     public static boolean isBlackKing(int piece) {
         return piece == DraughtsState.BLACKKING;
     }
-    
+
     public static boolean isBlack(int piece) {
         return DraughtsState.EMPTY != piece && (isBlackPiece(piece) || isBlackKing(piece));
     }
-    
-    public static boolean isKing(int piece){
+
+    public static boolean isKing(int piece) {
         return isWhiteKing(piece) || isBlackKing(piece);
     }
-    
+
     public static int evaluateSide(int piece, boolean isWhitePlayer) {
         return evaluateSide(piece, isWhitePlayer, 1);
     }
-    
+
     public static int evaluateSide(int piece, boolean isWhitePlayer, int score) {
-        if(isWhite(piece)){
+        if (isWhite(piece)) {
             return isWhitePlayer ? score : -score;
-        } else if(isBlack(piece)) {
+        } else if (isBlack(piece)) {
             return isWhitePlayer ? -score : score;
         }
         return 0;

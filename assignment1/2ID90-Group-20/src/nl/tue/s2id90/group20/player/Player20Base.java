@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -18,16 +20,22 @@ import nl.tue.s2id90.draughts.player.DraughtsPlayer;
 import nl.tue.s2id90.group20.AIStoppedException;
 import nl.tue.s2id90.group20.GameNode;
 import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
+import nl.tue.s2id90.group20.evaluation.BorderPiecesEvaluation;
+import nl.tue.s2id90.group20.evaluation.CenterEvaluation;
+import nl.tue.s2id90.group20.evaluation.CountCrownPiecesEvaluation;
+import nl.tue.s2id90.group20.evaluation.CountPiecesEvaluation;
 import nl.tue.s2id90.group20.evaluation.PrioritiseEndstateEvaluation;
+import nl.tue.s2id90.group20.evaluation.TandemEvaluation;
 import org10x10.dam.game.Move;
 
 /**
  *
  * @author Melroy
  */
-public abstract class Player20Base extends DraughtsPlayer {
-    protected PrioritiseEndstateEvaluation extraEvaluator;
-    
+public class Player20Base extends DraughtsPlayer {
+
+    protected final List<AbstractEvaluation> evaluators;//The evaluation method used by the player
+
     protected boolean stopped = false;
     protected boolean isWhite = false;
 
@@ -40,13 +48,68 @@ public abstract class Player20Base extends DraughtsPlayer {
     protected int fetchCount = 0;
     protected int pruneCount = 0;
     protected Stack<Integer> values;
+    protected int aspirationFails = 0;
     protected int maxDepth;
+    
+    protected final String name;
+    
+    private static final HashSet<String> takenNames = new HashSet<String>();
+    private static int duplicateNameCounter = 0;
 
-    public Player20Base(String name) {
+    public Player20Base(int pieceWeight, int kingWeight, int sideWeight,
+            int kingLaneWeight, int tandemWeight, int centerWeight,
+            int endStateWeight) {
+        this(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, false);
+    }
+    
+    public Player20Base(int pieceWeight, int kingWeight, int sideWeight,
+            int kingLaneWeight, int tandemWeight, int centerWeight,
+            int endStateWeight, boolean isTransposition) {
+        super(UninformedPlayer.class.getResource("resources/hourglass.png"));
         if (timestamp == -1) {
             timestamp = System.currentTimeMillis();
         }
-        resultFile = new File("results/" + timestamp + "_" + name + ".csv");
+        
+        String temp = "Player20";
+        
+        evaluators = new ArrayList<>();
+        if(pieceWeight != -1){
+            evaluators.add(new CountPiecesEvaluation(pieceWeight));
+            temp += "#CPE";
+        }
+        if(kingWeight != -1){
+            evaluators.add(new CountCrownPiecesEvaluation(pieceWeight));
+            temp += "#CCPE";
+        }
+        if(sideWeight != -1 && kingLaneWeight != -1){
+            evaluators.add(new BorderPiecesEvaluation(sideWeight, kingLaneWeight));
+            temp += "#BPE";
+        }
+        if(tandemWeight != -1){
+            evaluators.add(new TandemEvaluation(tandemWeight));
+            temp += "#TE";
+        }
+        if(centerWeight != -1){
+            evaluators.add(new CenterEvaluation(centerWeight));
+            temp += "#CE";
+        }
+        if(endStateWeight != -1){
+            evaluators.add(new PrioritiseEndstateEvaluation(endStateWeight));
+            temp += "#PEE";
+        }
+        if(isTransposition){
+            temp += "#TR";
+        }
+        
+        if(takenNames.contains(temp)){
+            temp += "#" + duplicateNameCounter++;
+        }
+        
+        takenNames.add(temp);
+        
+        this.name = temp;
+        
+        resultFile = new File("results/" + timestamp + "_" + this.getName() + ".csv");
     }
 
     @Override
@@ -77,12 +140,12 @@ public abstract class Player20Base extends DraughtsPlayer {
                 bestMove = node.getBestMove();
                 values.push(value);
             }
-            System.out.println(this.getClass().toString() + " reached end state. Total of " + nodeCount + " nodes.");
+            System.out.println(this.getName() + " reached end state. Total of " + nodeCount + " nodes.");
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
-            System.out.println(this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");
+            System.out.println(this.getName() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");
         }
-        
+
         return bestMove;
     }
 
@@ -90,11 +153,13 @@ public abstract class Player20Base extends DraughtsPlayer {
         nodeCount = 0;
         pruneCount = 0;
         fetchCount = 0;
+        aspirationFails = 0;
         Stack<Integer> values = new Stack<>();
         return values;
     }
 
-    protected void writeResultsToFile(DraughtsState state, Stack<Integer> values, Move bestMove, int maxDepth) {
+    protected void writeResultsToFile(DraughtsState state, Stack<Integer> values,
+            Move bestMove, int maxDepth) {
         String playerSide = isWhite ? "White" : "Black";
 
         int countWhite = 0;
@@ -132,6 +197,7 @@ public abstract class Player20Base extends DraughtsPlayer {
                     + fetchCount + "," //we do not store in ordinary version.
                     + pruneCount + ","
                     + (maxDepth - 1) + ","
+                    + aspirationFails + ","
                     + countWhite + ","
                     + countBlack + ","
                     + countWhiteKing + ","
@@ -140,7 +206,7 @@ public abstract class Player20Base extends DraughtsPlayer {
             );
             writer.close();
         } catch (IOException ex) {
-            Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(this.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -151,10 +217,10 @@ public abstract class Player20Base extends DraughtsPlayer {
                 PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
                 writer.println("sep=,");
                 writer.println(this.toString());
-                writer.println("PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,#WP,#BP,#WK,#BK,EvaluationValues");
+                writer.println("PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues");
                 writer.close();
             } catch (IOException ex) {
-                Logger.getLogger(Player20Base.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(this.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -182,7 +248,8 @@ public abstract class Player20Base extends DraughtsPlayer {
      * @return Best evaluative value found during search.
      * @throws AIStoppedException
      */
-    protected int alphaBeta(GameNode node, int a, int b, int depth, int depthLimit, boolean maximize) throws AIStoppedException {
+    protected int alphaBeta(GameNode node, int a, int b, int depth,
+            int depthLimit, boolean maximize) throws AIStoppedException {
         if (stopped) {
             //if the stop sign has been given, throw an AI stopped exception.
             stopped = false;
@@ -231,8 +298,6 @@ public abstract class Player20Base extends DraughtsPlayer {
         return maximize ? a : b;
     }
 
-    public abstract AbstractEvaluation[] getEvaluators();
-
     /**
      * Evaluate the state of the board.
      *
@@ -240,10 +305,9 @@ public abstract class Player20Base extends DraughtsPlayer {
      * @return An integer value denoting an evaluation.
      */
     public int evaluate(DraughtsState state) {
-        int[] pieces = state.getPieces();
         int result = 0;
-        for (AbstractEvaluation evaluator : getEvaluators()) {
-            result += evaluator.evaluate(pieces, isWhite);
+        for (AbstractEvaluation evaluator : evaluators) {
+            result += evaluator.evaluate(state, isWhite);
         }
         return result;
     }
@@ -251,10 +315,14 @@ public abstract class Player20Base extends DraughtsPlayer {
     @Override
     public String toString() {
         String evaluationSettings = "";
-        for(AbstractEvaluation evaluator : getEvaluators()){
+        for (AbstractEvaluation evaluator : evaluators) {
             evaluationSettings += evaluator.toString();
         }
-        String endStateEvaluation = extraEvaluator == null ? "" : extraEvaluator.toString() + " ";
-        return evaluationSettings + endStateEvaluation;
+        return evaluationSettings;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

@@ -12,16 +12,21 @@ import nl.tue.s2id90.draughts.DraughtsState;
  * @author Melroy
  */
 public class TandemEvaluation extends AbstractEvaluation {
-    private final int tandemWeight = 5;
-    
+
+    private final int tandemWeight;
+
+    public TandemEvaluation(int tandemWeight) {
+        this.tandemWeight = tandemWeight;
+    }
+
     @Override
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         //check neighbouring fields for friendly pieces.
         int value = 0;
-        
+
         for (int i = 1; i < pieces.length; i++) {
             int piece = pieces[i];
-            
+
             boolean isWhitePiece = isWhite(piece);
 
             if (piece != DraughtsState.EMPTY) {
@@ -35,7 +40,6 @@ public class TandemEvaluation extends AbstractEvaluation {
                     if (i > 5) {
                         value += evaluateNeighbour(pieces[i - 5], isWhitePiece, piece, isWhitePlayer);
                     }
-                    
 
                     //right may only be queried if i != 5,15,25,35,45
                     if (i % 10 != 5) {
@@ -74,7 +78,8 @@ public class TandemEvaluation extends AbstractEvaluation {
         return value;
     }
 
-    private int evaluateNeighbour(int neighbour, boolean isWhitePiece, int piece, boolean isWhitePlayer) {
+    private int evaluateNeighbour(int neighbour, boolean isWhitePiece, int piece,
+            boolean isWhitePlayer) {
         if (neighbour != DraughtsState.EMPTY && isWhitePiece == isWhite(neighbour)) {
             //if the piece is of the same color as the target.
             return evaluateSide(piece, isWhitePlayer, tandemWeight);

@@ -5,25 +5,10 @@
  */
 package nl.tue.s2id90.group20.player;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
-import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.group20.AIStoppedException;
 import nl.tue.s2id90.group20.GameNode;
-import nl.tue.s2id90.group20.evaluation.AbstractEvaluation;
-import nl.tue.s2id90.group20.evaluation.BorderPiecesEvaluation;
-import nl.tue.s2id90.group20.evaluation.CenterEvaluation;
-import nl.tue.s2id90.group20.evaluation.CountCrownPiecesEvaluation;
-import nl.tue.s2id90.group20.evaluation.CountPiecesEvaluation;
-import nl.tue.s2id90.group20.evaluation.PrioritiseEndstateEvaluation;
-import nl.tue.s2id90.group20.evaluation.TandemEvaluation;
-import nl.tue.s2id90.group20.player.Player20Base;
 import nl.tue.s2id90.group20.transposition.TranspositionEntry;
 import nl.tue.s2id90.group20.transposition.TranspositionTable;
 import org10x10.dam.game.Move;
@@ -32,20 +17,25 @@ import org10x10.dam.game.Move;
  *
  * @author Melroy
  */
-public abstract class Player20TranspositionBase extends Player20Base {
+public class Player20TranspositionBase extends Player20Base {
 
     /**
      * Table holding already analyzed nodes.
      */
     private final TranspositionTable transpositionTable = new TranspositionTable();
 
-    protected int pruningWindow = 10;
-    protected int bounds = 20000;
+    protected final int pruningWindow;
+    protected final int bounds;
     protected int[][] historyHeuristic;
     protected int[][][] killHeuristic;
 
-    public Player20TranspositionBase(String name) {
-        super(name + "_TR");
+    public Player20TranspositionBase(int pruningWindow, int bounds,
+            int pieceWeight, int kingWeight, int sideWeight,
+            int kingLaneWeight, int tandemWeight, int centerWeight,
+            int endStateWeight) {
+        super(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, true);
+        this.pruningWindow = pruningWindow;
+        this.bounds = bounds;
     }
 
     @Override
@@ -91,8 +81,10 @@ public abstract class Player20TranspositionBase extends Player20Base {
                         beta = bounds;
                     }
 
-                    System.out.println("Failed to aspirate. Setting a=" + alpha + ", b=" + beta);
-                    System.out.println("Pruned: " + pruneCount);
+                    aspirationFails++;
+
+                    /*System.out.println("Failed to aspirate. Setting a=" + alpha + ", b=" + beta);
+                     System.out.println("Pruned: " + pruneCount);*/
                     continue;
                 }
 
@@ -103,8 +95,8 @@ public abstract class Player20TranspositionBase extends Player20Base {
                 alpha = value - pruningWindow;
                 beta = value + pruningWindow;
                 maxDepth++;
-                System.out.println("Setting a=" + alpha + ", b=" + beta);
-                System.out.println("Pruned: " + pruneCount);
+                /*System.out.println("Setting a=" + alpha + ", b=" + beta);
+                 System.out.println("Pruned: " + pruneCount);*/
 
                 //as the starting gameNode is altered during runtime,
                 //a half completed iteration could mess things up.
@@ -121,7 +113,8 @@ public abstract class Player20TranspositionBase extends Player20Base {
     }
 
     @Override
-    protected int alphaBeta(GameNode node, int a, int b, int depth, int depthLimit, boolean maximize) throws AIStoppedException {
+    protected int alphaBeta(GameNode node, int a, int b, int depth,
+            int depthLimit, boolean maximize) throws AIStoppedException {
         if (stopped) {
             //if the stop sign has been given, throw an AI stopped exception.
             stopped = false;
@@ -165,35 +158,34 @@ public abstract class Player20TranspositionBase extends Player20Base {
          bestMove = moves[0];*/
         //first two nodes ordering
         /*List<Move> unorderedMoves = state.getMoves();
-        Move[] moves = unorderedMoves.toArray(new Move[unorderedMoves.size()]);
-        bestMove = moves[0];*/
+         Move[] moves = unorderedMoves.toArray(new Move[unorderedMoves.size()]);
+         bestMove = moves[0];*/
 
         /*if (moves.length > 1) {
-            int eval0 = killHeuristic[depth][moves[0].getBeginField()][moves[0].getEndField()];
-            for (int i = 1; i < unorderedMoves.size(); i++) {
-                int evali = killHeuristic[depth][moves[i].getBeginField()][moves[i].getEndField()];
-                if (eval0 < evali) {
-                    eval0 = evali;
-                    Move temp = moves[i];
-                    moves[i] = moves[0];
-                    moves[0] = temp;
-                }
-            }
+         int eval0 = killHeuristic[depth][moves[0].getBeginField()][moves[0].getEndField()];
+         for (int i = 1; i < unorderedMoves.size(); i++) {
+         int evali = killHeuristic[depth][moves[i].getBeginField()][moves[i].getEndField()];
+         if (eval0 < evali) {
+         eval0 = evali;
+         Move temp = moves[i];
+         moves[i] = moves[0];
+         moves[0] = temp;
+         }
+         }
 
-            int eval1 = killHeuristic[depth][moves[1].getBeginField()][moves[1].getEndField()];
-            //get second best local move
-            for (int i = 2; i < unorderedMoves.size(); i++) {
-                int evali = killHeuristic[depth][moves[i].getBeginField()][moves[i].getEndField()];
-                if (eval1 < evali) {
-                    eval1 = evali;
-                    Move temp = moves[i];
-                    moves[i] = moves[1];
-                    moves[1] = temp;
-                }
-            }
-        }*/
+         int eval1 = killHeuristic[depth][moves[1].getBeginField()][moves[1].getEndField()];
+         //get second best local move
+         for (int i = 2; i < unorderedMoves.size(); i++) {
+         int evali = killHeuristic[depth][moves[i].getBeginField()][moves[i].getEndField()];
+         if (eval1 < evali) {
+         eval1 = evali;
+         Move temp = moves[i];
+         moves[i] = moves[1];
+         moves[1] = temp;
+         }
+         }
+         }*/
         //get best local move
-
         for (Move move : moves) {
             key = doMove(state, move, key);
 

@@ -12,16 +12,21 @@ import nl.tue.s2id90.draughts.DraughtsState;
  * @author Melroy
  */
 public class PrioritiseEndstateEvaluation extends AbstractEvaluation {
-    private final int winWeight = 1000;
-    
+
+    private final int winWeight;
+
+    public PrioritiseEndstateEvaluation(int winWeight) {
+        this.winWeight = winWeight;
+    }
+
     @Override
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public int evaluate(DraughtsState state, boolean isWhitePlayer) {
-        if(state.isEndState()){
-            if(state.isWhiteToMove() == isWhitePlayer){
+        if (state.isEndState()) {
+            if (state.isWhiteToMove() == isWhitePlayer) {
                 return -winWeight;
             } else {
                 return winWeight;
@@ -34,7 +39,5 @@ public class PrioritiseEndstateEvaluation extends AbstractEvaluation {
     public String toString() {
         return "winWeight=" + winWeight + " ";
     }
-    
-    
-    
+
 }

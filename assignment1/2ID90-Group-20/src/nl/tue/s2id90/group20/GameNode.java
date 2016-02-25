@@ -1,7 +1,6 @@
 package nl.tue.s2id90.group20;
 
 import nl.tue.s2id90.draughts.DraughtsState;
-import nl.tue.s2id90.group20.transposition.TranspositionEntry;
 import org10x10.dam.game.Move;
 
 /**

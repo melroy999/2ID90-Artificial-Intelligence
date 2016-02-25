@@ -7,7 +7,6 @@ package nl.tue.s2id90.group20.transposition;
 
 import java.util.HashMap;
 import nl.tue.s2id90.draughts.DraughtsState;
-import nl.tue.s2id90.group20.GameNode;
 import org10x10.dam.game.Move;
 
 /**

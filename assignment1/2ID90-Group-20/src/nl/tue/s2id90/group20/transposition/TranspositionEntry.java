@@ -11,6 +11,7 @@ package nl.tue.s2id90.group20.transposition;
  */
 public class TranspositionEntry {
     /*private final TranspositionType type;*/
+
     private final int depth;
     private final int value;
     private final int nodes;
@@ -23,9 +24,8 @@ public class TranspositionEntry {
     }
 
     /*public TranspositionType getType() {
-        return type;
-    }*/
-
+     return type;
+     }*/
     public int getDepth() {
         return depth;
     }

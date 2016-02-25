@@ -11,6 +11,12 @@ package nl.tue.s2id90.group20.evaluation;
  */
 public class CountPiecesExponentialEvaluation extends AbstractEvaluation {
 
+    protected final int pieceWeight;
+
+    public CountPiecesExponentialEvaluation(int pieceWeight) {
+        this.pieceWeight = pieceWeight;
+    }
+
     /**
      * Evaluate the current state of the board by counting the amount of pieces
      * on the board.
@@ -34,15 +40,15 @@ public class CountPiecesExponentialEvaluation extends AbstractEvaluation {
                 black++;
             }
         }
-        
-        black = (int) Math.pow(2, black);
-        white = (int) Math.pow(2, white);
+
+        black = (int) Math.pow(pieceWeight, black);
+        white = (int) Math.pow(pieceWeight, white);
 
         return isWhitePlayer ? white - black : black - white;
     }
 
     @Override
     public String toString() {
-        return "CountPiecesSomething";
+        return "pieceWeight=" + pieceWeight;
     }
 }
