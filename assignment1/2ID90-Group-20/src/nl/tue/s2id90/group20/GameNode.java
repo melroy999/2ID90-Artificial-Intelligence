@@ -9,16 +9,18 @@ import org10x10.dam.game.Move;
  * information.
  */
 public class GameNode {
+
     private final DraughtsState gameState;//state of the game in the current configuration.
     private Move bestMove;//best move to make.
-    private final ResultNode resultParameters;
+    private int value = 0;
+    private final int subTreeDepth;
     private final boolean isWhitePlaying;
     private final int depth;
     private final long key;
 
     public GameNode(DraughtsState gameState, int depth, int maxDepth) {
         this.gameState = gameState;
-        this.resultParameters = new ResultNode(maxDepth - depth);
+        this.subTreeDepth = maxDepth - depth;
         this.isWhitePlaying = gameState.isWhiteToMove();
         this.depth = depth;
         this.key = 0;
@@ -26,22 +28,18 @@ public class GameNode {
 
     public GameNode(DraughtsState gameState, int depth, int maxDepth, long key) {
         this.gameState = gameState;
-        this.resultParameters = new ResultNode(maxDepth - depth);
+        this.subTreeDepth = maxDepth - depth;
         this.isWhitePlaying = gameState.isWhiteToMove();
         this.depth = depth;
         this.key = key;
     }
 
-    public ResultNode getResultParameters() {
-        return resultParameters;
-    }
-
     public int getValue() {
-        return resultParameters.getValue();
+        return value;
     }
 
     public void setValue(int value) {
-        this.resultParameters.setValue(value);
+        this.value = value;
     }
 
     public DraughtsState getGameState() {
@@ -57,7 +55,7 @@ public class GameNode {
     }
 
     public int getSubTreeDepth() {
-        return resultParameters.getSubTreeDepth();
+        return subTreeDepth;
     }
 
     public int getDepth() {

@@ -147,6 +147,7 @@ public abstract class Player20Base extends DraughtsPlayer {
             try {
                 //create result file for this player.
                 PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
+                writer.println("sep=,");
                 writer.println("PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,#WP,#BP,#WK,#BK,EvaluationValues");
                 writer.close();
             } catch (IOException ex) {

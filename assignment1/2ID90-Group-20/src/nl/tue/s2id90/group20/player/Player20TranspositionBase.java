@@ -38,8 +38,11 @@ public abstract class Player20TranspositionBase extends Player20Base {
      * Table holding already analyzed nodes.
      */
     private final TranspositionTable transpositionTable = new TranspositionTable();
-    
-    int pruningWindow = 10;
+
+    protected int pruningWindow = 5;
+    protected int bounds = 20000;
+    protected int[][] historyHeuristic;
+    protected int[][][] killHeuristic;
 
     public Player20TranspositionBase(String name) {
         super(name + "_TR");
@@ -54,9 +57,12 @@ public abstract class Player20TranspositionBase extends Player20Base {
 
         return bestMove;
     }
-    
+
     @Override
     protected Move iterativeDeepening(DraughtsState state) {
+        historyHeuristic = new int[52][52];
+        killHeuristic = new int[40][52][52];
+
         long key = TranspositionTable.getZobristKey(state);
         isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state.clone(), 0, Integer.MAX_VALUE, key);
@@ -68,10 +74,10 @@ public abstract class Player20TranspositionBase extends Player20Base {
             //Do iterative deepening.
             //we use aspiration techniques to determine the starting alpha and beta.
 
-            int alpha = -20000;
-            int beta = 20000;
+            int alpha = -bounds;
+            int beta = bounds;
 
-            while (maxDepth < 100) {
+            while (maxDepth < 40) {
                 value = alphaBeta(node, alpha, beta, 1, maxDepth, true);
 
                 //if the evaluation is not between alpha and beta.
@@ -80,9 +86,9 @@ public abstract class Player20TranspositionBase extends Player20Base {
                     //the next iteration of the while loop without incrementing
                     //the maximum depth.
                     if (value <= alpha) {
-                        alpha = -20000;
+                        alpha = -bounds;
                     } else if (value >= beta) {
-                        beta = 20000;
+                        beta = bounds;
                     }
 
                     System.out.println("Failed to aspirate. Setting a=" + alpha + ", b=" + beta);
@@ -110,7 +116,7 @@ public abstract class Player20TranspositionBase extends Player20Base {
             //Stop iterative deepening when exception is thrown.
             System.out.println(this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");
         }
-        
+
         return bestMove;
     }
 
@@ -146,8 +152,48 @@ public abstract class Player20TranspositionBase extends Player20Base {
         }
 
         int subTreeNodeCountStart = nodeCount;
-        List<Move> moves = state.getMoves();
-        Move bestMove = moves.get(0);
+        /*List<Move> unorderedMoves = state.getMoves();*/
+
+        Move bestMove;
+
+        //no ordering
+        /*List<Move> moves = state.getMoves();
+         bestMove = moves.get(0);*/
+        //complete ordering
+        /*List<Move> unorderedMoves = state.getMoves();
+         Move[] moves = MoveMergeSort.sort(unorderedMoves, historyHeuristic);
+         bestMove = moves[0];*/
+        //first two nodes ordering
+        List<Move> unorderedMoves = state.getMoves();
+        Move[] moves = unorderedMoves.toArray(new Move[unorderedMoves.size()]);
+        bestMove = moves[0];
+
+        if (moves.length > 1) {
+            int eval0 = killHeuristic[depth][moves[0].getBeginField()][moves[0].getEndField()];
+            for (int i = 1; i < unorderedMoves.size(); i++) {
+                int evali = killHeuristic[depth][moves[i].getBeginField()][moves[i].getEndField()];
+                if (eval0 < evali) {
+                    eval0 = evali;
+                    Move temp = moves[i];
+                    moves[i] = moves[0];
+                    moves[0] = temp;
+                }
+            }
+
+            int eval1 = killHeuristic[depth][moves[1].getBeginField()][moves[1].getEndField()];
+            //get second best local move
+            for (int i = 2; i < unorderedMoves.size(); i++) {
+                int evali = killHeuristic[depth][moves[i].getBeginField()][moves[i].getEndField()];
+                if (eval1 < evali) {
+                    eval1 = evali;
+                    Move temp = moves[i];
+                    moves[i] = moves[1];
+                    moves[1] = temp;
+                }
+            }
+        }
+        //get best local move
+
         for (Move move : moves) {
             key = doMove(state, move, key);
 
@@ -173,6 +219,10 @@ public abstract class Player20TranspositionBase extends Player20Base {
                 node.setBestMove(bestMove);
                 TranspositionEntry resultEntry = new TranspositionEntry(depthLimit - depth, maximize ? b : a, subTreeDepth);
                 transpositionTable.storeEntry(key, resultEntry);
+
+                historyHeuristic[move.getBeginPiece()][move.getEndField()]++;
+                killHeuristic[depth][move.getBeginPiece()][move.getEndField()]++;
+
                 pruneCount++;
                 return maximize ? b : a;
             }
@@ -193,5 +243,64 @@ public abstract class Player20TranspositionBase extends Player20Base {
     public long undoMove(DraughtsState state, Move move, long key) {
         state.undoMove(move);
         return TranspositionTable.undoMove(key, move, state.isWhiteToMove());
+    }
+
+    private static class MoveMergeSort {
+
+        private static Move[] moves;
+        private static Move[] helper;
+        private static int[][] heuristic;
+
+        private static int size;
+
+        public static Move[] sort(List<Move> moveList, int[][] historyHeuristic) {
+            heuristic = historyHeuristic;
+            size = moveList.size();
+            moves = moveList.toArray(new Move[size]);
+            helper = new Move[size];
+            mergeSort(0, size - 1);
+            return moves;
+        }
+
+        private static void mergeSort(int low, int high) {
+            if (low < high) {
+                int middle = low + (high - low) / 2;
+                mergeSort(low, middle);
+                mergeSort(middle + 1, high);
+                merge(low, middle, high);
+            }
+        }
+
+        private static void merge(int low, int middle, int high) {
+            //copy to helper array.
+            for (int i = low; i <= high; i++) {
+                helper[i] = moves[i];
+            }
+
+            int i = low;
+            int j = middle + 1;
+            int k = low;
+
+            //copy smallest values from the left or the right side to the original array.
+            while (i <= middle && j <= high) {
+                Move mi = moves[i];
+                Move mj = moves[j];
+                if (heuristic[mi.getBeginField()][mi.getEndField()] <= heuristic[mj.getBeginField()][mj.getEndField()]) {
+                    moves[k] = helper[i];
+                    i++;
+                } else {
+                    moves[k] = helper[j];
+                    j++;
+                }
+                k++;
+            }
+
+            //copy remaining part
+            while (i <= middle) {
+                moves[k] = helper[i];
+                k++;
+                i++;
+            }
+        }
     }
 }
