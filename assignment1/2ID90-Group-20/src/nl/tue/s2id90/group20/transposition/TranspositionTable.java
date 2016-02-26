@@ -18,7 +18,7 @@ public class TranspositionTable {
     /**
      * Object that generates the keys connected to DraughtsStates.
      */
-    private static final ZobristKey keyManager = new ZobristKey();
+    private static final ZobristKey keyManager = ZobristKey.getInstance();
 
     /**
      * Table holding already analysed nodes.
@@ -42,19 +42,12 @@ public class TranspositionTable {
      * @param move: The move made.
      * @return The key of the state where the move was made.
      */
-    public static long doMove(long key, Move move, boolean isWhiteMove) {
-        return keyManager.doMove(key, move, isWhiteMove);
+    public static long doMove(long key, Move move) {
+        return keyManager.doMove(key, move);
     }
 
-    /**
-     * Returns the key corresponding to the state in which the move was made.
-     *
-     * @param key: The key of the state where the move was not made yet.
-     * @param move: The move made.
-     * @return The key of the state where the move was made.
-     */
-    public static long undoMove(long key, Move move, boolean isWhiteMove) {
-        return keyManager.undoMove(key, move, isWhiteMove);
+    public long removePiece(long key, int position, int piece) {
+        return keyManager.removePiece(key, position, piece);
     }
 
     /**

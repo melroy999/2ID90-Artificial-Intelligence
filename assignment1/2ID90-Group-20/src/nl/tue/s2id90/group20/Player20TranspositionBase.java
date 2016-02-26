@@ -186,14 +186,14 @@ public class Player20TranspositionBase extends Player20Base {
          }*/
         //get best local move
         for (Move move : moves) {
-            key = doMove(state, move, key);
+            long childKey = doMove(state, move, key);
 
             //recursive boogaloo
-            GameNode newNode = new GameNode(state, depth, depthLimit, key);
+            GameNode newNode = new GameNode(state, depth, depthLimit, childKey);
             int childResult = alphaBeta(newNode, a, b, depth + 1, depthLimit, !maximize);
 
-            key = undoMove(state, move, key);
-
+            state.undoMove(move);
+            
             if (maximize) {
                 if (childResult > a) {
                     a = childResult;
@@ -228,12 +228,12 @@ public class Player20TranspositionBase extends Player20Base {
 
     public long doMove(DraughtsState state, Move move, long key) {
         state.doMove(move);
-        return TranspositionTable.doMove(key, move, state.isWhiteToMove());
-    }
-
-    public long undoMove(DraughtsState state, Move move, long key) {
-        state.undoMove(move);
-        return TranspositionTable.undoMove(key, move, state.isWhiteToMove());
+        for(int i = 0; i < move.getCaptureCount(); i++) {
+            int piece = move.getCapturedPiece(i);
+            int field = move.getCapturedField(i);
+            transpositionTable.removePiece(key, field, piece);
+        }
+        return TranspositionTable.doMove(key, move);
     }
 
     private static class MoveMergeSort {

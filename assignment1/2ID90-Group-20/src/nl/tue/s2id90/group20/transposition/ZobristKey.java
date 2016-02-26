@@ -38,7 +38,7 @@ public class ZobristKey {
      *
      * To make debugging possible, we use a fixed seed.
      */
-    private static final Random randomGenerator = new Random(9238791733L);
+    private static final Random randomGenerator = new Random(92387917698L);
 
     /**
      * A table of random numbers, used to generate a hash key.
@@ -46,7 +46,11 @@ public class ZobristKey {
      * The table is two dimensional, as every position type combination needs to
      * have an unique key.
      */
-    private final long[][][] zobristArray = new long[positions][types][2];
+    private static final long[][] zobristArray = new long[positions][types];
+    
+    private static final long playerSideKey = randomGenerator.nextLong();
+    
+    private static ZobristKey instance;
 
     /**
      * Constructor
@@ -54,27 +58,33 @@ public class ZobristKey {
     public ZobristKey() {
         initializeRandomTable(zobristArray);
     }
+    
+    public static ZobristKey getInstance(){
+        if(instance == null){
+            instance = new ZobristKey();
+        }
+        return instance;
+    }
 
     /**
      * Fills the zobristArray with pseudorandom numbers.
      *
      * @param zobristArray: table to be filled.
      */
-    public static void initializeRandomTable(long[][][] zobristArray) {
+    public static void initializeRandomTable(long[][] zobristArray) {
         HashSet<Long> takenKeys = new HashSet<>();
+        takenKeys.add(playerSideKey);
         for (int i = 0; i < positions; i++) {
             for (int j = 0; j < types; j++) {
-                for (int k = 0; k < 2; k++) {
-                    long key = randomGenerator.nextLong();
+                long key = randomGenerator.nextLong();
 
-                    //we do not want duplicate keys.
-                    while (takenKeys.contains(key)) {
-                        key = randomGenerator.nextLong();
-                    }
-
-                    takenKeys.add(key);
-                    zobristArray[i][j][k] = key;
+                //we do not want duplicate keys.
+                while (takenKeys.contains(key)) {
+                    key = randomGenerator.nextLong();
                 }
+
+                takenKeys.add(key);
+                zobristArray[i][j] = key;
             }
         }
     }
@@ -95,9 +105,13 @@ public class ZobristKey {
             if (piece != DraughtsState.EMPTY) {
                 //here we decrement i by one. 
                 //we also decrement piece by 1, as piece ids start at 1. 
-                key ^= zobristArray[i - 1][piece - 1][state.isWhiteToMove() ? 1 : 0];
+                key ^= zobristArray[i - 1][piece - 1];
             }
         }
+        
+        //do it regardless of state. has to be applied ever time you go 
+        //deeper into the tree anyways.
+        key ^= playerSideKey;
 
         return key;
     }
@@ -109,30 +123,26 @@ public class ZobristKey {
      * @param move: The move made.
      * @return The key of the state where the move was made.
      */
-    public long doMove(long key, Move move, boolean whiteMove) {
+    public long doMove(long key, Move move) {
         //undo source position
         int bi = move.getBeginField();
         int bPiece = move.getBeginPiece();
-        key ^= zobristArray[bi - 1][bPiece - 1][whiteMove ? 1 : 0];
+        key ^= zobristArray[bi - 1][bPiece - 1];
 
         //do target position
         int ti = move.getEndField();
         int tPiece = move.getEndPiece();
-        key ^= zobristArray[ti - 1][tPiece - 1][whiteMove ? 1 : 0];
+        key ^= zobristArray[ti - 1][tPiece - 1];
+        
+        key ^= playerSideKey;
 
         return key;
     }
 
-    /**
-     * Returns the key corresponding to the state in which the move was made.
-     *
-     * @param key: The key of the state where the move was not made yet.
-     * @param move: The move made.
-     * @return The key of the state where the move was made.
-     */
-    public long undoMove(long key, Move move, boolean whiteMove) {
-        //undoing a move is exactly the same as making a move, as the order
-        //in which we do the XOR operations does not matter.
-        return doMove(key, move, whiteMove);
+    public long removePiece(long key, int field, int piece) {
+        if (piece != DraughtsState.EMPTY) {
+            key ^= zobristArray[field - 1][piece - 1];
+        }
+        return key;
     }
 }
