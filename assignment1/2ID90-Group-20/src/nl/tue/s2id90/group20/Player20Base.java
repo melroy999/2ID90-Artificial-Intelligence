@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.tue.s2id90.group20.player;
+package nl.tue.s2id90.group20;
 
+import nl.tue.s2id90.group20.UninformedPlayer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,19 +55,19 @@ public class Player20Base extends DraughtsPlayer {
     
     protected final String name;
     
-    private static final HashSet<String> takenNames = new HashSet<String>();
+    private static HashSet<String> namesTaken = new HashSet<>();
     private static int duplicateNameCounter = 0;
 
     public Player20Base(int pieceWeight, int kingWeight, int sideWeight,
             int kingLaneWeight, int tandemWeight, int centerWeight,
             int endStateWeight) {
-        this(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, false);
+        this(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, false, Player20Base.class.getResource("resources/hourglass.png"));
     }
     
     public Player20Base(int pieceWeight, int kingWeight, int sideWeight,
             int kingLaneWeight, int tandemWeight, int centerWeight,
-            int endStateWeight, boolean isTransposition) {
-        super(UninformedPlayer.class.getResource("resources/hourglass.png"));
+            int endStateWeight, boolean isTransposition, URL url) {
+        super(url);
         if (timestamp == -1) {
             timestamp = System.currentTimeMillis();
         }
@@ -101,11 +103,11 @@ public class Player20Base extends DraughtsPlayer {
             temp += "#TR";
         }
         
-        if(takenNames.contains(temp)){
+        if(namesTaken.contains(temp)){
             temp += "#" + duplicateNameCounter++;
         }
         
-        takenNames.add(temp);
+        namesTaken.add(temp);
         
         this.name = temp;
         

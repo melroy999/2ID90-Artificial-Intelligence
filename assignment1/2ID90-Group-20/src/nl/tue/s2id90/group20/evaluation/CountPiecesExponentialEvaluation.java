@@ -49,6 +49,6 @@ public class CountPiecesExponentialEvaluation extends AbstractEvaluation {
 
     @Override
     public String toString() {
-        return "pieceWeight=" + pieceWeight;
+        return "pieceWeight=" + pieceWeight + " ";
     }
 }

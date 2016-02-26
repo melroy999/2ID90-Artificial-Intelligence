@@ -7,11 +7,6 @@ package nl.tue.s2id90.group20;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 import nl.tue.s2id90.draughts.DraughtsPlayerProvider;
 import nl.tue.s2id90.draughts.DraughtsPlugin;
-import nl.tue.s2id90.group20.player.OptimisticPlayer;
-import nl.tue.s2id90.group20.player.Player20Base;
-import nl.tue.s2id90.group20.player.Player20TranspositionBase;
-import nl.tue.s2id90.group20.player.StupidPlayer;
-import nl.tue.s2id90.group20.player.UninformedPlayer;
 
 /**
  *

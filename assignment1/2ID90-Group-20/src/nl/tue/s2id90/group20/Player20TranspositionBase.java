@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.tue.s2id90.group20.player;
+package nl.tue.s2id90.group20;
 
 import java.util.List;
 import nl.tue.s2id90.draughts.DraughtsState;
@@ -33,13 +33,16 @@ public class Player20TranspositionBase extends Player20Base {
             int pieceWeight, int kingWeight, int sideWeight,
             int kingLaneWeight, int tandemWeight, int centerWeight,
             int endStateWeight) {
-        super(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, true);
+        super(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, true, Player20TranspositionBase.class.getResource("resources/book.png"));
         this.pruningWindow = pruningWindow;
         this.bounds = bounds;
     }
 
     @Override
     public Move getMove(DraughtsState state) {
+        historyHeuristic = new int[52][52];
+        killHeuristic = new int[40][52][52];
+        
         Move bestMove = super.getMove(state);
 
         //clear the table, so that we cannot cheat by using previous results in next iteration.
@@ -50,9 +53,6 @@ public class Player20TranspositionBase extends Player20Base {
 
     @Override
     protected Move iterativeDeepening(DraughtsState state) {
-        historyHeuristic = new int[52][52];
-        killHeuristic = new int[40][52][52];
-
         long key = TranspositionTable.getZobristKey(state);
         isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state.clone(), 0, Integer.MAX_VALUE, key);
