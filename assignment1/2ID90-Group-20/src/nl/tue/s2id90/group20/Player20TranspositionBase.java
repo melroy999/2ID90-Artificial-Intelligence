@@ -27,7 +27,7 @@ public class Player20TranspositionBase extends Player20Base {
     protected final int pruningWindow;
     protected final int bounds;
     protected int[][] historyHeuristic;
-    protected int[][][] killHeuristic;
+    //protected int[][][] killHeuristic;
 
     public Player20TranspositionBase(int pruningWindow, int bounds,
             int pieceWeight, int kingWeight, int sideWeight,
@@ -40,13 +40,12 @@ public class Player20TranspositionBase extends Player20Base {
 
     @Override
     public Move getMove(DraughtsState state) {
+        //clear the table, so that we cannot cheat by using previous results in next iteration.
         historyHeuristic = new int[52][52];
-        killHeuristic = new int[40][52][52];
+        //killHeuristic = new int[40][52][52];
+        transpositionTable.clear();
         
         Move bestMove = super.getMove(state);
-
-        //clear the table, so that we cannot cheat by using previous results in next iteration.
-        transpositionTable.clear();
 
         return bestMove;
     }
@@ -213,7 +212,7 @@ public class Player20TranspositionBase extends Player20Base {
                 transpositionTable.storeEntry(key, resultEntry);
 
                 historyHeuristic[move.getBeginPiece()][move.getEndField()]++;
-                killHeuristic[depth][move.getBeginPiece()][move.getEndField()]++;
+                //killHeuristic[depth][move.getBeginPiece()][move.getEndField()]++;
 
                 pruneCount++;
                 return maximize ? b : a;

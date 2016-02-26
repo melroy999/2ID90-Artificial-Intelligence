@@ -23,7 +23,7 @@ public class TranspositionTable {
     /**
      * Table holding already analysed nodes.
      */
-    private final HashMap<Long, TranspositionEntry> transpositionTable = new HashMap<>(2000000);
+    private static final HashMap<Long, TranspositionEntry> transpositionTable = new HashMap<>(2000000);
 
     /**
      * Returns a zobrist key.

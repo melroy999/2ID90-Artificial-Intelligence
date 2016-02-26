@@ -80,7 +80,7 @@ public class Player20Base extends DraughtsPlayer {
             temp += "#CPE";
         }
         if(kingWeight != -1){
-            evaluators.add(new CountCrownPiecesEvaluation(pieceWeight));
+            evaluators.add(new CountCrownPiecesEvaluation(kingWeight));
             temp += "#CCPE";
         }
         if(sideWeight != -1 && kingLaneWeight != -1){
@@ -113,14 +113,22 @@ public class Player20Base extends DraughtsPlayer {
         
         resultFile = new File("results/" + timestamp + "_" + this.getName() + ".csv");
     }
+    
+    long time;
 
     @Override
     public Move getMove(DraughtsState state) {
         initializeFile();
+        
+        time = System.currentTimeMillis();
 
         values = resetResultLoggingValues();
+        
+        System.gc();
 
         Move bestMove = iterativeDeepening(state);
+        
+        System.out.println(this.getClass().getSimpleName() + " took: " + (time = System.currentTimeMillis() - time));
 
         writeResultsToFile(state, values, bestMove, maxDepth);
         return bestMove;
@@ -134,7 +142,7 @@ public class Player20Base extends DraughtsPlayer {
 
         try {
             //Do iterative deepening.
-            for (maxDepth = 2; maxDepth < 100; maxDepth++) {
+            for (maxDepth = 2; maxDepth < 40; maxDepth++) {
                 value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
 
                 //as the starting gameNode is altered during runtime,
@@ -204,7 +212,8 @@ public class Player20Base extends DraughtsPlayer {
                     + countBlack + ","
                     + countWhiteKing + ","
                     + countBlackKing + ","
-                    + "[" + evaluationValues + "]"
+                    + "[" + evaluationValues + "],"
+                    + time
             );
             writer.close();
         } catch (IOException ex) {
