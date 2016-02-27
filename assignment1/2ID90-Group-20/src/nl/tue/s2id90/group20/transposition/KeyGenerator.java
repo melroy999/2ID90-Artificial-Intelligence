@@ -6,6 +6,7 @@
 package nl.tue.s2id90.group20.transposition;
 
 import nl.tue.s2id90.draughts.DraughtsState;
+import org10x10.dam.game.Move;
 
 /**
  *
@@ -29,7 +30,8 @@ public class KeyGenerator {
         
         int key = 0;
         int arrayKey = 0;
-        for(int piece : pieces) {
+        for(int i = 1; i < pieces.length; i++) {
+            int piece = pieces[i];
             keypair[arrayKey] ^= powerToValue[key][piece];
             key++;
             if(key > 26){
@@ -40,6 +42,34 @@ public class KeyGenerator {
         
         keypair[arrayKey] ^= ((state.isWhiteToMove() ? 1L : 0L) << 63);
         
+        return keypair;
+    }
+    
+    public static long[] applyMove(long[] keypair, Move move){
+        int field = move.getBeginField();
+        int piece = move.getBeginPiece();
+        keypair = toggleField(keypair, field, piece);
+        
+        for (int i = 0; i < move.getCaptureCount(); i++) {
+            field = move.getCapturedField(i);
+            piece = move.getCapturedPiece(i);
+            keypair = toggleField(keypair, field, piece);
+        }
+        
+        field = move.getEndField();
+        piece = move.getEndPiece();
+        keypair = toggleField(keypair, field, piece);
+        
+        keypair[2] ^= (1L << 63);
+        return keypair;
+    }
+    
+    public static long[] toggleField(long[] keypair, int field, int piece){
+        int key = (field - 1) % 27;
+        int arrayKey = (field - 1) / 27;
+        if(piece != DraughtsState.EMPTY){
+            keypair[arrayKey] ^= powerToValue[key][piece];
+        }
         return keypair;
     }
 }

@@ -5,6 +5,7 @@
  */
 package nl.tue.s2id90.group20;
 
+import java.net.URL;
 import java.util.List;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.group20.AIStoppedException;
@@ -34,6 +35,17 @@ public class Player20TranspositionBase extends Player20Base {
             int kingLaneWeight, int tandemWeight, int centerWeight,
             int endStateWeight) {
         super(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, true, Player20TranspositionBase.class.getResource("resources/book.png"));
+        this.pruningWindow = pruningWindow;
+        this.bounds = bounds;
+    }
+
+    public Player20TranspositionBase(int pruningWindow, int bounds, URL icon) {
+        super(icon);
+        this.pruningWindow = pruningWindow;
+        this.bounds = bounds;
+    }
+
+    public Player20TranspositionBase(int pruningWindow, int bounds) {
         this.pruningWindow = pruningWindow;
         this.bounds = bounds;
     }

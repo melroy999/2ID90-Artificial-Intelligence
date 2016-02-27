@@ -35,8 +35,7 @@ import org10x10.dam.game.Move;
  * @author Melroy
  */
 public class Player20Base extends DraughtsPlayer {
-
-    protected final List<AbstractEvaluation> evaluators;//The evaluation method used by the player
+    private final List<AbstractEvaluation> evaluators;//The evaluation method used by the player
 
     protected boolean stopped = false;
     protected boolean isWhite = false;
@@ -63,6 +62,17 @@ public class Player20Base extends DraughtsPlayer {
             int endStateWeight) {
         this(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, false, Player20Base.class.getResource("resources/hourglass.png"));
     }
+
+    public Player20Base(URL icon) {
+        super(icon);
+        this.evaluators = new ArrayList<>();
+        this.name = this.getClass().getSimpleName();
+        this.resultFile = new File("results/" + timestamp + "_" + this.getName() + ".csv"); 
+    }
+
+    public Player20Base() {
+        this(Player20Base.class.getResource("resources/hourglass.png"));
+    }
     
     public Player20Base(int pieceWeight, int kingWeight, int sideWeight,
             int kingLaneWeight, int tandemWeight, int centerWeight,
@@ -72,31 +82,32 @@ public class Player20Base extends DraughtsPlayer {
             timestamp = System.currentTimeMillis();
         }
         
+        this.evaluators = new ArrayList<>();
+        
         String temp = "Player20";
         
-        evaluators = new ArrayList<>();
         if(pieceWeight != -1){
-            evaluators.add(new CountPiecesEvaluation(pieceWeight));
+            addEvaluator(new CountPiecesEvaluation(pieceWeight));
             temp += "#CPE";
         }
         if(kingWeight != -1){
-            evaluators.add(new CountCrownPiecesEvaluation(kingWeight));
+            addEvaluator(new CountCrownPiecesEvaluation(kingWeight));
             temp += "#CCPE";
         }
         if(sideWeight != -1 && kingLaneWeight != -1){
-            evaluators.add(new BorderPiecesEvaluation(sideWeight, kingLaneWeight));
+            addEvaluator(new BorderPiecesEvaluation(sideWeight, kingLaneWeight));
             temp += "#BPE";
         }
         if(tandemWeight != -1){
-            evaluators.add(new TandemEvaluation(tandemWeight));
+            addEvaluator(new TandemEvaluation(tandemWeight));
             temp += "#TE";
         }
         if(centerWeight != -1){
-            evaluators.add(new CenterEvaluation(centerWeight));
+            addEvaluator(new CenterEvaluation(centerWeight));
             temp += "#CE";
         }
         if(endStateWeight != -1){
-            evaluators.add(new PrioritiseEndstateEvaluation(endStateWeight));
+            addEvaluator(new PrioritiseEndstateEvaluation(endStateWeight));
             temp += "#PEE";
         }
         if(isTransposition){
@@ -111,7 +122,7 @@ public class Player20Base extends DraughtsPlayer {
         
         this.name = temp;
         
-        resultFile = new File("results/" + timestamp + "_" + this.getName() + ".csv");
+        this.resultFile = new File("results/" + timestamp + "_" + this.getName() + ".csv");
     }
     
     long time;
@@ -335,5 +346,9 @@ public class Player20Base extends DraughtsPlayer {
     @Override
     public String getName() {
         return name;
+    }
+    
+    public void addEvaluator(AbstractEvaluation a){
+        evaluators.add(a);
     }
 }
