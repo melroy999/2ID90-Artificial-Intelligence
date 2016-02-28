@@ -27,6 +27,27 @@ public class OmniEvaluation extends AbstractEvaluation {
     private final int lonerKingWeight;
     private final int holeWeight;
 
+    /**
+     * Create an omni evaluator. With a lot of parameters...
+     * 
+     * @param unoccupiedPromotionLineFieldsWeight
+     * @param pawnWeight
+     * @param kingWeight
+     * @param safePawnWeight
+     * @param safeKingWeight
+     * @param aggregatedDistanceOfPawnToPromotionLineWeight
+     * @param defenderPieceWeight
+     * @param attackPawnWeight
+     * @param centerPawnWeight
+     * @param centerKingWeight
+     * @param mainDiagonalPawnWeight
+     * @param mainDiagonalKingWeight
+     * @param doubleDiagonalPawnWeight
+     * @param doubleDiagonalKingWeight
+     * @param lonerPawnWeight
+     * @param lonerKingWeight
+     * @param holeWeight 
+     */
     public OmniEvaluation(int unoccupiedPromotionLineFieldsWeight,
             int pawnWeight, int kingWeight, int safePawnWeight,
             int safeKingWeight,
@@ -87,6 +108,15 @@ public class OmniEvaluation extends AbstractEvaluation {
         }
     }
 
+    /**
+     * Evaluate the state of the board by using the pieces on the field, and the
+     * side that makes the current move.
+     *
+     * @param pieces: List of pieces on the board, in the order specified in the
+     * problem description.
+     * @param isWhitePlayer: Whether white makes the current move or not.
+     * @return Evaluative value for the current state of the board.
+     */
     @Override
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         //all the following values are differences, with the positive side being white.
@@ -251,6 +281,11 @@ public class OmniEvaluation extends AbstractEvaluation {
         return isWhitePlayer ? evaluation : -evaluation;
     }
 
+    /**
+     * Name of the evaluation function.
+     * 
+     * @return String with evaluation settings.
+     */
     @Override
     public String toString() {
         return "unoccupiedPromotionLineFieldsWeight=" + unoccupiedPromotionLineFieldsWeight + " pawnWeight=" + pawnWeight + " kingWeight=" + kingWeight + " safePawnWeight=" + safePawnWeight + " safeKingWeight=" + safeKingWeight + " aggregatedDistanceOfPawnToPromotionLineWeight=" + aggregatedDistanceOfPawnToPromotionLineWeight + " defenderPieceWeight=" + defenderPieceWeight + " attackPawnWeight=" + attackPawnWeight + " centerPawnWeight=" + centerPawnWeight + " centerKingWeight=" + centerKingWeight + " mainDiagonalPawnWeight=" + mainDiagonalPawnWeight + " mainDiagonalKingWeight=" + mainDiagonalKingWeight + " doubleDiagonalPawnWeight=" + doubleDiagonalPawnWeight + " doubleDiagonalKingWeight=" + doubleDiagonalKingWeight + " lonerPawnWeight=" + lonerPawnWeight + " lonerKingWeight=" + lonerKingWeight + " holeWeight=" + holeWeight + " ";

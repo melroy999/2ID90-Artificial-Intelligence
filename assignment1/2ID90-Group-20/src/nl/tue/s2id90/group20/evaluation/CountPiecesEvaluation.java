@@ -7,6 +7,11 @@ public class CountPiecesEvaluation extends AbstractEvaluation {
 
     private final int pieceWeight;
 
+    /**
+     * Count the amount of pieces on the board.
+     * 
+     * @param pieceWeight: Weight of a piece.
+     */
     public CountPiecesEvaluation(int pieceWeight) {
         this.pieceWeight = pieceWeight;
     }
@@ -33,6 +38,11 @@ public class CountPiecesEvaluation extends AbstractEvaluation {
         return count;
     }
 
+    /**
+     * Name of the evaluation function.
+     * 
+     * @return String with evaluation settings.
+     */
     @Override
     public String toString() {
         return "pieceWeight=" + pieceWeight + " ";

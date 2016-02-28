@@ -13,6 +13,9 @@ import nl.tue.s2id90.group20.evaluation.OmniEvaluation;
  */
 public class Player20TranspositionOmni extends Player20TranspositionBase {
 
+    /**
+     * Create a player using the omniEvaluation.
+     */
     public Player20TranspositionOmni() {
         super(20, 20000, Player20TranspositionBase.class.getResource("resources/owl.png"));
 

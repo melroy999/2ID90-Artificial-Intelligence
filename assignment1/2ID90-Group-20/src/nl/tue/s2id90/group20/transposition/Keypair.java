@@ -1,28 +1,41 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.tue.s2id90.group20.transposition;
 
 /**
- *
- * @author Melroy
+ * A pair of keys used for state identification. 
  */
 public class Keypair {
+    //first key.
     public final long key1;
+    
+    //second key.
     public final long key2;
 
+    /**
+     * Create keypair from two integers.
+     * 
+     * @param key1: first key.
+     * @param key2: second key.
+     */
     public Keypair(long key1, long key2) {
         this.key1 = key1;
         this.key2 = key2;
     }
     
+    /**
+     * Create keypair from array.
+     * 
+     * @param keypair: array.
+     */
     public Keypair(long[] keypair) {
         this.key1 = keypair[0];
         this.key2 = keypair[1];
     }
 
+    /**
+     * Generate a hashcode.
+     * 
+     * @return hashcode. 
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -31,6 +44,12 @@ public class Keypair {
         return hash;
     }
 
+    /**
+     * Check if equal.
+     * 
+     * @param obj: object that should be equal.
+     * @return if objects are equal.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -49,6 +68,11 @@ public class Keypair {
         return true;
     }
     
+    /**
+     * Convert keypair to an array of two longs.
+     * 
+     * @return long array with two entries.
+     */
     public long[] toArray(){
         return new long[]{key1, key2};
     }

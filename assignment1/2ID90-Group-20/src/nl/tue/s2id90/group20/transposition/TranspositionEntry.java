@@ -1,21 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.tue.s2id90.group20.transposition;
 
 /**
- *
- * @author Melroy
+ * Entries used for the transposition table.
  */
 public class TranspositionEntry {
-    /*private final TranspositionType type;*/
-
     private final int depth;
     private final int value;
     private final int nodes;
 
+    /**
+     * Make a transposition table entry.
+     * 
+     * @param depth: depth the entry is at.
+     * @param value: value of the entry.
+     * @param nodes: amount of nodes in the entry.
+     */
     public TranspositionEntry(int depth, int value, int nodes) {
         /*this.type = type;*/
         this.depth = depth;
@@ -23,17 +22,29 @@ public class TranspositionEntry {
         this.nodes = nodes;
     }
 
-    /*public TranspositionType getType() {
-     return type;
-     }*/
+    /**
+     * Returns the depth attached to this entry.
+     * 
+     * @return depth
+     */
     public int getDepth() {
         return depth;
     }
 
+    /**
+     * Returns the value attached to this entry.
+     * 
+     * @return value
+     */
     public int getValue() {
         return value;
     }
 
+    /**
+     * Returns the amount of nodes attached to this entry.
+     * 
+     * @return nodes
+     */
     public int getNodes() {
         return nodes;
     }

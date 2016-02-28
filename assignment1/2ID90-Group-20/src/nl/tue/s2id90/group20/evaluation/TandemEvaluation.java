@@ -15,10 +15,24 @@ public class TandemEvaluation extends AbstractEvaluation {
 
     private final int tandemWeight;
 
+    /**
+     * Create a tandem evaluation.
+     * 
+     * @param tandemWeight: Weight of a tandem pattern.
+     */
     public TandemEvaluation(int tandemWeight) {
         this.tandemWeight = tandemWeight;
     }
 
+    /**
+     * Evaluate the state of the board by using the pieces on the field, and the
+     * side that makes the current move.
+     *
+     * @param pieces: List of pieces on the board, in the order specified in the
+     * problem description.
+     * @param isWhitePlayer: Whether white makes the current move or not.
+     * @return Evaluative value for the current state of the board.
+     */
     @Override
     public int evaluate(int[] pieces, boolean isWhitePlayer) {
         //check neighbouring fields for friendly pieces.
@@ -78,6 +92,15 @@ public class TandemEvaluation extends AbstractEvaluation {
         return value;
     }
 
+    /**
+     * Get the evaluation of a neighbour piece.
+     * 
+     * @param neighbour: Field the neighbour is at.
+     * @param isWhitePiece: Whether the original field is white. 
+     * @param piece: Current piece id.
+     * @param isWhitePlayer: Whether you are a white player.
+     * @return Evaluation of the neighbour.
+     */
     private int evaluateNeighbour(int neighbour, boolean isWhitePiece, int piece,
             boolean isWhitePlayer) {
         if (neighbour != DraughtsState.EMPTY && isWhitePiece == isWhite(neighbour)) {
@@ -87,6 +110,11 @@ public class TandemEvaluation extends AbstractEvaluation {
         return 0;
     }
 
+    /**
+     * Name of the evaluation function.
+     * 
+     * @return String with evaluation settings.
+     */
     @Override
     public String toString() {
         return "tandemWeight=" + tandemWeight + " ";

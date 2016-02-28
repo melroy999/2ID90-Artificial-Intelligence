@@ -35,7 +35,10 @@ import org10x10.dam.game.Move;
  * @author Melroy
  */
 public class Player20Base extends DraughtsPlayer {
-    private final List<AbstractEvaluation> evaluators;//The evaluation method used by the player
+
+    //The evaluation method used by the player
+
+    private final List<AbstractEvaluation> evaluators;
 
     protected boolean stopped = false;
     protected boolean isWhite = false;
@@ -45,35 +48,53 @@ public class Player20Base extends DraughtsPlayer {
 
     protected int value = 0;
 
-    protected int nodeCount = 0;
+    protected long nodeCount = 0;
     protected int fetchCount = 0;
     protected int pruneCount = 0;
     protected Stack<Integer> values;
     protected int aspirationFails = 0;
     protected int maxDepth;
-    
+
     protected final String name;
-    
+
+    //variables to keep track of taken names.
     private static HashSet<String> namesTaken = new HashSet<>();
     private static int duplicateNameCounter = 0;
 
+    /**
+     * Create a player using the mountain of parameters.
+     */
     public Player20Base(int pieceWeight, int kingWeight, int sideWeight,
             int kingLaneWeight, int tandemWeight, int centerWeight,
             int endStateWeight) {
-        this(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight, centerWeight, endStateWeight, false, Player20Base.class.getResource("resources/hourglass.png"));
+        this(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight,
+                centerWeight, endStateWeight, false,
+                Player20Base.class.getResource("resources/hourglass.png"));
     }
 
+    /**
+     * Create a basic player.
+     *
+     * @param icon: Icon of the player.
+     */
     public Player20Base(URL icon) {
         super(icon);
         this.evaluators = new ArrayList<>();
         this.name = this.getClass().getSimpleName();
-        this.resultFile = new File("results/" + timestamp + "_" + this.getName() + ".csv"); 
+        this.resultFile = new File(
+                "results/" + timestamp + "_" + this.getName() + ".csv");
     }
 
+    /**
+     * Create a basic player.
+     */
     public Player20Base() {
         this(Player20Base.class.getResource("resources/hourglass.png"));
     }
-    
+
+    /**
+     * Create a player using the mountain of parameters, and determine the name.
+     */
     public Player20Base(int pieceWeight, int kingWeight, int sideWeight,
             int kingLaneWeight, int tandemWeight, int centerWeight,
             int endStateWeight, boolean isTransposition, URL url) {
@@ -81,93 +102,137 @@ public class Player20Base extends DraughtsPlayer {
         if (timestamp == -1) {
             timestamp = System.currentTimeMillis();
         }
-        
+
         this.evaluators = new ArrayList<>();
-        
+
         String temp = "Player20";
-        
-        if(pieceWeight != -1){
+
+        //based on the parameters given, determine what evaluations are desired.
+        if (pieceWeight != -1) {
             addEvaluator(new CountPiecesEvaluation(pieceWeight));
             temp += "#CPE";
         }
-        if(kingWeight != -1){
+        if (kingWeight != -1) {
             addEvaluator(new CountCrownPiecesEvaluation(kingWeight));
             temp += "#CCPE";
         }
-        if(sideWeight != -1 && kingLaneWeight != -1){
+        if (sideWeight != -1 && kingLaneWeight != -1) {
             addEvaluator(new BorderPiecesEvaluation(sideWeight, kingLaneWeight));
             temp += "#BPE";
         }
-        if(tandemWeight != -1){
+        if (tandemWeight != -1) {
             addEvaluator(new TandemEvaluation(tandemWeight));
             temp += "#TE";
         }
-        if(centerWeight != -1){
+        if (centerWeight != -1) {
             addEvaluator(new CenterEvaluation(centerWeight));
             temp += "#CE";
         }
-        if(endStateWeight != -1){
+        if (endStateWeight != -1) {
             addEvaluator(new PrioritiseEndstateEvaluation(endStateWeight));
             temp += "#PEE";
         }
-        if(isTransposition){
+        if (isTransposition) {
             temp += "#TR";
         }
-        
-        if(namesTaken.contains(temp)){
+
+        //if name is taken, add a number to it!
+        if (namesTaken.contains(temp)) {
             temp += "#" + duplicateNameCounter++;
         }
-        
         namesTaken.add(temp);
-        
-        this.name = temp;
-        
-        this.resultFile = new File("results/" + timestamp + "_" + this.getName() + ".csv");
-    }
-    
-    long time;
 
+        //set the actual name.
+        this.name = temp;
+
+        //attach a result file, in which runtime data can be found.
+        this.resultFile = new File(
+                "results/" + timestamp + "_" + this.getName() + ".csv");
+    }
+
+    //variable that keeps track of time.
+    protected long time;
+
+    /**
+     * Get the move this player desires.
+     *
+     * @param state: Current state.
+     * @return best move as determined by this player.
+     */
     @Override
     public Move getMove(DraughtsState state) {
+        //initialize the logging file.
         initializeFile();
-        
+
+        //set current time.
         time = System.currentTimeMillis();
 
+        //reset logging values.
         values = resetResultLoggingValues();
 
+        //get the best move by iterative deepening.
         Move bestMove = iterativeDeepening(state);
-        
-        System.out.println(this.getClass().getSimpleName() + " took: " + (time = System.currentTimeMillis() - time));
 
+        //set the time taken.
+        time = System.currentTimeMillis() - time;
+
+        //write the results and return best move.
         writeResultsToFile(state, values, bestMove, maxDepth);
         return bestMove;
     }
 
+    /**
+     * Iterative deepening algorithm.
+     *
+     * @param state: current state.
+     * @return best move as determined by the iterative deepening algorithm.
+     */
     protected Move iterativeDeepening(DraughtsState state) {
+        //set whether this player is white.
         isWhite = state.isWhiteToMove();
+
+        //create a gamenode.
         GameNode node = new GameNode(state.clone(), 0, -1);
+
+        //set temporal move.
         node.setBestMove(state.getMoves().get(0));
         Move bestMove = node.getBestMove();
 
         try {
             //Do iterative deepening.
             for (maxDepth = 2; maxDepth < 40; maxDepth++) {
-                value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, maxDepth, true);
+                //get best evaluation for given depth.
+                value = alphaBeta(node, Integer.MIN_VALUE, Integer.MAX_VALUE, 1,
+                        maxDepth, true);
 
                 //as the starting gameNode is altered during runtime,
                 //a half completed iteration could mess things up.
                 bestMove = node.getBestMove();
+
+                //push the value to a stack for logging purposes.
                 values.push(value);
             }
-            System.out.println(this.getName() + " reached end state. Total of " + nodeCount + " nodes.");
+
+            //report about iterative deepening.
+            System.out.println(
+                    this.getName() + " reached end state. Total of " + nodeCount + " nodes.");
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
-            System.out.println(this.getName() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");
+
+            //report about iterative deepening.
+            System.out.println(
+                    this.getName() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");
         }
 
+        //return best move.
         return bestMove;
     }
 
+    /**
+     * Reset all logging variables.
+     *
+     * @return return empty stack of integers.
+     */
     protected Stack<Integer> resetResultLoggingValues() {
         nodeCount = 0;
         pruneCount = 0;
@@ -177,6 +242,14 @@ public class Player20Base extends DraughtsPlayer {
         return values;
     }
 
+    /**
+     * Write information about the state and move.
+     *
+     * @param state: Current state of the game.
+     * @param values: Values encountered.
+     * @param bestMove: Move chosen.
+     * @param maxDepth: Depth reached.
+     */
     protected void writeResultsToFile(DraughtsState state, Stack<Integer> values,
             Move bestMove, int maxDepth) {
         String playerSide = isWhite ? "White" : "Black";
@@ -207,7 +280,8 @@ public class Player20Base extends DraughtsPlayer {
         }
 
         try {
-            PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
+            PrintWriter writer = new PrintWriter(
+                    new FileWriter(resultFile, true));
             //PlayerSide, Move, Traversed Nodes, Fetched Nodes, Subtrees Pruned, Search Depth, #WP, #BP, #WK, #BK, Evaluation Values
             writer.println(
                     playerSide + ","
@@ -230,14 +304,19 @@ public class Player20Base extends DraughtsPlayer {
         }
     }
 
+    /**
+     * Initialize the logging file.
+     */
     protected void initializeFile() {
         if (!resultFile.exists()) {
             try {
                 //create result file for this player.
-                PrintWriter writer = new PrintWriter(new FileWriter(resultFile, true));
+                PrintWriter writer = new PrintWriter(new FileWriter(resultFile,
+                        true));
                 writer.println("sep=,");
                 writer.println(this.toString());
-                writer.println("PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues");
+                writer.println(
+                        "PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues");
                 writer.close();
             } catch (IOException ex) {
                 Logger.getLogger(this.getName()).log(Level.SEVERE, null, ex);
@@ -245,11 +324,19 @@ public class Player20Base extends DraughtsPlayer {
         }
     }
 
+    /**
+     * Get current expectation value of the player.
+     *
+     * @return the value.
+     */
     @Override
     public Integer getValue() {
         return value;
     }
 
+    /**
+     * Stop the player.
+     */
     @Override
     public void stop() {
         stopped = true;
@@ -275,45 +362,65 @@ public class Player20Base extends DraughtsPlayer {
             stopped = false;
             throw new AIStoppedException();
         }
+
+        //count the amount of nodes encountered.
         nodeCount++;
 
+        //get the current state.
         DraughtsState state = node.getGameState();
 
+        //check if we are at a leaf or at max depth in the tree.
         if (depth > depthLimit || state.isEndState()) {
-            //No more moves exist, one player has won.
             return evaluate(state);
         }
 
+        //get moves, and set temporal best one.
         List<Move> moves = state.getMoves();
         Move bestMove = moves.get(0);
 
+        //iterate over all moves.
         for (Move move : moves) {
+            //do the move.
             state.doMove(move);
 
-            //recursive boogaloo
+            //make new node.
             GameNode newNode = new GameNode(state, depth, depthLimit);
-            int childResult = alphaBeta(newNode, a, b, depth + 1, depthLimit, !maximize);
 
+            //recursively call alphaBeta.
+            int childResult = alphaBeta(newNode, a, b, depth + 1, depthLimit,
+                    !maximize);
+
+            //undo the move.
             state.undoMove(move);
 
+            //if our goal is to maximize.
             if (maximize) {
+                //if alpha is better than previous value.
                 if (childResult > a) {
+                    //set alpha and bestMove.
                     a = childResult;
                     bestMove = move;
                 }
-            } else if (childResult < b) {
-                b = childResult;
-                bestMove = move;
+            } else {
+                if (childResult < b) {
+                    //set beta and bestMove.
+                    b = childResult;
+                    bestMove = move;
+                }
             }
 
+            //if we are able to prune.
             if (a >= b) {
+                //increment prune count.
                 pruneCount++;
-                //is calling best move here correct?
+                
+                //set new best move and return beta or alpha.
                 node.setBestMove(bestMove);
                 return maximize ? b : a;
             }
         }
 
+        //set best move and return alpha or beta.
         node.setBestMove(bestMove);
         return maximize ? a : b;
     }
@@ -326,27 +433,45 @@ public class Player20Base extends DraughtsPlayer {
      */
     public int evaluate(DraughtsState state) {
         int result = 0;
+        
+        //evaluate using all evaluation functions.
         for (AbstractEvaluation evaluator : evaluators) {
             result += evaluator.evaluate(state, isWhite);
         }
         return result;
     }
 
+    /**
+     * Converts this player to a string representation.
+     * 
+     * @return String having information about evaluation functions.
+     */
     @Override
     public String toString() {
         String evaluationSettings = "";
+        //generate string based on evaluation functions.
         for (AbstractEvaluation evaluator : evaluators) {
             evaluationSettings += evaluator.toString();
         }
         return evaluationSettings;
     }
 
+    /**
+     * Returns the name of this player.
+     * 
+     * @return name.
+     */
     @Override
     public String getName() {
         return name;
     }
-    
-    public void addEvaluator(AbstractEvaluation a){
+
+    /**
+     * Add evaluation function to evaluations.
+     * 
+     * @param a: desired evaluation functions.
+     */
+    public void addEvaluator(AbstractEvaluation a) {
         evaluators.add(a);
     }
 }

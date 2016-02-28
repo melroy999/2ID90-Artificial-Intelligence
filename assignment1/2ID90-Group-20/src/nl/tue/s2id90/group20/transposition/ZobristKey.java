@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.tue.s2id90.group20.transposition;
 
 import java.util.HashSet;
@@ -11,8 +6,7 @@ import nl.tue.s2id90.draughts.DraughtsState;
 import org10x10.dam.game.Move;
 
 /**
- *
- * @author Melroy
+ * Class that generates keys for states.
  */
 public class ZobristKey {
     //TODO check if isWhite is really needed.
@@ -48,10 +42,10 @@ public class ZobristKey {
      */
     private static final long[][] zobristArray = new long[positions][types];
     private static final long[][] zobristArray2 = new long[positions][types];
-    
+
     private static final long playerSideKey = randomGenerator.nextLong();
     private static final long playerSideKey2 = randomGenerator.nextLong();
-    
+
     private static ZobristKey instance;
 
     /**
@@ -60,9 +54,9 @@ public class ZobristKey {
     private ZobristKey() {
         initializeRandomTable(zobristArray);
     }
-    
-    public static ZobristKey getInstance(){
-        if(instance == null){
+
+    public static ZobristKey getInstance() {
+        if (instance == null) {
             instance = new ZobristKey();
         }
         return instance;
@@ -88,7 +82,7 @@ public class ZobristKey {
 
                 takenKeys.add(key);
                 zobristArray[i][j] = key;
-                
+
                 key = randomGenerator.nextLong();
 
                 //we do not want duplicate keys.
@@ -102,33 +96,6 @@ public class ZobristKey {
         }
     }
 
-    /**
-     * Returns a zobrist key.
-     *
-     * @param state: State you want a key for.
-     * @return Highly probable unique key for the given state.
-     */
-    public long getZobristKey(DraughtsState state) {
-        int[] pieces = state.getPieces();
-
-        long key = 0;
-        for (int i = 1; i < pieces.length; i++) {
-            //the index starts at 1, according to the assignment description.
-            int piece = pieces[i];
-            if (piece != DraughtsState.EMPTY) {
-                //here we decrement i by one. 
-                //we also decrement piece by 1, as piece ids start at 1. 
-                key ^= zobristArray[i - 1][piece - 1];
-            }
-        }
-        
-        //do it regardless of state. has to be applied ever time you go 
-        //deeper into the tree anyways.
-        key ^= playerSideKey;
-
-        return key;
-    }
-    
     public Keypair getZobristKeypair(DraughtsState state) {
         int[] pieces = state.getPieces();
 
@@ -143,7 +110,7 @@ public class ZobristKey {
                 keypair[1] ^= zobristArray2[i - 1][piece - 1];
             }
         }
-        
+
         //do it regardless of state. has to be applied ever time you go 
         //deeper into the tree anyways.
         keypair[0] ^= playerSideKey;
@@ -152,67 +119,31 @@ public class ZobristKey {
         return new Keypair(keypair);
     }
 
-    /**
-     * Returns the key corresponding to the state in which the move was made.
-     *
-     * @param key: The key of the state where the move was not made yet.
-     * @param move: The move made.
-     * @return The key of the state where the move was made.
-     */
-    public long doMove(long key, Move move) {
-        //undo source position
-        int bi = move.getBeginField();
-        int bPiece = move.getBeginPiece();
-        key = togglePiece(key, bi, bPiece);
-
-        for(int i = 0; i < move.getCaptureCount(); i++) {
-            int piece = move.getCapturedPiece(i);
-            int field = move.getCapturedField(i);
-            key = togglePiece(key, field, piece);
-        }
-        
-        //do target position
-        int ti = move.getEndField();
-        int tPiece = move.getEndPiece();
-        key = togglePiece(key, ti, tPiece);
-        
-        key ^= playerSideKey;
-
-        return key;
-    }
-    
     public Keypair doMove(Keypair keypair, Move move) {
         long[] keys = keypair.toArray();
-        
+
         //undo source position
         int bi = move.getBeginField();
         int bPiece = move.getBeginPiece();
         keys = togglePiece(keys, bi, bPiece);
 
-        for(int i = 0; i < move.getCaptureCount(); i++) {
+        for (int i = 0; i < move.getCaptureCount(); i++) {
             int piece = move.getCapturedPiece(i);
             int field = move.getCapturedField(i);
             keys = togglePiece(keys, field, piece);
         }
-        
+
         //do target position
         int ti = move.getEndField();
         int tPiece = move.getEndPiece();
         keys = togglePiece(keys, ti, tPiece);
-        
+
         keys[0] ^= playerSideKey;
         keys[1] ^= playerSideKey2;
 
         return new Keypair(keys);
     }
 
-    private long togglePiece(long key, int field, int piece) {
-        if (piece != DraughtsState.EMPTY) {
-            key ^= zobristArray[field - 1][piece - 1];
-        }
-        return key;
-    }
-    
     private long[] togglePiece(long[] keypair, int field, int piece) {
         if (piece != DraughtsState.EMPTY) {
             keypair[0] ^= zobristArray[field - 1][piece - 1];
