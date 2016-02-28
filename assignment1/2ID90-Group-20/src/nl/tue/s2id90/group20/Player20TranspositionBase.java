@@ -8,8 +8,7 @@ package nl.tue.s2id90.group20;
 import java.net.URL;
 import java.util.List;
 import nl.tue.s2id90.draughts.DraughtsState;
-import nl.tue.s2id90.group20.AIStoppedException;
-import nl.tue.s2id90.group20.GameNode;
+import nl.tue.s2id90.group20.transposition.Keypair;
 import nl.tue.s2id90.group20.transposition.TranspositionEntry;
 import nl.tue.s2id90.group20.transposition.TranspositionTable;
 import org10x10.dam.game.Move;
@@ -57,6 +56,9 @@ public class Player20TranspositionBase extends Player20Base {
         //killHeuristic = new int[40][52][52];
         transpositionTable.clear();
         
+        System.out.println("Requesting garbage collection.");
+        System.gc();
+        
         Move bestMove = super.getMove(state);
 
         return bestMove;
@@ -64,7 +66,8 @@ public class Player20TranspositionBase extends Player20Base {
 
     @Override
     protected Move iterativeDeepening(DraughtsState state) {
-        long key = TranspositionTable.getZobristKey(state);
+        /*long key = TranspositionTable.getZobristKey(state);*/
+        Keypair key = TranspositionTable.getZobristKeypair(state);
         isWhite = state.isWhiteToMove();
         GameNode node = new GameNode(state.clone(), 0, Integer.MAX_VALUE, key);
         node.setBestMove(state.getMoves().get(0));
@@ -133,7 +136,8 @@ public class Player20TranspositionBase extends Player20Base {
         }
 
         //get the entry that is stored in the transposition table.
-        long key = node.getKey();
+        /*long key = node.getKey();*/
+        Keypair key = node.getKeypair();
         TranspositionEntry entry = transpositionTable.fetchEntry(key);
 
         //if the entry is not null.
@@ -198,7 +202,8 @@ public class Player20TranspositionBase extends Player20Base {
          }*/
         //get best local move
         for (Move move : moves) {
-            long childKey = doMove(state, move, key);
+            /*long childKey = doMove(state, move, key);*/
+            Keypair childKey = doMove(state, move, key);
 
             //recursive boogaloo
             GameNode newNode = new GameNode(state, depth, depthLimit, childKey);
@@ -240,11 +245,11 @@ public class Player20TranspositionBase extends Player20Base {
 
     public long doMove(DraughtsState state, Move move, long key) {
         state.doMove(move);
-        for(int i = 0; i < move.getCaptureCount(); i++) {
-            int piece = move.getCapturedPiece(i);
-            int field = move.getCapturedField(i);
-            transpositionTable.removePiece(key, field, piece);
-        }
+        return TranspositionTable.doMove(key, move);
+    }
+    
+    public Keypair doMove(DraughtsState state, Move move, Keypair key) {
+        state.doMove(move);
         return TranspositionTable.doMove(key, move);
     }
 

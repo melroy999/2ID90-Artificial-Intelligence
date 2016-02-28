@@ -134,8 +134,6 @@ public class Player20Base extends DraughtsPlayer {
         time = System.currentTimeMillis();
 
         values = resetResultLoggingValues();
-        
-        System.gc();
 
         Move bestMove = iterativeDeepening(state);
         
