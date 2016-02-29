@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.tue.s2id90.group20;
+package nl.tue.s2id90.group20.extensiveTesters;
 
+import nl.tue.s2id90.group20.Player20TranspositionBase;
 import nl.tue.s2id90.group20.evaluation.OmniEvaluation;
 
 /**
  *
  * @author Melroy
  */
-public class Player20OmniMemTesterP2 extends Player20TranspositionBase {
-
-    public Player20OmniMemTesterP2() {
-        super(20000, 20000, Player20TranspositionBase.class.getResource("resources/gc.png"));
+public class Player20Test5_1 extends Player20TranspositionBase {
+    public Player20Test5_1() {
+        super(20, 20000, Player20TranspositionBase.class.getResource("resources/gc.png"));
 
         /*
          int unoccupiedPromotionLineFieldsWeight,
@@ -32,10 +32,7 @@ public class Player20OmniMemTesterP2 extends Player20TranspositionBase {
          int doubleDiagonalPawnWeight,
          int doubleDiagonalKingWeight, 
          */
-        OmniEvaluation evaluation = new OmniEvaluation(20, 50, 150, 0, 0, 0 /*not useful*/, 0, 0, 0,
-                0, 0, 0, 0, 0, -50);
+        OmniEvaluation evaluation = new OmniEvaluation(20, 50, 200, 5, 5, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5);
         this.addEvaluator(evaluation);
     }
-    
-    
 }
