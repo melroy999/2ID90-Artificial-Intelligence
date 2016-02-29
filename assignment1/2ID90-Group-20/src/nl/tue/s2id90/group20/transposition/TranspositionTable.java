@@ -17,8 +17,13 @@ public class TranspositionTable {
     /**
      * Table holding already analysed nodes.
      */
-    private static final HashMap<Keypair, TranspositionEntry> keypairTranspositionTable = new HashMap<>(2000000);
+    private static final HashMap<Keypair, TranspositionEntry> transpositionTable = new HashMap<>(1000000);
 
+    /**
+     * Table holding leaf results.
+     */
+    private static final HashMap<Keypair, TranspositionEntry> leafTranspositionTable = new HashMap<>(1000000);
+    
     /**
      * Returns a zobrist key.
      *
@@ -41,10 +46,18 @@ public class TranspositionTable {
     }
 
     /**
-     * Clears the transposition table.
+     * Clears the transposition table and leaf table.
      */
     public void clear() {
-        keypairTranspositionTable.clear();
+        transpositionTable.clear();
+        leafTranspositionTable.clear();
+    }
+    
+    /**
+     * Clears the leaf table.
+     */
+    public void clearLeafTable() {
+        leafTranspositionTable.clear();
     }
 
     /**
@@ -54,7 +67,7 @@ public class TranspositionTable {
      * @return The corresponding entry, if it exists. Null otherwise.
      */
     public TranspositionEntry fetchEntry(Keypair keypair) {
-        return keypairTranspositionTable.get(keypair);
+        return transpositionTable.get(keypair);
     }
 
     /**
@@ -64,6 +77,26 @@ public class TranspositionTable {
      * @param entry: Entry you want to store.
      */
     public void storeEntry(Keypair keypair, TranspositionEntry entry) {
-        keypairTranspositionTable.put(keypair, entry);
+        transpositionTable.put(keypair, entry);
+    }
+    
+    /**
+     * Fetch a leaf entry from the transpotation table.
+     *
+     * @param keypair: The keypair of the state you want to fetch.
+     * @return The corresponding entry, if it exists. Null otherwise.
+     */
+    public TranspositionEntry fetchLeafEntry(Keypair keypair) {
+        return leafTranspositionTable.get(keypair);
+    }
+
+    /**
+     * Store a leaf entry from the transposition table.
+     *
+     * @param keypair: The keypair of the state you want to store.
+     * @param entry: Entry you want to store.
+     */
+    public void storeLeafEntry(Keypair keypair, TranspositionEntry entry) {
+        leafTranspositionTable.put(keypair, entry);
     }
 }

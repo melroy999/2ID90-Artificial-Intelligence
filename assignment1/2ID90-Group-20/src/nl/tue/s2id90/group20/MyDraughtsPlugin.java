@@ -34,10 +34,10 @@ public class MyDraughtsPlugin extends DraughtsPlayerProvider implements Draughts
                 /*int window, int bounds, String name, int pieceWeight, int kingWeight, int sideWeight, 
                  int kingLaneWeight, int tandemWeight, int centerWeight, 
                  int endStateWeight*/
-                new Player20TranspositionBase(10, 20000, 25, 125, 25, 75, 5, 10, 1000),
-                new Player20TranspositionBase(10, 20000, 25, 125, -1, -1, -1, -1, -1),
-                new Player20TranspositionBase(10, 20000, 25, 125, -1, -1, -1, -1, 2000),
-                new Player20TranspositionBase(10, 20000, 25, 50, -1, -1, -1, -1, -1),
+                new Player20TranspositionBase(11, 20000, 25, 125, 25, 75, 5, 10, 1000),
+                new Player20TranspositionBase(11, 20000, 25, 125, -1, -1, -1, -1, -1),
+                new Player20TranspositionBase(11, 20000, 25, 125, -1, -1, -1, -1, 2000),
+                new Player20TranspositionBase(11, 20000, 25, 50, -1, -1, -1, -1, -1),
                 
                 new Player20TranspositionOmni()
         );

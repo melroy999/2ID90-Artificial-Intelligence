@@ -25,7 +25,7 @@ public class Player20TranspositionBase extends Player20Base {
     /**
      * Table holding already analyzed nodes.
      */
-    private final TranspositionTable transpositionTable = new TranspositionTable();
+    private static final TranspositionTable transpositionTable = new TranspositionTable();
 
     protected final int pruningWindow;
     protected final int bounds;
@@ -49,7 +49,7 @@ public class Player20TranspositionBase extends Player20Base {
 
     /**
      * Creates a player using transposition.
-     * 
+     *
      * @param pruningWindow: aspiration window.
      * @param bounds: aspiration default bounds.
      * @param icon: icon used.
@@ -62,7 +62,7 @@ public class Player20TranspositionBase extends Player20Base {
 
     /**
      * Creates a player using transposition.
-     * 
+     *
      * @param pruningWindow: aspiration window.
      * @param bounds: aspiration default bounds.
      */
@@ -78,10 +78,9 @@ public class Player20TranspositionBase extends Player20Base {
 
         //create a timer.
         Timer stopBeforeLimit = new Timer();
-        
+
         //create a stop TimeTask.
         //StopPlayerTimer stopPlayer = new StopPlayerTimer(this);
-
         //if we have 'reliable' estimations of the timer.
         if (timeSamples > 1) {
             //create a new stop player timer.
@@ -90,10 +89,11 @@ public class Player20TranspositionBase extends Player20Base {
             //round the time to seconds.
             long stopTime = (long) ((((estimatedTime + 500) / 1000)) * 1000);
             System.out.println("Estimated turn time: " + stopTime);
-            
+
             //time a garbage collection (just past) halfway our turn.
-            stopBeforeLimit.schedule(new GarbageCollectionTimer(), (long) (0.6 * stopTime));
-            
+            stopBeforeLimit.schedule(new GarbageCollectionTimer(),
+                    (long) (0.5 * stopTime));
+
             //previously used to make sure that we never go past the time limit.
             //this cannot be used anymore, as we need full time 
             //stopBeforeLimit.schedule(stopPlayer, stopTime);
@@ -121,13 +121,13 @@ public class Player20TranspositionBase extends Player20Base {
         //get the keypair for the starting state. 
         //only call this here! use move related methods during iteration.
         Keypair key = TranspositionTable.getZobristKeypair(state);
-        
+
         //set whether are the white player.
         isWhite = state.isWhiteToMove();
-        
+
         //make a new gamenode, containing information about this state.
         GameNode node = new GameNode(state.clone(), 0, Integer.MAX_VALUE, key);
-        
+
         //set a temporary best move.
         node.setBestMove(state.getMoves().get(0));
         Move bestMove = node.getBestMove();
@@ -173,23 +173,24 @@ public class Player20TranspositionBase extends Player20Base {
                 //for the next iteration.
                 alpha = value - pruningWindow;
                 beta = value + pruningWindow;
-                
+
                 //increase the depth for next iteration.
                 maxDepth++;
+
+                transpositionTable.clearLeafTable();
 
                 //set the best move.
                 bestMove = node.getBestMove();
             }
-            
+
             //we do not estimate the time of the turn if we reach max depth!
             //the time given will be a wrong estimation of reality!
-
             //print information about the depth reached.
             System.out.println(
                     this.getClass().toString() + " reached end state. Total of " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
-            
+
             //print information about the depth reached.
             System.out.println(
                     this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");
@@ -223,7 +224,7 @@ public class Player20TranspositionBase extends Player20Base {
 
         //get the entry that is stored in the transposition table.
         Keypair key = node.getKeypair();
-        
+
         //fetch the entry connected to the keypair.
         TranspositionEntry entry = transpositionTable.fetchEntry(key);
 
@@ -231,10 +232,10 @@ public class Player20TranspositionBase extends Player20Base {
         if (entry != null && entry.getDepth() >= depthLimit - depth) {
             //increase the amount of fetched nodes.
             fetchCount++;
-            
+
             //increment the nodecount by the size of the subtree.
             nodeCount += entry.getNodes();
-            
+
             //return the value connected to the state.
             return entry.getValue();
         }
@@ -247,18 +248,23 @@ public class Player20TranspositionBase extends Player20Base {
 
         //check if we reached a leaf, or reached our depth limit.
         if (depth == depthLimit || state.isEndState()) {
-            //evaluate the state.
-            int result = evaluate(state);
-            
-            //convert this result to a entry that can be used later.
-            TranspositionEntry resultEntry = new TranspositionEntry(
-                    depthLimit - depth, result, 1);
-            
-            //store the entry.
-            transpositionTable.storeEntry(key, resultEntry);
-            
-            //return the evaluation of this state.
-            return result;
+            entry = transpositionTable.fetchLeafEntry(key);
+            if (entry != null) {
+                return entry.getValue();
+            } else {
+                //evaluate the state.
+                int result = evaluate(state);
+
+                //convert this result to a entry that can be used later.
+                TranspositionEntry resultEntry = new TranspositionEntry(
+                        depthLimit - depth, result, 1);
+
+                //store the entry.
+                transpositionTable.storeLeafEntry(key, resultEntry);
+
+                //return the evaluation of this state.
+                return result;
+            }
         }
 
         //keep track of where this subtree starts, countwise.
@@ -303,17 +309,17 @@ public class Player20TranspositionBase extends Player20Base {
             if (a >= b) {
                 //get the size of the subtree.
                 long subTreeDepth = nodeCount - subTreeNodeCountStart;
-                
+
                 //convert this result to a entry that can be used later.
                 TranspositionEntry resultEntry = new TranspositionEntry(
                         depthLimit - depth, maximize ? b : a, (int) subTreeDepth);
-                
+
                 //store the entry.
                 transpositionTable.storeEntry(key, resultEntry);
-                
+
                 //increase the amount of prunes detected.
                 pruneCount++;
-                
+
                 //set the bestmove, and return beta or alpha.
                 node.setBestMove(bestMove);
                 return maximize ? b : a;
@@ -322,14 +328,14 @@ public class Player20TranspositionBase extends Player20Base {
 
         //get the size of the subtree.
         long subTreeDepth = nodeCount - subTreeNodeCountStart;
-        
+
         //convert this result to a entry that can be used later.
         TranspositionEntry resultEntry = new TranspositionEntry(
                 depthLimit - depth, maximize ? a : b, (int) subTreeDepth);
-        
+
         //store the entry.
         transpositionTable.storeEntry(key, resultEntry);
-        
+
         //set the bestmove, and return alpha or beta.
         node.setBestMove(bestMove);
         return maximize ? a : b;
@@ -375,7 +381,7 @@ public class Player20TranspositionBase extends Player20Base {
         @Override
         public void run() {
             System.out.println(
-                    "Requesting garbage collection at 60% timemark of this turn.");
+                    "Requesting garbage collection at 50% timemark of this turn.");
             System.gc();
         }
     }
