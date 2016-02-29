@@ -1,12 +1,10 @@
 package nl.tue.s2id90.group20.evaluation;
 
+import java.util.ArrayList;
 import nl.tue.s2id90.draughts.DraughtsState;
 
-/**
- *
- * @author Melroy
- */
 public class OmniEvaluation extends AbstractEvaluation {
+
     private final int unoccupiedPromotionLineFieldsWeight;
     private final int pawnWeight;
     private final int kingWeight;
@@ -22,14 +20,10 @@ public class OmniEvaluation extends AbstractEvaluation {
     private final int mainDiagonalKingWeight;
     private final int doubleDiagonalPawnWeight;
     private final int doubleDiagonalKingWeight;
-    
-    private final int lonerPawnWeight;
-    private final int lonerKingWeight;
-    private final int holeWeight;
 
     /**
      * Create an omni evaluator. With a lot of parameters...
-     * 
+     *
      * @param unoccupiedPromotionLineFieldsWeight
      * @param pawnWeight
      * @param kingWeight
@@ -44,9 +38,6 @@ public class OmniEvaluation extends AbstractEvaluation {
      * @param mainDiagonalKingWeight
      * @param doubleDiagonalPawnWeight
      * @param doubleDiagonalKingWeight
-     * @param lonerPawnWeight
-     * @param lonerKingWeight
-     * @param holeWeight 
      */
     public OmniEvaluation(int unoccupiedPromotionLineFieldsWeight,
             int pawnWeight, int kingWeight, int safePawnWeight,
@@ -55,8 +46,7 @@ public class OmniEvaluation extends AbstractEvaluation {
             int defenderPieceWeight, int attackPawnWeight, int centerPawnWeight,
             int centerKingWeight, int mainDiagonalPawnWeight,
             int mainDiagonalKingWeight, int doubleDiagonalPawnWeight,
-            int doubleDiagonalKingWeight, int lonerPawnWeight,
-            int lonerKingWeight, int holeWeight) {
+            int doubleDiagonalKingWeight) {
         this.unoccupiedPromotionLineFieldsWeight = unoccupiedPromotionLineFieldsWeight;
         this.pawnWeight = pawnWeight;
         this.kingWeight = kingWeight;
@@ -71,9 +61,6 @@ public class OmniEvaluation extends AbstractEvaluation {
         this.mainDiagonalKingWeight = mainDiagonalKingWeight;
         this.doubleDiagonalPawnWeight = doubleDiagonalPawnWeight;
         this.doubleDiagonalKingWeight = doubleDiagonalKingWeight;
-        this.lonerPawnWeight = lonerPawnWeight;
-        this.lonerKingWeight = lonerKingWeight;
-        this.holeWeight = holeWeight;
     }
 
     private final static boolean[] isEdge = new boolean[51];
@@ -86,8 +73,11 @@ public class OmniEvaluation extends AbstractEvaluation {
     private final static boolean[] isCenterPosition = new boolean[51];
     private final static boolean[] isOnMainDiagonal = new boolean[51];
     private final static boolean[] isOnDoubleDiagonal = new boolean[51];
+    private final static ArrayList<ArrayList<Integer>> neighbours = new ArrayList<>(
+            51);
 
     static {
+        neighbours.add(new ArrayList<>());
         for (int i = 1; i < 51; i++) {
             isEdge[i] = i < 6 || i > 45 || i % 10 == 6 || i % 10 == 5;
             whiteDistanceToPromotion[i] = (50 - i) / 5;
@@ -105,6 +95,53 @@ public class OmniEvaluation extends AbstractEvaluation {
                     || i == 23 || i == 28 || i == 29 || i == 33
                     || i == 34 || i == 39 || i == 40 || i == 44
                     || i == 45 || i == 50;
+
+            ArrayList<Integer> neighbour = new ArrayList<>(4);
+            if ((i - 1) % 10 < 5) {
+                //rows 1 - 5, 11 - 15 etc
+
+                //always query bottom left.
+                neighbour.add(i + 5);
+
+                //can always query top left, except for top row.
+                if (i > 5) {
+                    neighbour.add(i - 5);
+                }
+
+                //right may only be queried if i != 5,15,25,35,45
+                if (i % 10 != 5) {
+                    //always query bottom right
+                    neighbour.add(i + 6);
+
+                    //can always query top right, except for top row.
+                    if (i > 5) {
+                        neighbour.add(i - 4);
+                    }
+                }
+            } else {
+                //rows 6 - 10, 16 - 20 etc
+
+                //always query top right
+                neighbour.add(i - 5);
+
+                //can always query right, except for bottom row.
+                if (i < 46) {
+                    neighbour.add(i + 5);
+                }
+
+                //left may only be queried if i != 6,16,26,36,46
+                if (i % 10 != 6) {
+                    //always query top left
+                    neighbour.add(i - 6);
+
+                    //can always query right, except for bottom row.
+                    if (i < 46) {
+                        neighbour.add(i + 4);
+                    }
+                }
+            }
+
+            neighbours.add(neighbour);
         }
     }
 
@@ -118,7 +155,8 @@ public class OmniEvaluation extends AbstractEvaluation {
      * @return Evaluative value for the current state of the board.
      */
     @Override
-    public int evaluate(int[] pieces, boolean isWhitePlayer) {
+    public int evaluate(int[] pieces, boolean isWhitePlayer
+    ) {
         //all the following values are differences, with the positive side being white.
         int promotionLinesEmpty = 0;//
         int pawns = 0;//
@@ -135,12 +173,6 @@ public class OmniEvaluation extends AbstractEvaluation {
         int mainDiagonalKings = 0;//
         int doubleDiagonalPawns = 0;//
         int doubleDiagonalKings = 0;//     
-        
-        int stubbornKings = 0;
-        
-        int lonerPawns = 0;
-        int lonerKings = 0;
-        int holes = 0;
 
         for (int i = 1; i < pieces.length; i++) {
             int piece = pieces[i];
@@ -259,8 +291,8 @@ public class OmniEvaluation extends AbstractEvaluation {
             }
         }
 
-        int evaluation = 
-                promotionLinesEmpty * unoccupiedPromotionLineFieldsWeight 
+        int evaluation
+                = promotionLinesEmpty * unoccupiedPromotionLineFieldsWeight
                 + pawns * pawnWeight
                 + kings * kingWeight
                 + safePawns * safePawnWeight
@@ -273,24 +305,19 @@ public class OmniEvaluation extends AbstractEvaluation {
                 + mainDiagonalPawns * mainDiagonalPawnWeight
                 + mainDiagonalKings * mainDiagonalKingWeight
                 + doubleDiagonalPawns * doubleDiagonalPawnWeight
-                + doubleDiagonalKings * doubleDiagonalKingWeight
-                + lonerPawns * lonerPawnWeight
-                + lonerKings * lonerKingWeight
-                + holes * holeWeight;
+                + doubleDiagonalKings * doubleDiagonalKingWeight;
 
         return isWhitePlayer ? evaluation : -evaluation;
     }
 
     /**
      * Name of the evaluation function.
-     * 
+     *
      * @return String with evaluation settings.
      */
     @Override
     public String toString() {
-        return "unoccupiedPromotionLineFieldsWeight=" + unoccupiedPromotionLineFieldsWeight + " pawnWeight=" + pawnWeight + " kingWeight=" + kingWeight + " safePawnWeight=" + safePawnWeight + " safeKingWeight=" + safeKingWeight + " aggregatedDistanceOfPawnToPromotionLineWeight=" + aggregatedDistanceOfPawnToPromotionLineWeight + " defenderPieceWeight=" + defenderPieceWeight + " attackPawnWeight=" + attackPawnWeight + " centerPawnWeight=" + centerPawnWeight + " centerKingWeight=" + centerKingWeight + " mainDiagonalPawnWeight=" + mainDiagonalPawnWeight + " mainDiagonalKingWeight=" + mainDiagonalKingWeight + " doubleDiagonalPawnWeight=" + doubleDiagonalPawnWeight + " doubleDiagonalKingWeight=" + doubleDiagonalKingWeight + " lonerPawnWeight=" + lonerPawnWeight + " lonerKingWeight=" + lonerKingWeight + " holeWeight=" + holeWeight + " ";
+        return "unoccupiedPromotionLineFieldsWeight=" + unoccupiedPromotionLineFieldsWeight + " pawnWeight=" + pawnWeight + " kingWeight=" + kingWeight + " safePawnWeight=" + safePawnWeight + " safeKingWeight=" + safeKingWeight + " aggregatedDistanceOfPawnToPromotionLineWeight=" + aggregatedDistanceOfPawnToPromotionLineWeight + " defenderPieceWeight=" + defenderPieceWeight + " attackPawnWeight=" + attackPawnWeight + " centerPawnWeight=" + centerPawnWeight + " centerKingWeight=" + centerKingWeight + " mainDiagonalPawnWeight=" + mainDiagonalPawnWeight + " mainDiagonalKingWeight=" + mainDiagonalKingWeight + " doubleDiagonalPawnWeight=" + doubleDiagonalPawnWeight + " doubleDiagonalKingWeight=" + doubleDiagonalKingWeight + " ";
     }
-
-    
 
 }

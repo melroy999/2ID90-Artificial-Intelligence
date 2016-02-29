@@ -42,7 +42,7 @@ public class Player20TranspositionBase extends Player20Base {
             int endStateWeight) {
         super(pieceWeight, kingWeight, sideWeight, kingLaneWeight, tandemWeight,
                 centerWeight, endStateWeight, true,
-                Player20TranspositionBase.class.getResource("resources/book.png"));
+                Player20TranspositionBase.class.getResource("resources/gc.png"));
         this.pruningWindow = pruningWindow;
         this.bounds = bounds;
     }
