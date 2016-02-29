@@ -34,9 +34,10 @@ public class Player20TranspositionOmni extends Player20TranspositionBase {
          int mainDiagonalKingWeight, 
          int doubleDiagonalPawnWeight,
          int doubleDiagonalKingWeight, 
+         int winWeight
          */
         OmniEvaluation evaluation = new OmniEvaluation(25, 50, 200, 5, 10, 1, 2, 3, 4,
-                10, 2, 15, 2, 12);
+                10, 2, 15, 2, 12, 0);
         this.addEvaluator(evaluation);
     }
 }

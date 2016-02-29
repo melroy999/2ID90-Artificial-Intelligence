@@ -20,6 +20,8 @@ public class OmniEvaluation extends AbstractEvaluation {
     private final int mainDiagonalKingWeight;
     private final int doubleDiagonalPawnWeight;
     private final int doubleDiagonalKingWeight;
+    
+    private final int winWeight;
 
     /**
      * Create an omni evaluator. With a lot of parameters...
@@ -46,7 +48,7 @@ public class OmniEvaluation extends AbstractEvaluation {
             int defenderPieceWeight, int attackPawnWeight, int centerPawnWeight,
             int centerKingWeight, int mainDiagonalPawnWeight,
             int mainDiagonalKingWeight, int doubleDiagonalPawnWeight,
-            int doubleDiagonalKingWeight) {
+            int doubleDiagonalKingWeight, int winWeight) {
         this.unoccupiedPromotionLineFieldsWeight = unoccupiedPromotionLineFieldsWeight;
         this.pawnWeight = pawnWeight;
         this.kingWeight = kingWeight;
@@ -61,6 +63,7 @@ public class OmniEvaluation extends AbstractEvaluation {
         this.mainDiagonalKingWeight = mainDiagonalKingWeight;
         this.doubleDiagonalPawnWeight = doubleDiagonalPawnWeight;
         this.doubleDiagonalKingWeight = doubleDiagonalKingWeight;
+        this.winWeight = winWeight;
     }
 
     private final static boolean[] isEdge = new boolean[51];
@@ -309,6 +312,19 @@ public class OmniEvaluation extends AbstractEvaluation {
 
         return isWhitePlayer ? evaluation : -evaluation;
     }
+
+    @Override
+    public int evaluate(DraughtsState state, boolean isWhitePlayer) {
+        int value = super.evaluate(state, isWhitePlayer);
+        if (state.isEndState()) {
+            if (state.isWhiteToMove() != isWhitePlayer) {
+                value += winWeight;
+            } 
+        }
+        return value; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 
     /**
      * Name of the evaluation function.

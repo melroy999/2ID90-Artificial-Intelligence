@@ -11,13 +11,11 @@ import nl.tue.s2id90.group20.evaluation.OmniEvaluation;
  *
  * @author Melroy
  */
-public class Player20Omni extends Player20Base {
+public class Player20OmniMemTesterP1 extends Player20TranspositionBase {
 
-    /**
-     * Create a player using the omniEvaluation.
-     */
-    public Player20Omni() {
-        super(Player20Omni.class.getResource("resources/owl.png"));
+    public Player20OmniMemTesterP1() {
+        super(20000, 20000, Player20TranspositionBase.class.getResource("resources/gc.png"));
+
         /*
          int unoccupiedPromotionLineFieldsWeight,
          int pawnWeight, 
@@ -34,9 +32,10 @@ public class Player20Omni extends Player20Base {
          int doubleDiagonalPawnWeight,
          int doubleDiagonalKingWeight, 
          */
-        OmniEvaluation evaluation = new OmniEvaluation(25, 50, 150, 5, 10, 1, 2, 3, 4,
-                10, 2, 15, 2, 12, 0);
+        OmniEvaluation evaluation = new OmniEvaluation(20, 50, 150, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0);
         this.addEvaluator(evaluation);
     }
-   
+    
+    
 }
