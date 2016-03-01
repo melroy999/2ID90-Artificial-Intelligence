@@ -557,7 +557,7 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
             } else {
                 updateGUI();
             }
-            //finishGame(currentGame, gameGUI.getCurrentGameState());
+            finishGame(currentGame, gameGUI.getCurrentGameState());
             return;
         }
         turnCounter++;
