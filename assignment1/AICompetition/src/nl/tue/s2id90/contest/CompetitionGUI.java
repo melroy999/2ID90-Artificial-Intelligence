@@ -460,7 +460,7 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
                 currentSearchTask.stop();
                 currentGame = null;
             }
-            
+
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(
                         new File("wins.txt"), true));
@@ -554,9 +554,7 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
             System.out.println("Both lost. Unending game.");
             if (currentSearchTask != null) {
                 currentSearchTask.stop();
-                currentGame = null;
             } else {
-                currentGame = null;
                 updateGUI();
             }
             finishGame(currentGame, gameGUI.getCurrentGameState());
@@ -568,7 +566,8 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
             updateGUI(game, gs);
             updateGUI();
             Player currentPlayer;
-            if (game != null && gs.isWhiteToMove()) {
+            
+            if (gs.isWhiteToMove()) {
                 currentPlayer = game.first;
             } else {
                 currentPlayer = game.second;
@@ -604,7 +603,7 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
         updateRanking();
         notifyCompetitionListeners(game, false); // notify of end of game
     }
-    
+
     boolean disablePrints = true;
 
     private SearchTask getComputerMove(final Player currentPlayer, final S gs,
@@ -621,11 +620,12 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
 
                 // sleep at least MIN DELAY ms before doing the move on the board
                 long dt = timer.elapsedTimeInMilliSeconds();
-                
-                if(!disablePrints){
-                    System.err.println("dt = " + dt + "/" + 1000 * maxTime + "\n\n");
+
+                if (!disablePrints) {
+                    System.err.println(
+                            "dt = " + dt + "/" + 1000 * maxTime + "\n\n");
                 }
-                
+
                 if (dt < MIN_DELAY) {
                     sleep(MIN_DELAY - dt);
                 }
