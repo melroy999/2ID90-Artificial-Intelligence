@@ -25,7 +25,7 @@ public class MyDraughtsPlugin extends DraughtsPlayerProvider implements Draughts
         super(
                 /*new UninformedPlayer(),
                  new OptimisticPlayer(),
-                 new StupidPlayer(),*/
+                 new StupidPlayer(),
                 new OmniTesterBase(20, 200000, 10, 0, 50, 0, 1, 5, 50, 1, 0, 5,
                         0, 0, 50, 1, "TestPlayer#0"),
                 new OmniTesterBase(20, 200000, 5, 50, 50, 10, 5, 10, 50, 0, 50,
@@ -225,7 +225,8 @@ public class MyDraughtsPlugin extends DraughtsPlayerProvider implements Draughts
                 new OmniTesterBase(20, 200000, 0, 1, 1, 10, 0, 1, 50, 5, 5, 1, 1,
                         5, 10, 0, "TestPlayer#98"),
                 new OmniTesterBase(20, 200000, 10, 0, 1, 1, 0, 5, 0, 50, 50, 50,
-                        10, 50, 1, 50, "TestPlayer#99")
+                        10, 50, 1, 50, "TestPlayer#99"),*/
+                new Group20TournamentPlayer()
         );
     }
 }
