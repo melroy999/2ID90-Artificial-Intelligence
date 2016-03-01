@@ -88,7 +88,7 @@ public class Player20TranspositionBase extends Player20Base {
 
             //round the time to seconds.
             long stopTime = (long) ((((estimatedTime + 500) / 1000)) * 1000);
-            System.out.println("Estimated turn time: " + stopTime);
+            /*System.out.println("Estimated turn time: " + stopTime);*/
 
             //time a garbage collection (just past) halfway our turn.
             stopBeforeLimit.schedule(new GarbageCollectionTimer(),
@@ -104,7 +104,7 @@ public class Player20TranspositionBase extends Player20Base {
 
         //request a garbage collection at the start of the iteration.
         //so that garbage collection becomes more predictable.
-        System.out.println("Requesting garbage collection at start of move.");
+        /*System.out.println("Requesting garbage collection at start of move.");*/
         System.gc();
 
         //call the getMove of parent, which will initiate the iterative deepening.
@@ -186,14 +186,14 @@ public class Player20TranspositionBase extends Player20Base {
             //we do not estimate the time of the turn if we reach max depth!
             //the time given will be a wrong estimation of reality!
             //print information about the depth reached.
-            System.out.println(
-                    this.getClass().toString() + " reached end state. Total of " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");
+            /*System.out.println(
+                    this.getClass().toString() + " reached end state. Total of " + nodeCount + " nodes, of which we fetched " + fetchCount + ".")*/
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
 
             //print information about the depth reached.
-            System.out.println(
-                    this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");
+            /*System.out.println(
+                    this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");*/
 
             //estimate the time of the turn.
             if (estimatedTime == 0) {
@@ -380,8 +380,8 @@ public class Player20TranspositionBase extends Player20Base {
 
         @Override
         public void run() {
-            System.out.println(
-                    "Requesting garbage collection at 50% timemark of this turn.");
+            /*System.out.println(
+                    "Requesting garbage collection at 50% timemark of this turn.");*/
             System.gc();
         }
     }

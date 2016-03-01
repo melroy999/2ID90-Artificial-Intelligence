@@ -214,14 +214,14 @@ public class Player20Base extends DraughtsPlayer {
             }
 
             //report about iterative deepening.
-            System.out.println(
-                    this.getName() + " reached end state. Total of " + nodeCount + " nodes.");
+            /*System.out.println(
+                    this.getName() + " reached end state. Total of " + nodeCount + " nodes.");*/
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
 
             //report about iterative deepening.
-            System.out.println(
-                    this.getName() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");
+            /*System.out.println(
+                    this.getName() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");*/
         }
 
         //return best move.
