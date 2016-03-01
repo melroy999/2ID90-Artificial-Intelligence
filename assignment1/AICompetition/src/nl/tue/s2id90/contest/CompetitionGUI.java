@@ -568,7 +568,7 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
             updateGUI(game, gs);
             updateGUI();
             Player currentPlayer;
-            if (gs.isWhiteToMove()) {
+            if (game != null && gs.isWhiteToMove()) {
                 currentPlayer = game.first;
             } else {
                 currentPlayer = game.second;
