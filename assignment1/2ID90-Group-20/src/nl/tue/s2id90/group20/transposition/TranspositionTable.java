@@ -17,19 +17,21 @@ public class TranspositionTable {
     /**
      * Table holding already analysed nodes.
      */
-    private static final HashMap<Keypair, TranspositionEntry> transpositionTable = new HashMap<>(1000000);
+    private static final HashMap<Keypair, TranspositionEntry> transpositionTable = new HashMap<>(
+            1000000);
 
     /**
      * Table holding leaf results.
      */
-    private static final HashMap<Keypair, TranspositionEntry> leafTranspositionTable = new HashMap<>(1000000);
-    
+    private static final HashMap<Keypair, TranspositionEntry> leafTranspositionTable = new HashMap<>(
+            1000000);
+
     /**
      * Returns a zobrist key.
      *
      * @param state: State you want a key for.
      * @return highly probable unique keypair for the given state.
-     */    
+     */
     public static Keypair getZobristKeypair(DraughtsState state) {
         return keyManager.getZobristKeypair(state);
     }
@@ -52,7 +54,7 @@ public class TranspositionTable {
         transpositionTable.clear();
         leafTranspositionTable.clear();
     }
-    
+
     /**
      * Clears the leaf table.
      */
@@ -79,7 +81,7 @@ public class TranspositionTable {
     public void storeEntry(Keypair keypair, TranspositionEntry entry) {
         transpositionTable.put(keypair, entry);
     }
-    
+
     /**
      * Fetch a leaf entry from the transpotation table.
      *

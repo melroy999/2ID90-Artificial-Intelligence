@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.tue.s2id90.group20;
 
 import java.net.URL;
@@ -16,10 +11,6 @@ import nl.tue.s2id90.group20.transposition.TranspositionEntry;
 import nl.tue.s2id90.group20.transposition.TranspositionTable;
 import org10x10.dam.game.Move;
 
-/**
- *
- * @author Melroy
- */
 public class Player20TranspositionBase extends Player20Base {
 
     /**
@@ -187,14 +178,13 @@ public class Player20TranspositionBase extends Player20Base {
             //the time given will be a wrong estimation of reality!
             //print information about the depth reached.
             /*System.out.println(
-                    this.getClass().toString() + " reached end state. Total of " + nodeCount + " nodes, of which we fetched " + fetchCount + ".")*/
+             this.getClass().toString() + " reached end state. Total of " + nodeCount + " nodes, of which we fetched " + fetchCount + ".")*/
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
 
             //print information about the depth reached.
             /*System.out.println(
-                    this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");*/
-
+             this.getClass().toString() + " reached depth " + maxDepth + " with " + nodeCount + " nodes, of which we fetched " + fetchCount + ".");*/
             //estimate the time of the turn.
             if (estimatedTime == 0) {
                 //if we have no data yet, use the first thing found.
@@ -381,7 +371,7 @@ public class Player20TranspositionBase extends Player20Base {
         @Override
         public void run() {
             /*System.out.println(
-                    "Requesting garbage collection at 50% timemark of this turn.");*/
+             "Requesting garbage collection at 50% timemark of this turn.");*/
             System.gc();
         }
     }

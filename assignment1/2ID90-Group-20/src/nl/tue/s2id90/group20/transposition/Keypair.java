@@ -1,18 +1,19 @@
 package nl.tue.s2id90.group20.transposition;
 
 /**
- * A pair of keys used for state identification. 
+ * A pair of keys used for state identification.
  */
 public class Keypair {
+
     //first key.
     public final long key1;
-    
+
     //second key.
     public final long key2;
 
     /**
      * Create keypair from two integers.
-     * 
+     *
      * @param key1: first key.
      * @param key2: second key.
      */
@@ -20,10 +21,10 @@ public class Keypair {
         this.key1 = key1;
         this.key2 = key2;
     }
-    
+
     /**
      * Create keypair from array.
-     * 
+     *
      * @param keypair: array.
      */
     public Keypair(long[] keypair) {
@@ -33,8 +34,8 @@ public class Keypair {
 
     /**
      * Generate a hashcode.
-     * 
-     * @return hashcode. 
+     *
+     * @return hashcode.
      */
     @Override
     public int hashCode() {
@@ -46,7 +47,7 @@ public class Keypair {
 
     /**
      * Check if equal.
-     * 
+     *
      * @param obj: object that should be equal.
      * @return if objects are equal.
      */
@@ -67,13 +68,13 @@ public class Keypair {
         }
         return true;
     }
-    
+
     /**
      * Convert keypair to an array of two longs.
-     * 
+     *
      * @return long array with two entries.
      */
-    public long[] toArray(){
+    public long[] toArray() {
         return new long[]{key1, key2};
     }
 }

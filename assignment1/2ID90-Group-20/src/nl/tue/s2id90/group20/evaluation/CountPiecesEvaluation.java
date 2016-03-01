@@ -1,6 +1,10 @@
 package nl.tue.s2id90.group20.evaluation;
 
 /**
+ * @Deprecated Not used in final solution, this is an intermediary step to final
+ * solution.
+ */
+/**
  * Holds the evaluation based on piece counting.
  */
 public class CountPiecesEvaluation extends AbstractEvaluation {
@@ -9,7 +13,7 @@ public class CountPiecesEvaluation extends AbstractEvaluation {
 
     /**
      * Count the amount of pieces on the board.
-     * 
+     *
      * @param pieceWeight: Weight of a piece.
      */
     public CountPiecesEvaluation(int pieceWeight) {
@@ -40,7 +44,7 @@ public class CountPiecesEvaluation extends AbstractEvaluation {
 
     /**
      * Name of the evaluation function.
-     * 
+     *
      * @return String with evaluation settings.
      */
     @Override

@@ -1,8 +1,8 @@
 package nl.tue.s2id90.group20.evaluation;
 
 /**
- *
- * @author Melroy
+ * @Deprecated Not used in final solution, this is an intermediary step to final
+ * solution.
  */
 public class CenterEvaluation extends AbstractEvaluation {
 
@@ -10,7 +10,7 @@ public class CenterEvaluation extends AbstractEvaluation {
 
     /**
      * Make a center evaluator.
-     * 
+     *
      * @param centerWeight: Weight of a piece in the center.
      */
     public CenterEvaluation(int centerWeight) {
@@ -42,7 +42,7 @@ public class CenterEvaluation extends AbstractEvaluation {
 
     /**
      * Name of the evaluation function.
-     * 
+     *
      * @return String with evaluation settings.
      */
     @Override

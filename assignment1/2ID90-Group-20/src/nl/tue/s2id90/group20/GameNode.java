@@ -20,7 +20,7 @@ public class GameNode {
 
     /**
      * Create a gamenode without a keypair.
-     * 
+     *
      * @param gameState: current gamestate.
      * @param depth: depth the node is at.
      * @param maxDepth: maximum depth of the tree.
@@ -35,13 +35,14 @@ public class GameNode {
 
     /**
      * Create a gamenode with a keypair.
-     * 
+     *
      * @param gameState: current gamestate.
      * @param depth: depth the node is at.
      * @param maxDepth: maximum depth of the tree.
      * @param keypair: keypair of the state.
      */
-    public GameNode(DraughtsState gameState, int depth, int maxDepth, Keypair keypair) {
+    public GameNode(DraughtsState gameState, int depth, int maxDepth,
+            Keypair keypair) {
         this.gameState = gameState;
         this.subTreeDepth = maxDepth - depth;
         this.isWhitePlaying = gameState.isWhiteToMove();
@@ -51,8 +52,8 @@ public class GameNode {
 
     /**
      * Return the value of this state.
-     * 
-     * @return value; 
+     *
+     * @return value;
      */
     public int getValue() {
         return value;
@@ -60,7 +61,7 @@ public class GameNode {
 
     /**
      * Set the value of this state.
-     * 
+     *
      * @param value: new value.
      */
     public void setValue(int value) {
@@ -69,7 +70,7 @@ public class GameNode {
 
     /**
      * Return the GameState.
-     * 
+     *
      * @return gameState.
      */
     public DraughtsState getGameState() {
@@ -78,7 +79,7 @@ public class GameNode {
 
     /**
      * Set new best move.
-     * 
+     *
      * @param move: new best move.
      */
     public void setBestMove(Move move) {
@@ -87,7 +88,7 @@ public class GameNode {
 
     /**
      * Returns the current best move.
-     * 
+     *
      * @return bestMove.
      */
     public Move getBestMove() {
@@ -96,7 +97,7 @@ public class GameNode {
 
     /**
      * Returns the subtree depth.
-     * 
+     *
      * @return subTreeDepth.
      */
     public int getSubTreeDepth() {
@@ -105,7 +106,7 @@ public class GameNode {
 
     /**
      * Returns the depth this node is at.
-     * 
+     *
      * @return depth.
      */
     public int getDepth() {
@@ -114,7 +115,7 @@ public class GameNode {
 
     /**
      * Returns whether white is playing.
-     * 
+     *
      * @return isWhitePlaying.
      */
     public boolean isWhitePlaying() {
@@ -123,7 +124,7 @@ public class GameNode {
 
     /**
      * Return the keypair connected to this node.
-     * 
+     *
      * @return keypair.
      */
     public Keypair getKeypair() {

@@ -4,13 +4,14 @@ package nl.tue.s2id90.group20.transposition;
  * Entries used for the transposition table.
  */
 public class TranspositionEntry {
+
     private final int depth;
     private final int value;
     private final int nodes;
 
     /**
      * Make a transposition table entry.
-     * 
+     *
      * @param depth: depth the entry is at.
      * @param value: value of the entry.
      * @param nodes: amount of nodes in the entry.
@@ -24,7 +25,7 @@ public class TranspositionEntry {
 
     /**
      * Returns the depth attached to this entry.
-     * 
+     *
      * @return depth
      */
     public int getDepth() {
@@ -33,7 +34,7 @@ public class TranspositionEntry {
 
     /**
      * Returns the value attached to this entry.
-     * 
+     *
      * @return value
      */
     public int getValue() {
@@ -42,7 +43,7 @@ public class TranspositionEntry {
 
     /**
      * Returns the amount of nodes attached to this entry.
-     * 
+     *
      * @return nodes
      */
     public int getNodes() {

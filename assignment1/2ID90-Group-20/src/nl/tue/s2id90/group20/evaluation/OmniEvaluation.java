@@ -3,6 +3,9 @@ package nl.tue.s2id90.group20.evaluation;
 import java.util.ArrayList;
 import nl.tue.s2id90.draughts.DraughtsState;
 
+/**
+ * Main class used for evaluation of states.
+ */
 public class OmniEvaluation extends AbstractEvaluation {
 
     private final int unoccupiedPromotionLineFieldsWeight;
@@ -47,8 +50,7 @@ public class OmniEvaluation extends AbstractEvaluation {
             int centerKingWeight, int mainDiagonalPawnWeight,
             int mainDiagonalKingWeight, int doubleDiagonalPawnWeight,
             int doubleDiagonalKingWeight) {
-        
-        
+
         //promotionLinesEmpty 0 - 5
         //pawns 0 - 20
         //kings 0 - 20
@@ -59,7 +61,6 @@ public class OmniEvaluation extends AbstractEvaluation {
         //center 0 - 10
         //diagonal 0 - 10
         //diagonal2 0 - 18
-        
         this.unoccupiedPromotionLineFieldsWeight = unoccupiedPromotionLineFieldsWeight * 4;
         this.pawnWeight = pawnWeight * 1;
         this.kingWeight = kingWeight * 1;
@@ -314,7 +315,7 @@ public class OmniEvaluation extends AbstractEvaluation {
                 }
             }
         }
-        
+
         int pawnDistanceToPromotion = blackPawnDistanceToPromotion / (blackPieces + 1) - whitePawnDistanceToPromotion / (whitePieces + 1);
 
         int evaluation

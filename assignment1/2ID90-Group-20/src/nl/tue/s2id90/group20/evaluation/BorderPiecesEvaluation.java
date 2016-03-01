@@ -1,5 +1,9 @@
 package nl.tue.s2id90.group20.evaluation;
 
+/**
+ * @Deprecated Not used in final solution, this is an intermediary step to final
+ * solution.
+ */
 public class BorderPiecesEvaluation extends AbstractEvaluation {
 
     private final int sideWeight;
@@ -7,7 +11,7 @@ public class BorderPiecesEvaluation extends AbstractEvaluation {
 
     /**
      * Create a border piece evaluation.
-     * 
+     *
      * @param sideWeight: Weight of pieces on the side.
      * @param kingLaneWeight: Weight of pieces on the promotion lane.
      */
@@ -37,8 +41,10 @@ public class BorderPiecesEvaluation extends AbstractEvaluation {
 
         //other borders of the playing board.
         for (int i = 1; i <= 4; i++) {
-            count += evaluateSide(pieces[15 + 10 * (i - 1)], isWhitePlayer, sideWeight);
-            count += evaluateSide(pieces[6 + 10 * (i - 1)], isWhitePlayer, sideWeight);
+            count += evaluateSide(pieces[15 + 10 * (i - 1)], isWhitePlayer,
+                    sideWeight);
+            count += evaluateSide(pieces[6 + 10 * (i - 1)], isWhitePlayer,
+                    sideWeight);
         }
 
         return count;
@@ -46,7 +52,7 @@ public class BorderPiecesEvaluation extends AbstractEvaluation {
 
     /**
      * Name of the evaluation function.
-     * 
+     *
      * @return String with evaluation settings.
      */
     @Override

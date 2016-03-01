@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.tue.s2id90.group20;
 
 import nl.tue.s2id90.group20.UninformedPlayer;
@@ -30,14 +25,9 @@ import nl.tue.s2id90.group20.evaluation.PrioritiseEndstateEvaluation;
 import nl.tue.s2id90.group20.evaluation.TandemEvaluation;
 import org10x10.dam.game.Move;
 
-/**
- *
- * @author Melroy
- */
 public class Player20Base extends DraughtsPlayer {
 
     //The evaluation method used by the player
-
     private final List<AbstractEvaluation> evaluators;
 
     protected boolean stopped = false;
@@ -162,7 +152,7 @@ public class Player20Base extends DraughtsPlayer {
     @Override
     public Move getMove(DraughtsState state) {
         //initialize the logging file.
-        initializeFile();
+        /*initializeFile();*/
 
         //set current time.
         time = System.currentTimeMillis();
@@ -177,7 +167,7 @@ public class Player20Base extends DraughtsPlayer {
         time = System.currentTimeMillis() - time;
 
         //write the results and return best move.
-        writeResultsToFile(state, values, bestMove, maxDepth);
+        /*writeResultsToFile(state, values, bestMove, maxDepth);*/
         return bestMove;
     }
 
@@ -215,13 +205,13 @@ public class Player20Base extends DraughtsPlayer {
 
             //report about iterative deepening.
             /*System.out.println(
-                    this.getName() + " reached end state. Total of " + nodeCount + " nodes.");*/
+             this.getName() + " reached end state. Total of " + nodeCount + " nodes.");*/
         } catch (AIStoppedException ex) {
             //Stop iterative deepening when exception is thrown.
 
             //report about iterative deepening.
             /*System.out.println(
-                    this.getName() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");*/
+             this.getName() + " reached depth " + maxDepth + " with " + nodeCount + " nodes.");*/
         }
 
         //return best move.
@@ -413,7 +403,7 @@ public class Player20Base extends DraughtsPlayer {
             if (a >= b) {
                 //increment prune count.
                 pruneCount++;
-                
+
                 //set new best move and return beta or alpha.
                 node.setBestMove(bestMove);
                 return maximize ? b : a;
@@ -433,7 +423,7 @@ public class Player20Base extends DraughtsPlayer {
      */
     public int evaluate(DraughtsState state) {
         int result = 0;
-        
+
         //evaluate using all evaluation functions.
         for (AbstractEvaluation evaluator : evaluators) {
             result += evaluator.evaluate(state, isWhite);
@@ -443,7 +433,7 @@ public class Player20Base extends DraughtsPlayer {
 
     /**
      * Converts this player to a string representation.
-     * 
+     *
      * @return String having information about evaluation functions.
      */
     @Override
@@ -458,7 +448,7 @@ public class Player20Base extends DraughtsPlayer {
 
     /**
      * Returns the name of this player.
-     * 
+     *
      * @return name.
      */
     @Override
@@ -468,7 +458,7 @@ public class Player20Base extends DraughtsPlayer {
 
     /**
      * Add evaluation function to evaluations.
-     * 
+     *
      * @param a: desired evaluation functions.
      */
     public void addEvaluator(AbstractEvaluation a) {

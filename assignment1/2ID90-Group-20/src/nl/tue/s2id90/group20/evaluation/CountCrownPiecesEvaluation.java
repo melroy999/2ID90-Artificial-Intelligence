@@ -1,12 +1,16 @@
 package nl.tue.s2id90.group20.evaluation;
 
+/**
+ * @Deprecated Not used in final solution, this is an intermediary step to final
+ * solution.
+ */
 public class CountCrownPiecesEvaluation extends AbstractEvaluation {
 
     private final int crownWeight;
 
     /**
      * Count the amount of kings on the board.
-     * 
+     *
      * @param crownWeight: Weight of a king.
      */
     public CountCrownPiecesEvaluation(int crownWeight) {
@@ -37,7 +41,7 @@ public class CountCrownPiecesEvaluation extends AbstractEvaluation {
 
     /**
      * Name of the evaluation function.
-     * 
+     *
      * @return String with evaluation settings.
      */
     @Override

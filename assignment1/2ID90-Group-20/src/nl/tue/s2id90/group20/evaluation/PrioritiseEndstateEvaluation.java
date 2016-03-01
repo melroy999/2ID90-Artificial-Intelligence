@@ -2,14 +2,18 @@ package nl.tue.s2id90.group20.evaluation;
 
 import nl.tue.s2id90.draughts.DraughtsState;
 
+/**
+ * @Deprecated Not used in final solution, this is an intermediary step to final
+ * solution.
+ */
 public class PrioritiseEndstateEvaluation extends AbstractEvaluation {
 
     private final int winWeight;
 
     /**
      * Create a prioritise endstate evaluation.
-     * 
-     * @param winWeight: Weight of a win. 
+     *
+     * @param winWeight: Weight of a win.
      */
     public PrioritiseEndstateEvaluation(int winWeight) {
         this.winWeight = winWeight;
@@ -31,7 +35,7 @@ public class PrioritiseEndstateEvaluation extends AbstractEvaluation {
 
     /**
      * Evaluate a state.
-     * 
+     *
      * @param state: State we want to evaluate.
      * @param isWhitePlayer: Whether we are the white player or not.
      * @return Evaluation of the state.
@@ -50,7 +54,7 @@ public class PrioritiseEndstateEvaluation extends AbstractEvaluation {
 
     /**
      * Name of the evaluation function.
-     * 
+     *
      * @return String with evaluation settings.
      */
     @Override
