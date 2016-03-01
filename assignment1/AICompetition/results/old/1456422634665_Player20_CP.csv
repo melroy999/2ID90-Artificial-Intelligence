@@ -1,0 +1,7 @@
+sep=,
+pieceWeight=25 
+PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues
+White,31-26 1,2237674,0,627446,11,0,20,20,0,0,[0 0 0 0 0 0 0 0 0 0 ]
+White,32-27 1,2415913,0,741550,12,0,20,20,0,0,[0 0 0 0 0 0 0 0 0 0 0 ]
+White,37x28 1,2671423,0,675254,12,0,19,20,0,0,[0 0 0 0 0 0 0 0 0 0 0 ]
+White,28-23 1,237,0,30,3,0,19,19,0,0,[0 0 ]

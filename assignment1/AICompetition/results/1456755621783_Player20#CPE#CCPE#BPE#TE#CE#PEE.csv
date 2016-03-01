@@ -1,0 +1,7 @@
+sep=,
+pieceWeight=25 crownWeight=125 sideWeight=25 kingLaneWeight=75 tandemWeight=5 centerWeight=10 winWeight=1000 
+PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues
+White,32-28 1,858912,0,188224,9,0,20,20,0,0,[0 0 0 0 0 0 5 -5 ],1878
+White,31-26 1,46372,0,10690,6,0,20,20,0,0,[0 0 0 0 0 ],102
+White,31-26 1,568816,0,113754,8,0,20,20,0,0,[5 -5 ],1456755634150
+White,31-26 1,580478,0,113629,8,0,20,20,0,0,[0 0 0 0 0 5 -5 ],2001

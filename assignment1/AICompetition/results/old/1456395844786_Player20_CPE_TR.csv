@@ -1,0 +1,7 @@
+sep=,
+PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,#WP,#BP,#WK,#BK,EvaluationValues
+Black,16-21 2,1752135,48027,403273,12,20,20,0,0,0 0 0 0 0 0 0 0 0 0 0 
+Black,21x32 2,56682,28340,28341,1,20,20,0,0,
+Black,11-16 2,1648393,59237,496044,12,19,19,0,0,0 0 0 0 0 0 0 0 0 0 0 
+Black,18x29 2,59176,29587,29588,1,19,19,0,0,
+Black,19x28 2,49648,24823,24824,1,18,18,0,0,

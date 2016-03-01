@@ -1,0 +1,6 @@
+sep=,
+unoccupiedPromotionLineFieldsWeight=25 pawnWeight=50 kingWeight=200 safePawnWeight=5 safeKingWeight=10 aggregatedDistanceOfPawnToPromotionLineWeight=1 defenderPieceWeight=2 attackPawnWeight=3 centerPawnWeight=4 centerKingWeight=10 mainDiagonalPawnWeight=2 mainDiagonalKingWeight=15 doubleDiagonalPawnWeight=2 doubleDiagonalKingWeight=12 pruningWindow=11 bounds=20000
+PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues
+White,31-26 1,6656414,95616,425432,12,0,20,20,0,0,[8 0 5 0 6 -1 5 -2 5 -2 5 ],1977
+White,32-28 1,7355976,110935,463636,12,0,20,20,0,0,[15 7 13 5 12 5 11 4 11 3 10 ],1966
+White,28-23 1,8472144,139160,469269,12,1,20,20,0,0,[18 10 14 4 15 14 15 8 15 11 15 ],1975

@@ -1,0 +1,7 @@
+sep=,
+pieceWeight=25 crownWeight=125 pruningWindow=10 bounds=20000
+PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues
+White,31-26 1,286939,17221,26949,11,0,20,20,0,0,[0 0 0 0 0 0 0 0 0 0 ],160
+White,32-27 1,207248,11334,12856,11,0,20,20,0,0,[0 0 0 0 0 0 0 0 0 0 ],44
+White,37x28 1,180987,17151,26851,11,0,19,20,0,0,[0 0 0 0 0 0 0 0 0 0 ],96
+White,28-23 1,442385,25689,28128,11,0,19,19,0,0,[0 0 0 0 0 0 0 0 0 0 ],91

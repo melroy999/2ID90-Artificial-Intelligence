@@ -1,0 +1,4 @@
+sep=,
+unoccupiedPromotionLineFieldsWeight=25 pawnWeight=25 kingWeight=75 safePawnWeight=5 safeKingWeight=10 aggregatedDistanceOfPawnToPromotionLineWeight=1 defenderPieceWeight=2 attackPawnWeight=3 centerPawnWeight=4 centerKingWeight=10 mainDiagonalPawnWeight=2 mainDiagonalKingWeight=15 doubleDiagonalPawnWeight=2 doubleDiagonalKingWeight=12 lonerPawnWeight=0 lonerKingWeight=0 holeWeight=0 
+PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues
+White,31-26 1,2366214,0,541017,10,0,20,20,0,0,[0 5 0 6 -1 5 -2 5 -2 ],1996

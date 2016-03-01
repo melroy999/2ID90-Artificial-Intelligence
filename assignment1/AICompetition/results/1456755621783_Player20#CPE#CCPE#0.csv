@@ -1,0 +1,7 @@
+sep=,
+pieceWeight=25 crownWeight=50 
+PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues
+White,31-26 1,2841371,0,635935,12,0,20,20,0,0,[0 0 0 0 0 0 0 0 0 0 0 ],1861
+White,31-26 1,143782,0,28741,8,0,20,20,0,0,[0 0 0 0 0 0 0 ],97
+White,31-26 1,3379836,0,776925,12,0,20,20,0,0,[0 0 0 0 0 0 0 0 0 0 0 ],1869
+White,31-26 1,196545,0,35923,8,0,20,20,0,0,[0 0 0 0 0 0 0 ],95

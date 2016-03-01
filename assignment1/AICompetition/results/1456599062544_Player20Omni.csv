@@ -1,0 +1,14 @@
+sep=,
+unoccupiedPromotionLineFieldsWeight=50 pawnWeight=0 kingWeight=0 safePawnWeight=0 safeKingWeight=0 aggregatedDistanceOfPawnToPromotionLineWeight=0 defenderPieceWeight=0 attackPawnWeight=0 centerPawnWeight=0 centerKingWeight=0 mainDiagonalPawnWeight=0 mainDiagonalKingWeight=0 doubleDiagonalPawnWeight=0 doubleDiagonalKingWeight=0 lonerPawnWeight=0 lonerKingWeight=0 holeWeight=0 
+PlayerSide,Move,TraversedNodes,FetchedNodes,SubtreesPruned,SearchDepth,AspirationFails,#WP,#BP,#WK,#BK,EvaluationValues
+Black,37-41 2,3336866,0,538026,13,0,5,1,0,0,[0 -50 -50 0 0 0 0 0 0 0 0 0 ],1998
+Black,41-46 4,3914626,0,659445,13,0,5,1,0,0,[-50 0 0 0 0 0 0 0 0 0 0 0 ],2000
+Black,46x14x25 4,3555993,0,788639,12,0,5,1,1,1,[0 50 50 50 0 0 0 0 0 0 0 ],2001
+Black,25-20 4,3664869,0,798967,11,0,3,1,1,1,[50 50 0 0 0 0 0 0 0 0 ],2000
+Black,20-14 4,3739497,0,804616,11,0,3,1,1,1,[50 50 50 50 0 0 0 0 0 0 ],2000
+Black,14-3 4,3699338,0,773956,10,0,3,1,1,1,[50 50 0 0 0 0 0 0 0 ],2000
+Black,3x21 4,4221130,0,728988,12,0,3,1,1,1,[0 50 0 0 0 0 0 0 0 0 0 ],2000
+Black,21-16 4,4265065,0,694605,11,0,2,1,1,1,[0 0 0 0 0 0 0 0 0 0 ],2001
+Black,16-11 4,4156524,0,762031,11,0,2,1,1,1,[50 50 0 0 0 0 0 0 0 0 ],2001
+Black,11-2 4,3821983,0,802793,12,0,2,1,1,1,[0 0 0 0 0 0 0 0 0 0 0 ],2000
+Black,2-13 4,1470904,0,290848,11,0,2,1,1,1,[50 50 50 50 50 50 50 50 50 50 ],747
