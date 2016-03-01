@@ -49,4 +49,10 @@ public class OmniTesterBase extends Player20TranspositionBase {
         return name;
     }
 
+    @Override
+    public String getName() {
+        return name; //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
 }
