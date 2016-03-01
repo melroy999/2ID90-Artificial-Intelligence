@@ -1,0 +1,12 @@
+Round 0-4
+TestPlayer#0 = 5
+TestPlayer#1 = 6
+TestPlayer#2 = 6
+TestPlayer#3 = 3
+
+Round 5-9
+TestPlayer#5 = 8
+TestPlayer#6 = 2
+TestPlayer#7 = 3
+TestPlayer#8 = 3
+TestPlayer#9 = 4

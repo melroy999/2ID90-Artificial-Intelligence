@@ -426,8 +426,15 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
 
     private void fuckingSequencialTestMotherFuckerActionPerformed(ActionEvent evt) {//GEN-FIRST:event_fuckingSequencialTestMotherFuckerActionPerformed
         // TODO add your handling code here:
+        if (isSequencing) {
+            System.out.println("Already sequencing!");
+            return;
+        }
+        isSequencing = true;
         this.add(new SequenceTesting(gamesTable.getRowCount()));
     }//GEN-LAST:event_fuckingSequencialTestMotherFuckerActionPerformed
+
+    static boolean isSequencing;
 
     private class SequenceTesting implements CompetitionListener {
 
@@ -467,7 +474,11 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
 
             if (currentRow < maxRows) {
                 Game g = schedule.get(currentRow++);
+                System.out.println("Starting game " + currentRow);
                 startGame(g);
+            } else {
+                isSequencing = false;
+                System.out.println("Done with sequence.");
             }
 
         }
@@ -535,6 +546,13 @@ public class CompetitionGUI<Competitor extends Player<M, S>, P extends PlayerPro
     private void continueGame(final Game game, final S gs) {
         if (turnCounter > 150) {
             System.out.println("Both lost. Unending game.");
+            if (currentSearchTask != null) {
+                currentSearchTask.stop();
+                currentGame = null;
+            } else {
+                currentGame = null;
+                updateGUI();
+            }
             finishGame(game, gs);
             didBothLose = true;
         }
