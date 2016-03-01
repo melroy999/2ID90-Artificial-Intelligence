@@ -20,8 +20,6 @@ public class OmniEvaluation extends AbstractEvaluation {
     private final int mainDiagonalKingWeight;
     private final int doubleDiagonalPawnWeight;
     private final int doubleDiagonalKingWeight;
-    
-    private final int winWeight;
 
     /**
      * Create an omni evaluator. With a lot of parameters...
@@ -48,22 +46,34 @@ public class OmniEvaluation extends AbstractEvaluation {
             int defenderPieceWeight, int attackPawnWeight, int centerPawnWeight,
             int centerKingWeight, int mainDiagonalPawnWeight,
             int mainDiagonalKingWeight, int doubleDiagonalPawnWeight,
-            int doubleDiagonalKingWeight, int winWeight) {
-        this.unoccupiedPromotionLineFieldsWeight = unoccupiedPromotionLineFieldsWeight;
-        this.pawnWeight = pawnWeight;
-        this.kingWeight = kingWeight;
-        this.safePawnWeight = safePawnWeight;
-        this.safeKingWeight = safeKingWeight;
-        this.aggregatedDistanceOfPawnToPromotionLineWeight = aggregatedDistanceOfPawnToPromotionLineWeight;
-        this.defenderPieceWeight = defenderPieceWeight;
-        this.attackPawnWeight = attackPawnWeight;
-        this.centerPawnWeight = centerPawnWeight;
-        this.centerKingWeight = centerKingWeight;
-        this.mainDiagonalPawnWeight = mainDiagonalPawnWeight;
-        this.mainDiagonalKingWeight = mainDiagonalKingWeight;
+            int doubleDiagonalKingWeight) {
+        
+        
+        //promotionLinesEmpty 0 - 5
+        //pawns 0 - 20
+        //kings 0 - 20
+        //safe 0 - 18
+        //pawnDistance (0 - 5 * 9 + 5 * 8 + 5 * 7 + 5 * 6) / pieces (self) do seperate max 9
+        //defenders 0 - 15
+        //attack 0 - 20
+        //center 0 - 10
+        //diagonal 0 - 10
+        //diagonal2 0 - 18
+        
+        this.unoccupiedPromotionLineFieldsWeight = unoccupiedPromotionLineFieldsWeight * 4;
+        this.pawnWeight = pawnWeight * 1;
+        this.kingWeight = kingWeight * 1;
+        this.safePawnWeight = safePawnWeight * 1;
+        this.safeKingWeight = safeKingWeight * 2;
+        this.aggregatedDistanceOfPawnToPromotionLineWeight = aggregatedDistanceOfPawnToPromotionLineWeight * 2;
+        this.defenderPieceWeight = defenderPieceWeight * 1;//
+        this.attackPawnWeight = attackPawnWeight * 1;
+        this.centerPawnWeight = centerPawnWeight * 2;
+        this.centerKingWeight = centerKingWeight * 2;
+        this.mainDiagonalPawnWeight = mainDiagonalPawnWeight * 2;
+        this.mainDiagonalKingWeight = mainDiagonalKingWeight * 2;
         this.doubleDiagonalPawnWeight = doubleDiagonalPawnWeight;
         this.doubleDiagonalKingWeight = doubleDiagonalKingWeight;
-        this.winWeight = winWeight;
     }
 
     private final static boolean[] isEdge = new boolean[51];
@@ -164,9 +174,12 @@ public class OmniEvaluation extends AbstractEvaluation {
         int promotionLinesEmpty = 0;//
         int pawns = 0;//
         int kings = 0;//
+        int blackPieces = 0;
+        int whitePieces = 0;
         int safePawns = 0;//
         int safeKings = 0;//
-        int pawnDistanceToPromotion = 0;//
+        int whitePawnDistanceToPromotion = 0;//
+        int blackPawnDistanceToPromotion = 0;//
 
         int defenders = 0;//
         int attackPawns = 0;//
@@ -188,111 +201,121 @@ public class OmniEvaluation extends AbstractEvaluation {
                     //if white promotion line fields are empty.
                     promotionLinesEmpty--;
                 }
-            } else {
-                if ((piece & 1) == 1) {
-                    //if piece id is even, it is either white.
-                    if (piece == DraughtsState.WHITEPIECE) {
-                        //if it is a white pawn.
-                        pawns++;
-                        if (isEdge[i]) {
-                            //if we are at the edge of the board.
-                            safePawns++;
-                        }
-                        pawnDistanceToPromotion -= whiteDistanceToPromotion[i];
-                        if (isWhitePawnAttacker[i]) {
-                            //if this pawn is in the starting territory of the opponent.
-                            attackPawns++;
-                        }
-                        if (isCenterPosition[i]) {
-                            //if this pawn is in the empty starting area.
-                            centerPawns++;
-                        }
-                        if (isOnMainDiagonal[i]) {
-                            //if this piece is on the main diagonal.
-                            mainDiagonalPawns++;
-                        }
-                        if (isOnDoubleDiagonal[i]) {
-                            //if this piece is on the double diagonal.
-                            doubleDiagonalPawns++;
-                        }
-                    } else {
-                        //if it is a white king.
-                        kings++;
-                        if (isEdge[i]) {
-                            //if we are at the edge of the board.
-                            safeKings++;
-                        }
-                        if (isCenterPosition[i]) {
-                            //if this king is in the empty starting area.
-                            centerKings++;
-                        }
-                        if (isOnMainDiagonal[i]) {
-                            //if this piece is on the main diagonal.
-                            mainDiagonalKings++;
-                        }
-                        if (isOnDoubleDiagonal[i]) {
-                            //if this piece is on the double diagonal.
-                            doubleDiagonalKings++;
-                        }
+            } else if ((piece & 1) == 1) {
+                whitePieces++;
+                //if piece id is even, it is either white.
+                if (piece == DraughtsState.WHITEPIECE) {
+                    //if it is a white pawn.
+                    pawns++;
+                    if (isEdge[i]) {
+                        //if we are at the edge of the board.
+                        safePawns++;
                     }
-                    if (isWhiteDefender[i]) {
-                        //if this piece is on the last 3 rows of his side.
-                        defenders++;
+                    whitePawnDistanceToPromotion += whiteDistanceToPromotion[i];
+                    if (isWhitePawnAttacker[i]) {
+                        //if this pawn is in the starting territory of the opponent.
+                        attackPawns++;
+                    }
+                    if (isCenterPosition[i]) {
+                        //if this pawn is in the empty starting area.
+                        centerPawns++;
+                    }
+                    if (isOnMainDiagonal[i]) {
+                        //if this piece is on the main diagonal.
+                        mainDiagonalPawns++;
+                    }
+                    if (isOnDoubleDiagonal[i]) {
+                        //if this piece is on the double diagonal.
+                        doubleDiagonalPawns++;
                     }
                 } else {
-                    //as empty is not considered here, it has to be black.
-                    if (piece == DraughtsState.BLACKPIECE) {
-                        //if it is a black pawn.
-                        pawns--;
-                        if (isEdge[i]) {
-                            //if we are at the edge of the board.
-                            safePawns--;
-                        }
-                        //+ instead of -, as we desire the complete opposite effect.
-                        pawnDistanceToPromotion += blackDistanceToPromotion[i];
-                        if (isBlackPawnAttacker[i]) {
-                            //if this pawn is in the starting territory of the opponent.
-                            attackPawns--;
-                        }
-                        if (isCenterPosition[i]) {
-                            //if this pawn is in the empty starting area.
-                            centerPawns--;
-                        }
-                        if (isOnMainDiagonal[i]) {
-                            //if this piece is on the main diagonal.
-                            mainDiagonalPawns--;
-                        }
-                        if (isOnDoubleDiagonal[i]) {
-                            //if this piece is on the double diagonal.
-                            doubleDiagonalPawns--;
-                        }
-                    } else {
-                        //if it is a black king.
-                        kings--;
-                        if (isEdge[i]) {
-                            //if we are at the edge of the board.
-                            safeKings--;
-                        }
-                        if (isCenterPosition[i]) {
-                            //if this king is in the empty starting area.
-                            centerPawns--;
-                        }
-                        if (isOnMainDiagonal[i]) {
-                            //if this piece is on the main diagonal.
-                            mainDiagonalKings--;
-                        }
-                        if (isOnDoubleDiagonal[i]) {
-                            //if this piece is on the double diagonal.
-                            doubleDiagonalKings--;
-                        }
+                    //if it is a white king.
+                    kings++;
+                    if (isEdge[i]) {
+                        //if we are at the edge of the board.
+                        safeKings++;
                     }
-                    if (isBlackDefender[i]) {
-                        //if this piece is on the last 3 rows of his side.
-                        defenders--;
+                    if (isCenterPosition[i]) {
+                        //if this king is in the empty starting area.
+                        centerKings++;
                     }
+                    if (isOnMainDiagonal[i]) {
+                        //if this piece is on the main diagonal.
+                        mainDiagonalKings++;
+                    }
+                    if (isOnDoubleDiagonal[i]) {
+                        //if this piece is on the double diagonal.
+                        doubleDiagonalKings++;
+                    }
+                }
+                if (isWhiteDefender[i]) {
+                    //if this piece is on the last 3 rows of his side.
+                    defenders++;
+                }
+                if (i < 6) {
+                    //if black promotion line fields are empty.
+                    promotionLinesEmpty++;
+                }
+            } else {
+                blackPieces++;
+                //as empty is not considered here, it has to be black.
+                if (piece == DraughtsState.BLACKPIECE) {
+                    //if it is a black pawn.
+                    pawns--;
+                    if (isEdge[i]) {
+                        //if we are at the edge of the board.
+                        safePawns--;
+                    }
+                    //+ instead of -, as we desire the complete opposite effect.
+                    blackPawnDistanceToPromotion += blackDistanceToPromotion[i];
+                    if (isBlackPawnAttacker[i]) {
+                        //if this pawn is in the starting territory of the opponent.
+                        attackPawns--;
+                    }
+                    if (isCenterPosition[i]) {
+                        //if this pawn is in the empty starting area.
+                        centerPawns--;
+                    }
+                    if (isOnMainDiagonal[i]) {
+                        //if this piece is on the main diagonal.
+                        mainDiagonalPawns--;
+                    }
+                    if (isOnDoubleDiagonal[i]) {
+                        //if this piece is on the double diagonal.
+                        doubleDiagonalPawns--;
+                    }
+                } else {
+                    //if it is a black king.
+                    kings--;
+                    if (isEdge[i]) {
+                        //if we are at the edge of the board.
+                        safeKings--;
+                    }
+                    if (isCenterPosition[i]) {
+                        //if this king is in the empty starting area.
+                        centerPawns--;
+                    }
+                    if (isOnMainDiagonal[i]) {
+                        //if this piece is on the main diagonal.
+                        mainDiagonalKings--;
+                    }
+                    if (isOnDoubleDiagonal[i]) {
+                        //if this piece is on the double diagonal.
+                        doubleDiagonalKings--;
+                    }
+                }
+                if (isBlackDefender[i]) {
+                    //if this piece is on the last 3 rows of his side.
+                    defenders--;
+                }
+                if (i > 45) {
+                    //if white promotion line fields are empty.
+                    promotionLinesEmpty--;
                 }
             }
         }
+        
+        int pawnDistanceToPromotion = blackPawnDistanceToPromotion / blackPieces - whitePawnDistanceToPromotion / whitePieces;
 
         int evaluation
                 = promotionLinesEmpty * unoccupiedPromotionLineFieldsWeight
@@ -310,21 +333,18 @@ public class OmniEvaluation extends AbstractEvaluation {
                 + doubleDiagonalPawns * doubleDiagonalPawnWeight
                 + doubleDiagonalKings * doubleDiagonalKingWeight;
 
+        //promotionLinesEmpty 0 - 5
+        //pawns 0 - 20
+        //kings 0 - 20
+        //safe 0 - 18
+        //pawnDistance (0 - 5 * 9 + 5 * 8 + 5 * 7 + 5 * 6) / pieces (self) do seperate
+        //defenders 0 - 15
+        //attack 0 - 20
+        //center 0 - 10
+        //diagonal 0 - 10
+        //diagonal2 0 - 18
         return isWhitePlayer ? evaluation : -evaluation;
     }
-
-    @Override
-    public int evaluate(DraughtsState state, boolean isWhitePlayer) {
-        int value = super.evaluate(state, isWhitePlayer);
-        if (state.isEndState()) {
-            if (state.isWhiteToMove() != isWhitePlayer) {
-                value += winWeight;
-            } 
-        }
-        return value; //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
 
     /**
      * Name of the evaluation function.

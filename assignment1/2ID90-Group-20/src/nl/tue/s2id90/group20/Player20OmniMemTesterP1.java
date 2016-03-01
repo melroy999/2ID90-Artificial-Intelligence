@@ -33,7 +33,7 @@ public class Player20OmniMemTesterP1 extends Player20TranspositionBase {
          int doubleDiagonalKingWeight, 
          */
         OmniEvaluation evaluation = new OmniEvaluation(20, 50, 150, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0);
+                0, 0, 0, 0, 0);
         this.addEvaluator(evaluation);
     }
     

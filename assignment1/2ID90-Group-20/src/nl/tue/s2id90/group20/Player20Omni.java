@@ -35,7 +35,7 @@ public class Player20Omni extends Player20Base {
          int doubleDiagonalKingWeight, 
          */
         OmniEvaluation evaluation = new OmniEvaluation(25, 50, 150, 5, 10, 1, 2, 3, 4,
-                10, 2, 15, 2, 12, 0);
+                10, 2, 15, 2, 12);
         this.addEvaluator(evaluation);
     }
    
