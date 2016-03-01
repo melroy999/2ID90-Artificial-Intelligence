@@ -315,7 +315,7 @@ public class OmniEvaluation extends AbstractEvaluation {
             }
         }
         
-        int pawnDistanceToPromotion = blackPawnDistanceToPromotion / blackPieces - whitePawnDistanceToPromotion / whitePieces;
+        int pawnDistanceToPromotion = blackPawnDistanceToPromotion / (blackPieces + 1) - whitePawnDistanceToPromotion / (whitePieces + 1);
 
         int evaluation
                 = promotionLinesEmpty * unoccupiedPromotionLineFieldsWeight
