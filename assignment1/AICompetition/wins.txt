@@ -1,7 +1,9 @@
+TestPlayer#18
+TestPlayer#17
+Both lost
 TestPlayer#19
+TestPlayer#17
 TestPlayer#18
 TestPlayer#19
 TestPlayer#17
 TestPlayer#18
-TestPlayer#17
-TestPlayer#16
