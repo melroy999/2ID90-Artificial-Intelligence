@@ -90,7 +90,9 @@ public class CorpusReader {
     }
     
     public double getWordProbability(String word){
-        return ((double) getNGramCount(word)) / ((double) totalWords);
+        double chance = getNGramCount(word) / (double) totalWords;
+        System.out.println("word probability: " + chance);
+        return chance;
     }
 
     public int getTotalWords() {
@@ -118,11 +120,12 @@ public class CorpusReader {
             throw new IllegalArgumentException("NGram must be non-empty.");
         }
 
-        double smoothedCount = 0.0;
-
-        /**
-         * ADD CODE HERE *
-         */
-        return smoothedCount;
+        if(NGram.indexOf(' ') == -1){
+            //Single word.
+            return getNGramCount(NGram) + 1d;
+        } else {
+            //Bigram. 
+            return getNGramCount(NGram) + 0.01d;
+        }
     }
 }

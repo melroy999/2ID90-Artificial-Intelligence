@@ -24,7 +24,12 @@ public class SpellCorrector {
         String[] words = phrase.split(" ");
         String finalSuggestion = "";
 
-        
+        for (String word : words) {
+            Map<String, Double> candidates = getCandidateWords(word);
+            for(String key : candidates.keySet()){
+                System.out.println("word: " + key +", prob: " + candidates.get(key));
+            }
+        }
 
         /**
          * CODE TO BE ADDED *
@@ -97,19 +102,24 @@ public class SpellCorrector {
 
         return candidates;
     }
+    
+    private final static int HIGH_POWER = (int) Math.pow(10, 9);
 
     public void addCandidate(String candidate, String error, String correction, Map<String, Double> candidates) {
         if (cr.inVocabulary(candidate)) {
+            System.out.println("> " + candidate);
+            
+            double errorP = cmr.getErrorProbability(error, correction);
+            double wordP = cr.getWordProbability(candidate);
+
             double p
-                    = cmr.getErrorProbability(error, correction)
-                    * cr.getWordProbability(candidate)
+                    = errorP
+                    * wordP * HIGH_POWER
                     + candidates.getOrDefault(candidate, 0d);
 
-            if (p > 1) {
-                //something is wrong. This is not supposed to happen!
-                System.out.println("p > 1 for " + candidate);
-                p = 1d;
-            }
+            System.out.println("noise chance: " + errorP
+                    * wordP);
+            System.out.println("noise aggrigated: " + p);
 
             candidates.put(candidate, p);
         }
