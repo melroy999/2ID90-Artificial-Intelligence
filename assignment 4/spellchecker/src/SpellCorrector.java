@@ -38,70 +38,77 @@ public class SpellCorrector {
      * @return a map with candidate words and their noisy channel probability
      */
     public Map<String, Double> getCandidateWords(String word) {
-        //set containing all possible words that can be derived from the given word.
-        Set<String> foundWords = new HashSet<>();
-        
-        //iterate over all unique insertion positions, i.e. word.length + 1. .w.o.r.d.
-        for (int i = 0; i < word.length() + 1; i++) {
-            String candidate;
+        Map<String, Double> candidates = new HashMap<>();
 
-            //iterate over all characters in the alphabet.
+        String candidate;
+        String error;
+        String correction;
+
+        // generate insertions
+        for (int i = 0; i <= word.length(); i++) {
             for (char c : ALPHABET) {
-                //generate insertion.
-                candidate = insertCharacter(word, i, c);
-                foundWords.add(candidate);
-
-                //generate substitution.
-                candidate = substituteCharacter(word, i, c);
-                foundWords.add(candidate);
+                candidate = word.substring(0, i) + c + word.substring(i);
+                if (i != 0) {
+                    error = "" + word.charAt(i - 1);
+                } else {
+                    error = " ";
+                }
+                correction = error + c;
+                addCandidate(candidate, error, correction, candidates);
             }
+        }
 
-            //generate transposition.
-            candidate = transposeCharacter(word, i);
-            foundWords.add(candidate);
+        // generate deletions
+        for (int i = 0; i < word.length(); i++) {
+            candidate = word.substring(0, i) + word.substring(i + 1);
+            if (i != 0) {
+                correction = "" + word.charAt(i - 1);
+            } else {
+                correction = " ";
+            }
+            error = correction + word.charAt(i);
+            addCandidate(candidate, error, correction, candidates);
+        }
+
+        // generate transpositions
+        for (int i = 0; i < word.length() - 1; i++) {
+            candidate = word.substring(0, i) + word.charAt(i + 1) + word.charAt(i) + word.substring(i + 1);
+            error = "" + word.charAt(i) + word.charAt(i + 1);
+            correction = "" + word.charAt(i + 1) + word.charAt(i);
+            addCandidate(candidate, error, correction, candidates);
+        }
+
+        // generate substitutions
+        for (int i = 0; i < word.length(); i++) {
+            for (char c : ALPHABET) {
+                char[] wordA = word.toCharArray();
+                wordA[i] = c;
+                candidate = new String(wordA);
+                error = "" + word.charAt(i);
+                correction = "" + c;
+                addCandidate(candidate, error, correction, candidates);
+            }
+        }
+
+        //we don't want to suggest the problem as a solution, obviously.
+        candidates.remove(word);
+
+        return candidates;
+    }
+
+    public void addCandidate(String candidate, String error, String correction, Map<String, Double> candidates) {
+        if (cr.inVocabulary(candidate)) {
+            double p = 
+                    cmr.getErrorProbability(error, correction) 
+                    * cr.getWordProbability(candidate) 
+                    + candidates.getOrDefault(candidate, 0d);
             
-            //generate deletion.
-            candidate = deleteCharacter(word, i);
-            foundWords.add(candidate);
+            if(p > 1){
+                //something is wrong. This is not supposed to happen!
+                p = 1d;
+            }
+            
+            candidates.put(candidate, p);
         }
-
-        //get all words that are in the vocabulary. 
-        Set<String> validWords = cr.inVocabulary(foundWords);
-        
-        //create a mapping between the valid words and the probability.
-        Map<String, Double> mapOfWords = new HashMap<>();
-
-        //for all words that are in the vocabulary.
-        for (String key : validWords) {
-            //get the probability of the error being made.
-            double probability = getNoisyChannelProbability(word, key);
-            mapOfWords.put(key, probability);
-        }
-
-        return mapOfWords;
-    }
-    
-    // <editor-fold desc="Character operations" defaultstate="collapsed">
-    private String insertCharacter(String word, int i, char c) {
-        return word.substring(0, i) + c + word.substring(i);
-    }
-
-    private String transposeCharacter(String word, int i) {
-        return word.substring(0, i) + word.charAt(i + 1) + word.charAt(i) + word.substring(i + 1);
-    }
-
-    private String substituteCharacter(String word, int i, char c) {
-        char[] wordA = word.toCharArray();
-        wordA[i] = c;
-        return new String(wordA);
-    }
-
-    private String deleteCharacter(String word, int i) {
-        return word.substring(0, i) + word.substring(i + 1);
-    }
-    // </editor-fold>
-
-    public double getNoisyChannelProbability(String word, String candidate) {
-        return Double.NaN;
     }
 }

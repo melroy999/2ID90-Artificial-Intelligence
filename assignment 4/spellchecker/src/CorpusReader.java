@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,41 +8,42 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CorpusReader 
-{
+public class CorpusReader {
+
     final static String CNTFILE_LOC = "samplecnt.txt";
     final static String VOCFILE_LOC = "samplevoc.txt";
-    
-    private HashMap<String,Integer> ngrams;
+
+    private HashMap<String, Integer> ngrams;
     private Set<String> vocabulary;
-        
-    public CorpusReader() throws IOException
-    {  
+
+    private int totalWords = 0;
+
+    public CorpusReader() throws IOException {
         readNGrams();
         readVocabulary();
+
+        for (String key : vocabulary) {
+            totalWords += getNGramCount(key);
+        }
     }
-    
+
     /**
      * Returns the n-gram count of <NGram> in the file
-     * 
-     * 
+     *
+     *
      * @param nGram : space-separated list of words, e.g. "adopted by him"
-     * @return 0 if <NGram> cannot be found, 
-     * otherwise count of <NGram> in file
+     * @return 0 if <NGram> cannot be found, otherwise count of <NGram> in file
      */
-     public int getNGramCount(String nGram) throws  NumberFormatException
-    {
-        if(nGram == null || nGram.length() == 0)
-        {
+    public int getNGramCount(String nGram) throws NumberFormatException {
+        if (nGram == null || nGram.length() == 0) {
             throw new IllegalArgumentException("NGram must be non-empty.");
         }
         Integer value = ngrams.get(nGram);
-        return value==null?0:value;
+        return value == null ? 0 : value;
     }
-    
-    private void readNGrams() throws 
-            FileNotFoundException, IOException, NumberFormatException
-    {
+
+    private void readNGrams() throws
+            FileNotFoundException, IOException, NumberFormatException {
         ngrams = new HashMap<>();
 
         FileInputStream fis;
@@ -65,61 +67,62 @@ public class CorpusReader
             }
         }
     }
-    
-    
+
     private void readVocabulary() throws FileNotFoundException, IOException {
         vocabulary = new HashSet<>();
-        
+
         FileInputStream fis = new FileInputStream(VOCFILE_LOC);
         BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-        
-        while(in.ready())
-        {
+
+        while (in.ready()) {
             String line = in.readLine();
             vocabulary.add(line);
         }
     }
-    
+
     /**
      * Returns the size of the number of unique words in the dataset
-     * 
+     *
      * @return the size of the number of unique words in the dataset
      */
-    public int getVocabularySize() 
-    {
+    public int getVocabularySize() {
         return vocabulary.size();
     }
     
+    public double getWordProbability(String word){
+        return ((double) getNGramCount(word)) / ((double) totalWords);
+    }
+
+    public int getTotalWords() {
+        return totalWords;
+    }
+
     /**
      * Returns the subset of words in set that are in the vocabulary
-     * 
+     *
      * @param set
-     * @return 
+     * @return
      */
-    public HashSet<String> inVocabulary(Set<String> set) 
-    {
+    public HashSet<String> inVocabulary(Set<String> set) {
         HashSet<String> h = new HashSet<>(set);
         h.retainAll(vocabulary);
         return h;
     }
-    
-    public boolean inVocabulary(String word) 
-    {
-       return vocabulary.contains(word);
-    }    
-    
-    public double getSmoothedCount(String NGram)
-    {
-        if(NGram == null || NGram.length() == 0)
-        {
+
+    public boolean inVocabulary(String word) {
+        return vocabulary.contains(word);
+    }
+
+    public double getSmoothedCount(String NGram) {
+        if (NGram == null || NGram.length() == 0) {
             throw new IllegalArgumentException("NGram must be non-empty.");
         }
-        
+
         double smoothedCount = 0.0;
-        
-        /** ADD CODE HERE **/
-        
-        
-        return smoothedCount;        
+
+        /**
+         * ADD CODE HERE *
+         */
+        return smoothedCount;
     }
 }
