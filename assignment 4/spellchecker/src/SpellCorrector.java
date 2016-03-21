@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,19 +23,148 @@ public class SpellCorrector {
         }
 
         String[] words = phrase.split(" ");
-        String finalSuggestion = "";
+
+        ArrayList<Map<String, Double>> wordCandidates = new ArrayList<>();
 
         for (String word : words) {
             Map<String, Double> candidates = getCandidateWords(word);
-            for(String key : candidates.keySet()){
+            wordCandidates.add(candidates);
+
+            /*for(String key : candidates.keySet()){
                 System.out.println("word: " + key +", prob: " + candidates.get(key));
+            }*/
+        }
+
+        IntermediatePhrase intermediate = new IntermediatePhrase(words, wordCandidates);
+        //it is extremely important to evaluate the original state as well,
+        //as the phrase might not have an error.
+
+        //we have at most 2 errors in one sentence. Thus we make a nested for loop.
+        //here i is the i'th word in the sentence.
+        //it is the first word that is marked as an error.
+        for (int i = 0; i < words.length; i++) {
+            //iterate over all correction candidates.
+            for (String iCandidate : wordCandidates.get(i).keySet()) {
+                //evaluate the word.
+                intermediate.evaluate(i, iCandidate);
+
+                //mispelled words are never consecutive. So skip one index.
+                for (int j = i + 2; j < words.length; j++) {
+                    for (String jCandidate : wordCandidates.get(j).keySet()) {
+                        //evaluate the word.
+                        intermediate.evaluate(j, jCandidate);
+                    }
+                    //Restore j'th word.
+                    intermediate.restore(j);
+                }
+            }
+            //Restore i'th word.
+            intermediate.restore(i);
+        }
+
+        return intermediate.getFinalSuggestion().trim();
+    }
+
+    private class IntermediatePhrase {
+
+        private final ArrayList<Map<String, Double>> candidates;
+        private final String[] originalPhrase;
+
+        private final String[] suggestionPhrase;
+        private final double[] likelihoods;
+        private double aggLikelihood;
+
+        private String[] bestPhrase;
+        private double bestAggLikelihood;
+
+        private IntermediatePhrase(String[] phrase, ArrayList<Map<String, Double>> candidates) {
+            this.candidates = candidates;
+            this.originalPhrase = phrase.clone();
+
+            this.suggestionPhrase = phrase.clone();
+            this.likelihoods = new double[phrase.length];
+
+            this.aggLikelihood = 0;
+            for (int i = 0; i < suggestionPhrase.length; i++) {
+                likelihoods[i] = getLikelyhoodOfWordAt(i);
+                aggLikelihood += likelihoods[i];
+            }
+
+            this.bestPhrase = phrase.clone();
+            this.bestAggLikelihood = aggLikelihood;
+        }
+
+        private void restore(int i) {
+            suggestionPhrase[i] = originalPhrase[i];
+            //recalculate probability.
+            recalculateLikelihoodOfWordAt(i);
+        }
+
+        private void evaluate(int i, String word) {
+            suggestionPhrase[i] = word;
+            
+            //recalculate probability, and if better, store.
+            if(recalculateLikelihoodOfWordAt(i)){
+                bestPhrase = suggestionPhrase.clone();
+                this.bestAggLikelihood = aggLikelihood;
             }
         }
 
-        /**
-         * CODE TO BE ADDED *
-         */
-        return finalSuggestion.trim();
+        private String getFinalSuggestion() {
+            if(Double.isInfinite(bestAggLikelihood)){
+                System.out.println("Answer is not trustable!");
+            }
+            return String.join(" ", bestPhrase);
+        }
+
+        private boolean recalculateLikelihoodOfWordAt(int i) {
+            double difference = -likelihoods[i];
+            likelihoods[i] = getLikelyhoodOfWordAt(i);
+            difference += likelihoods[i];
+
+            //this word is used at the next word as well.
+            //if we are at the last word, skip this part.
+            if (i < suggestionPhrase.length - 1) {
+                difference = -likelihoods[i + 1];
+                likelihoods[i + 1] = getLikelyhoodOfWordAt(i + 1);
+                difference += likelihoods[i + 1];
+            }
+
+            //Check if the likelyhood sum is still usable.
+            if(Double.isFinite(aggLikelihood)){
+                aggLikelihood += difference;
+            } else {
+                //recalculate.
+                aggLikelihood = 0;
+                for(double d : likelihoods){
+                    aggLikelihood += d;
+                }
+            }
+            
+            return aggLikelihood > bestAggLikelihood;
+        }
+
+        private double getLikelyhoodOfWordAt(int i) {
+            String word = suggestionPhrase[i];
+
+            double probability;
+            if (!cr.inVocabulary(word)) {
+                probability = 0d;
+            } else {
+                //cannot multiply something that isn't present.
+                if (i == 0) {
+                    probability = 1d;
+                } else {
+                    probability = cr.getSmoothedCount(suggestionPhrase[i - 1] + " " + word) / cr.getSmoothedCount(suggestionPhrase[i - 1]);
+                }
+
+                if (!word.equals(originalPhrase[i])) {
+                    probability *= candidates.get(i).get(word);
+                } 
+            }
+
+            return Math.log(probability);
+        }
     }
 
     /**
@@ -102,13 +232,13 @@ public class SpellCorrector {
 
         return candidates;
     }
-    
+
     private final static int HIGH_POWER = (int) Math.pow(10, 9);
 
     public void addCandidate(String candidate, String error, String correction, Map<String, Double> candidates) {
         if (cr.inVocabulary(candidate)) {
-            System.out.println("> " + candidate);
-            
+            /*System.out.println("> " + candidate);*/
+
             double errorP = cmr.getErrorProbability(error, correction);
             double wordP = cr.getWordProbability(candidate);
 
@@ -117,10 +247,9 @@ public class SpellCorrector {
                     * wordP * HIGH_POWER
                     + candidates.getOrDefault(candidate, 0d);
 
-            System.out.println("noise chance: " + errorP
+            /*System.out.println("noise chance: " + errorP
                     * wordP);
-            System.out.println("noise aggrigated: " + p);
-
+            System.out.println("noise aggrigated: " + p);*/
             candidates.put(candidate, p);
         }
     }
