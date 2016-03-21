@@ -85,10 +85,14 @@ public class SpellCorrector {
             this.likelihoods = new double[phrase.length];
 
             this.aggLikelihood = 0;
+            System.out.println("Listing intermediate likelihoods: ");
             for (int i = 0; i < suggestionPhrase.length; i++) {
                 likelihoods[i] = getLikelyhoodOfWordAt(i);
                 aggLikelihood += likelihoods[i];
+                System.out.println(likelihoods[i]);
             }
+            
+            System.out.println("Likelihood: " + aggLikelihood);
 
             this.bestPhrase = phrase.clone();
             this.bestAggLikelihood = aggLikelihood;
@@ -107,6 +111,7 @@ public class SpellCorrector {
             if(recalculateLikelihoodOfWordAt(i)){
                 bestPhrase = suggestionPhrase.clone();
                 this.bestAggLikelihood = aggLikelihood;
+                System.out.println("Likelihood: " + aggLikelihood);
             }
         }
 
@@ -125,7 +130,7 @@ public class SpellCorrector {
             //this word is used at the next word as well.
             //if we are at the last word, skip this part.
             if (i < suggestionPhrase.length - 1) {
-                difference = -likelihoods[i + 1];
+                difference -= likelihoods[i + 1];
                 likelihoods[i + 1] = getLikelyhoodOfWordAt(i + 1);
                 difference += likelihoods[i + 1];
             }
@@ -161,6 +166,11 @@ public class SpellCorrector {
                 if (!word.equals(originalPhrase[i])) {
                     probability *= candidates.get(i).get(word);
                 } 
+            }
+            
+            if(Double.isInfinite(Math.log(probability))){
+                System.out.println(word + " is infinite!");
+                System.out.println("Probability value of " + probability);
             }
 
             return Math.log(probability);
@@ -244,9 +254,14 @@ public class SpellCorrector {
 
             double p
                     = errorP
-                    * wordP * HIGH_POWER
+                    * wordP /** HIGH_POWER*/
                     + candidates.getOrDefault(candidate, 0d);
 
+            if(p > 1){
+                System.out.println("WHAT?!");
+                p = 1;
+            }
+            
             /*System.out.println("noise chance: " + errorP
                     * wordP);
             System.out.println("noise aggrigated: " + p);*/
