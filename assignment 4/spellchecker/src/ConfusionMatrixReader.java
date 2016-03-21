@@ -57,14 +57,22 @@ public class ConfusionMatrixReader {
      * @return
      */
     public int getConfusionCount(String error, String correct) {
-        return countMatrix.getOrDefault(error + "|" + correct, 0);
+        System.out.println("confusion count for \'" + error + "|"+ correct + "\': " + confusionMatrix.getOrDefault(error + "|" + correct, 0));
+        return confusionMatrix.getOrDefault(error + "|" + correct, 0);
     }
 
     public int getErrorCount(String error) {
+        System.out.println("error count for \'" + error + "\': " + countMatrix.getOrDefault(error, 0));
         return countMatrix.getOrDefault(error, 0);
     }
     
     public double getErrorProbability(String error, String correct){
-        return getConfusionCount(error, correct) /(double) getErrorCount(error);
+        double prob = getConfusionCount(error, correct);
+        if(prob != 0d){
+            prob /= (double) getErrorCount(error);
+        } 
+        
+        System.out.println("error probability: " + prob);
+        return prob;
     }
 }
