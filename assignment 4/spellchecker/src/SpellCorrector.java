@@ -24,6 +24,8 @@ public class SpellCorrector {
         String[] words = phrase.split(" ");
         String finalSuggestion = "";
 
+        
+
         /**
          * CODE TO BE ADDED *
          */
@@ -98,16 +100,17 @@ public class SpellCorrector {
 
     public void addCandidate(String candidate, String error, String correction, Map<String, Double> candidates) {
         if (cr.inVocabulary(candidate)) {
-            double p = 
-                    cmr.getErrorProbability(error, correction) 
-                    * cr.getWordProbability(candidate) 
+            double p
+                    = cmr.getErrorProbability(error, correction)
+                    * cr.getWordProbability(candidate)
                     + candidates.getOrDefault(candidate, 0d);
-            
-            if(p > 1){
+
+            if (p > 1) {
                 //something is wrong. This is not supposed to happen!
+                System.out.println("p > 1 for " + candidate);
                 p = 1d;
             }
-            
+
             candidates.put(candidate, p);
         }
     }
