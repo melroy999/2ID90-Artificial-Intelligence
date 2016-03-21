@@ -1,5 +1,4 @@
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -32,83 +31,77 @@ public class SpellCorrector {
     }
 
     /**
-     * returns a map with candidate words and their noisy channel probability. *
+     * returns a map with candidate words and their noisy channel probability.
+     *
+     *
      * @param word the word to get candidate words for
      * @return a map with candidate words and their noisy channel probability
      */
     public Map<String, Double> getCandidateWords(String word) {
+        //set containing all possible words that can be derived from the given word.
+        Set<String> foundWords = new HashSet<>();
+        
+        //iterate over all unique insertion positions, i.e. word.length + 1. .w.o.r.d.
+        for (int i = 0; i < word.length() + 1; i++) {
+            String candidate;
+
+            //iterate over all characters in the alphabet.
+            for (char c : ALPHABET) {
+                //generate insertion.
+                candidate = insertCharacter(word, i, c);
+                foundWords.add(candidate);
+
+                //generate substitution.
+                candidate = substituteCharacter(word, i, c);
+                foundWords.add(candidate);
+            }
+
+            //generate transposition.
+            candidate = transposeCharacter(word, i);
+            foundWords.add(candidate);
+            
+            //generate deletion.
+            candidate = deleteCharacter(word, i);
+            foundWords.add(candidate);
+        }
+
+        //get all words that are in the vocabulary. 
+        Set<String> validWords = cr.inVocabulary(foundWords);
+        
+        //create a mapping between the valid words and the probability.
         Map<String, Double> mapOfWords = new HashMap<>();
-        Map<String, Double> tempMapOfWords = new HashMap<>();
 
-        // generate insertions
-        Set<String> insertions = new HashSet<>();
-        for (int i = 0; i <= word.length(); i++) {
-            for (char c : ALPHABET) {
-                String temp = word.substring(0, i) + c + word.substring(i);
-                insertions.add(temp);
-                double probability = 1d;/*replace with probability*/
-                if (tempMapOfWords.getOrDefault(temp, -1d) < probability) {
-                    tempMapOfWords.put(temp, probability);
-                }
-            }
-        }
-
-        insertions = cr.inVocabulary(insertions);
-        for (String s : insertions) {
-            mapOfWords.put(s, tempMapOfWords.get(s));
-        }
-
-        // generate deletions
-        Set<String> deletions = new HashSet<>();
-        for (int i = 0; i < word.length(); i++) {
-            String temp = word.substring(0, i) + word.substring(i + 1);
-            deletions.add(temp);
-            double probability = 1d;/*replace with probability*/
-            if (tempMapOfWords.getOrDefault(temp, -1d) < probability) {
-                tempMapOfWords.put(temp, probability);
-            }
-        }
-
-        deletions = cr.inVocabulary(deletions);
-        for (String s : deletions) {
-            mapOfWords.put(s, tempMapOfWords.get(s));
-        }
-
-        // generate transpositions
-        Set<String> transpositions = new HashSet<>();
-        for (int i = 0; i < word.length() - 1; i++) {
-            String temp = word.substring(0, i) + word.charAt(i + 1) + word.charAt(i) + word.substring(i + 1);
-            transpositions.add(temp);
-            double probability = 1d;/*replace with probability*/
-            if (tempMapOfWords.getOrDefault(temp, -1d) < probability) {
-                tempMapOfWords.put(temp, probability);
-            }
-        }
-
-        transpositions = cr.inVocabulary(transpositions);
-        for (String s : transpositions) {
-            mapOfWords.put(s, tempMapOfWords.get(s));
-        }
-
-        // generate substitutions
-        Set<String> substitutions = new HashSet<>();
-        for (int i = 0; i < word.length(); i++) {
-            for (char c : ALPHABET) {
-                char[] wordA = word.toCharArray();
-                wordA[i] = c;
-                String temp = new String(wordA);
-                substitutions.add(temp);
-                double probability = 1d;/*replace with probability*/
-                if (tempMapOfWords.getOrDefault(temp, -1d) < probability) {
-                    tempMapOfWords.put(temp, probability);
-                }
-            }
-        }
-        substitutions = cr.inVocabulary(substitutions);
-        for (String s : substitutions) {
-            mapOfWords.put(s, tempMapOfWords.get(s));
+        //for all words that are in the vocabulary.
+        for (String key : validWords) {
+            //get the probability of the error being made.
+            double probability = getNoisyChannelProbability(word, key);
+            mapOfWords.put(key, probability);
         }
 
         return mapOfWords;
+    }
+    
+    // <editor-fold desc="Character operations" defaultstate="collapsed">
+    private String insertCharacter(String word, int i, char c) {
+        return word.substring(0, i) + c + word.substring(i);
+    }
+
+    private String transposeCharacter(String word, int i) {
+        return word.substring(0, i) + word.charAt(i + 1) + word.charAt(i) + word.substring(i + 1);
+    }
+
+    private String substituteCharacter(String word, int i, char c) {
+        char[] wordA = word.toCharArray();
+        wordA[i] = c;
+        return new String(wordA);
+    }
+
+    private String deleteCharacter(String word, int i) {
+        return word.substring(0, i) + word.substring(i + 1);
+    }
+    // </editor-fold>
+
+    public double getNoisyChannelProbability(String word, String candidate) {
+        return Double.NaN;
     }
 }
