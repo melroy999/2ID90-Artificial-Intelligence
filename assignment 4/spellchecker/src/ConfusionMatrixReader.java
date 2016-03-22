@@ -61,17 +61,26 @@ public class ConfusionMatrixReader {
         return confusionMatrix.getOrDefault(error + "|" + correct, 0);
     }
 
+    /**
+     * Get the amount of times a given error occurs in the confusion matrix.
+     * 
+     * @param error error you want to investigate.
+     * @return amount of times we have error|x, with x being any occurrence.
+     */
     public int getErrorCount(String error) {
-        /*System.out.println("error count for \'" + error + "\': " + countMatrix.getOrDefault(error, 0));*/
         return countMatrix.getOrDefault(error, 0);
     }
-    
-    int K_SMOOTHING = 1;
-    
-    public double getErrorProbability(String error, String correct){       
-        double prob = (getConfusionCount(error, correct) + K_SMOOTHING) / ((double) getErrorCount(error) + K_SMOOTHING);
-        
-        /*System.out.println("error probability: " + prob);*/
+
+    /**
+     * The probability of an error|correction occurring.
+     * 
+     * @param error the error made.
+     * @param correct the correction made.
+     * @return probability of occurrence.
+     */
+    public double getErrorProbability(String error, String correct){ 
+        //using smoothing here, to avoid getting infinity because of log(0).
+        double prob = (getConfusionCount(error, correct) + 1) / ((double) getErrorCount(error) + 1);
         return prob;
     }
 }

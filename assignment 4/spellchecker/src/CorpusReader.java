@@ -89,12 +89,22 @@ public class CorpusReader {
         return vocabulary.size();
     }
     
+    /**
+     * The probability of the word being encountered.
+     * 
+     * @param word word you want to investigate.
+     * @return occurrences / total words.
+     */
     public double getWordProbability(String word){
         double chance = getNGramCount(word) / (double) totalWords;
-        /*System.out.println("word probability: " + chance);*/
         return chance;
     }
 
+    /**
+     * Get the total amount of non bigrams encounted in the samplecnt.txt file.
+     * 
+     * @return totalWords
+     */
     public int getTotalWords() {
         return totalWords;
     }
@@ -121,10 +131,10 @@ public class CorpusReader {
         }
 
         if(NGram.indexOf(' ') == -1){
-            //Single word.
+            //Single word. Using add-one smoothing.
             return getNGramCount(NGram) + 1d;
         } else {
-            //Bigram. 
+            //Bigram.  We don't want to overweight bigrams, so make it worth less.
             return getNGramCount(NGram) + 0.01d;
         }
     }

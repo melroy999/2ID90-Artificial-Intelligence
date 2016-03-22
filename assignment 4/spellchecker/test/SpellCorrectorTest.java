@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import java.io.IOException;
 import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -17,22 +18,22 @@ import static org.junit.Assert.*;
  * @author Administrator
  */
 public class SpellCorrectorTest {
-    
+
     public SpellCorrectorTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -42,29 +43,33 @@ public class SpellCorrectorTest {
      */
     @Test
     public void testCorrectPhrase() {
-        System.out.println("correctPhrase");
+        /*System.out.println("correctPhrase");
         String phrase = "";
         SpellCorrector instance = null;
         String expResult = "";
         String result = instance.correctPhrase(phrase);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("The test case is a prototype.");*/
     }
 
     /**
      * Test of getCandidateWords method, of class SpellCorrector.
      */
     @Test
-    public void testGetCandidateWords() {
+    public void testGetCandidateWords() throws IOException {
         System.out.println("getCandidateWords");
-        String word = "";
-        SpellCorrector instance = null;
-        Map<String, Double> expResult = null;
-        Map<String, Double> result = instance.getCandidateWords(word);
-        assertEquals(expResult, result);
+        String word = "idabetes";
+        CorpusReader cr = new CorpusReader();
+        ConfusionMatrixReader cmr = new ConfusionMatrixReader();
+        SpellCorrector sc = new SpellCorrector(cr, cmr);
+        Map<String, Double> result = sc.getCandidateWords(word);
+        for (String key : result.keySet()) {
+            System.out.println(key + ", " + result.get(key));
+        }
+        /*assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("The test case is a prototype.");*/
     }
-    
+
 }
