@@ -91,7 +91,7 @@ public class CorpusReader {
     
     public double getWordProbability(String word){
         double chance = getNGramCount(word) / (double) totalWords;
-        System.out.println("word probability: " + chance);
+        /*System.out.println("word probability: " + chance);*/
         return chance;
     }
 

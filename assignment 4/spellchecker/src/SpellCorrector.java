@@ -256,11 +256,6 @@ public class SpellCorrector {
                     = errorP
                     * wordP /** HIGH_POWER*/
                     + candidates.getOrDefault(candidate, 0d);
-
-            if(p > 1){
-                System.out.println("WHAT?!");
-                p = 1;
-            }
             
             /*System.out.println("noise chance: " + errorP
                     * wordP);
