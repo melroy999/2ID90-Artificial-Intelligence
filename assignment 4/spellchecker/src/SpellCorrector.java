@@ -17,7 +17,7 @@ public class SpellCorrector {
 
     /**
      * Corrects the phrase given.
-     * 
+     *
      * @param phrase the phrase that has to be corrected.
      * @return Corrected phrase.
      */
@@ -70,17 +70,15 @@ public class SpellCorrector {
     }
 
     /**
-     * Class in which result evaluations are executed. 
-     * 
-     * In here you can find: 
-     *      the original phrase,
-     *      the currently suggested phrase,
-     *      the likelihoods of the words in the suggested phrase,
-     *      the sum of the likelihoods,
-     *      the best phrase encountered yet,
-     *      and the sum of the likelihoods for the best phrase.
+     * Class in which result evaluations are executed.
+     *
+     * In here you can find: the original phrase, the currently suggested
+     * phrase, the likelihoods of the words in the suggested phrase, the sum of
+     * the likelihoods, the best phrase encountered yet, and the sum of the
+     * likelihoods for the best phrase.
      */
     private class IntermediatePhrase {
+
         private final ArrayList<Map<String, Double>> candidates;
         private final String[] originalPhrase;
 
@@ -93,7 +91,7 @@ public class SpellCorrector {
 
         /**
          * Constructor.
-         * 
+         *
          * @param phrase the words of the phrase.
          * @param candidates list of information about the candidate words.
          */
@@ -119,20 +117,20 @@ public class SpellCorrector {
 
         /**
          * Restore the i'th word.
-         * 
+         *
          * @param i index of the word you want to reset.
          */
         private void restore(int i) {
             //reset the i'th word.
             suggestionPhrase[i] = originalPhrase[i];
-            
+
             //recalculate probability.
             recalculateLikelihoodOfWordAt(i);
         }
 
         /**
          * Evaluate the phrase with the given word at the i'th position.
-         * 
+         *
          * @param i desired index.
          * @param word desired word.
          */
@@ -149,7 +147,7 @@ public class SpellCorrector {
 
         /**
          * Converts the best phrase found to a string.
-         * 
+         *
          * @return the answer.
          */
         private String getFinalSuggestion() {
@@ -159,7 +157,7 @@ public class SpellCorrector {
 
         /**
          * Recalculate the likelihood of the desired word.
-         * 
+         *
          * @param i index of the suggested word.
          * @return whether the word is better or not than the original.
          */
@@ -197,7 +195,7 @@ public class SpellCorrector {
 
         /**
          * Calculates the log probability of the word.
-         * 
+         *
          * @param i index of the word in the suggestion list.
          * @return likelihood of the i'th word in the suggestion.
          */
@@ -206,7 +204,7 @@ public class SpellCorrector {
             String word = suggestionPhrase[i];
 
             double probability;
-            
+
             //if the word is not in the vocabulary, we have to replace it.
             if (!cr.inVocabulary(word)) {
                 probability = 0;
@@ -224,7 +222,7 @@ public class SpellCorrector {
                 if (!word.equals(originalPhrase[i])) {
                     //so multiply by that error chance.
                     probability *= candidates.get(i).get(word);
-                } 
+                }
             }
 
             //we try to avoid infinity at any cost in our answers. 
@@ -251,10 +249,10 @@ public class SpellCorrector {
 
         //the new word
         String candidate;
-        
+
         //the part of the word that is considered "wrong"
         String error;
-        
+
         //the correction of the "wrong" part of the word.
         String correction;
 
@@ -309,14 +307,18 @@ public class SpellCorrector {
         }
 
         //we don't want to suggest the problem as a solution, obviously.
-        candidates.remove(word);
+            candidates.remove(word);
+        
+       // if (candidates.size()==1) {
+       //    candidates.put((String) candidates.keySet().toArray()[0],1000d);
+       // }
 
         return candidates;
     }
 
     /**
      * Determines if a candidate has to be added, and adds it if applicable.
-     * 
+     *
      * @param candidate the candidate word.
      * @param error the part of the original word that was wrong.
      * @param correction the correction of the wrong part of the original word.
@@ -327,13 +329,13 @@ public class SpellCorrector {
         if (cr.inVocabulary(candidate)) {
             //calculate the probability that the error is made.
             double errorP = cmr.getErrorProbability(error, correction);
-            
+
             //calculate the probability that the word is chosen.
             double wordP = cr.getWordProbability(candidate);
 
             //get the total probability.
             double p = errorP * wordP + candidates.getOrDefault(candidate, 0d);
-            
+
             //store the new total probability.
             candidates.put(candidate, p);
         }
