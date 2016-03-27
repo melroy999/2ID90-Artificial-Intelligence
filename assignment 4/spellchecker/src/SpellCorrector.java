@@ -219,24 +219,23 @@ public class SpellCorrector {
 
             //if the word is not in the vocabulary, we have to replace it.
             if (!cr.inVocabulary(word)) {
-                probability = 0;
+                probability = Math.log(Double.MIN_VALUE);
             } else {
                 //cannot multiply something that isn't present.
                 if (i == 0) {
                     //nothing to multiply with, so make it 1.
-                    probability = 1d;
+                    probability = Math.log(1d);
                 } else {
                     //calculate the probability of P(vw|v). Use smoothening for this.
-                    //probability = addNSmoothing(suggestionPhrase[i - 1], word, 1, 0);
-                    /*System.out.println("Original: " + addTwoSmoothingNoBigram(suggestionPhrase[i - 1], word));
-                    System.out.println("New: " + getGTSmoothing(suggestionPhrase[i - 1], word));*/
-                    probability = addNSmoothing(suggestionPhrase[i - 1], word, WORD_SMOOTHING_VALUE, BIGRAM_SMOOTHING_VALUE);
+                    //Also take the logarithm, so that we can use addition.
+                    probability = Math.log(addNSmoothing(suggestionPhrase[i - 1], word, WORD_SMOOTHING_VALUE, BIGRAM_SMOOTHING_VALUE));
                 }
 
                 //if the word is not the original word, an error has been corrected.
                 if (!word.equals(originalPhrase[i])) {
                     //so multiply by that error chance.
-                    probability *= candidates.get(i).get(word);
+                    //Also take the logarithm, so that we can use addition.
+                    probability += Math.log(candidates.get(i).get(word));
                 }
             }
 
@@ -245,8 +244,8 @@ public class SpellCorrector {
             /*if (Double.isInfinite(Math.log(probability))) {
                 probability = Double.MIN_VALUE;
             }*/
-            //return the logarithm of the probability.
-            return Math.log(probability);
+            //return the likelihood.
+            return probability;
         }
     }
 
