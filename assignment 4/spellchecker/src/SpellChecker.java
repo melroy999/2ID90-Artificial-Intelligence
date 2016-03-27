@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class SpellChecker {
@@ -11,13 +12,27 @@ public class SpellChecker {
         boolean inPeach = false; // set this to true if you submit to peach!!!
 
         try {
-            CorpusReader cr = new CorpusReader();
-            ConfusionMatrixReader cmr = new ConfusionMatrixReader();
-            SpellCorrector sc = new SpellCorrector(cr, cmr);
             if (inPeach) {
+                CorpusReader cr = new CorpusReader();
+                ConfusionMatrixReader cmr = new ConfusionMatrixReader();
+                SpellCorrector sc = new SpellCorrector(cr, cmr);
                 peachTest(sc);
             } else {
-                nonPeachTest(sc);
+                PrintWriter writer = new PrintWriter("testResults.csv", "UTF-8");
+                PrintWriter log = new PrintWriter("testResults.txt", "UTF-8");
+                writer.println("sep=;");
+
+                for (int i = 0; i < 10; i++) {
+                    for (double j = 1; j < Math.pow(2, 18); j *= 2) {
+                        CorpusReader cr = new CorpusReader();
+                        ConfusionMatrixReader cmr = new ConfusionMatrixReader();
+                        SpellCorrector sc = new SpellCorrector(cr, cmr, i, 1 / j);
+                        nonPeachTest(sc, writer, log);
+                    }
+                }
+
+                writer.close();
+
             }
         } catch (Exception ex) {
             System.out.println(ex);
@@ -25,7 +40,7 @@ public class SpellChecker {
         }
     }
 
-    static void nonPeachTest(SpellCorrector sc) throws IOException {
+    static void nonPeachTest(SpellCorrector sc, PrintWriter writer, PrintWriter log) throws IOException {
 
         String[] sentences = {
             //peach tests
@@ -102,6 +117,7 @@ public class SpellChecker {
         };
 
         int counter = 0;
+        String resultInfo = "\n";
         for (int i = 0; i < sentences.length; i++) {
             String sentence = sentences[i];
             String result = sc.correctPhrase(sentence);
@@ -109,15 +125,23 @@ public class SpellChecker {
             if (result.equals(correctSentences[i])) {
                 counter++;
             } else {
-                System.out.println("Test " + i + ":");
-                System.out.println("Input :  " + sentence);
-                System.out.println("Answer:  " + result);
-                System.out.println("Correct: " + correctSentences[i]);
-                System.out.println();
+                resultInfo += "Test " + i + ": \n";
+                resultInfo += "Input :  " + sentence + "\n";
+                resultInfo += "Answer:  " + result + "\n";
+                resultInfo += "Correct: " + correctSentences[i] + "\n\n";
             }
         }
 
-        System.out.println("Score: " + counter + "/" + sentences.length);
+        writer.print("Score: " + counter + "/" + sentences.length + "; With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + ";");
+        writer.print("\n");
+        
+        log.println("##################################################################");
+        log.println("Score: " + counter + "/" + sentences.length + "; With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + ";");
+        log.println(resultInfo);
+        
+        System.out.println("##################################################################");
+        System.out.println("Score: " + counter + "/" + sentences.length + " With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE);
+        System.out.println(resultInfo);
     }
 
     static void peachTest(SpellCorrector sc) throws IOException {

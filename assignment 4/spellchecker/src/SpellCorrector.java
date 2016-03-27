@@ -10,9 +10,21 @@ public class SpellCorrector {
 
     final char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz'".toCharArray();
 
+    public final int WORD_SMOOTHING_VALUE;
+    public final double BIGRAM_SMOOTHING_VALUE;
+
     public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr) {
         this.cr = cr;
         this.cmr = cmr;
+        WORD_SMOOTHING_VALUE = 2;
+        BIGRAM_SMOOTHING_VALUE = 0.00002d;
+    }
+
+    public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr, int wordSmoothingValue, double bigramSmoothingValue) {
+        this.cr = cr;
+        this.cmr = cmr;
+        WORD_SMOOTHING_VALUE = wordSmoothingValue;
+        BIGRAM_SMOOTHING_VALUE = bigramSmoothingValue;
     }
 
     /**
@@ -218,7 +230,7 @@ public class SpellCorrector {
                     //probability = addNSmoothing(suggestionPhrase[i - 1], word, 1, 0);
                     /*System.out.println("Original: " + addTwoSmoothingNoBigram(suggestionPhrase[i - 1], word));
                     System.out.println("New: " + getGTSmoothing(suggestionPhrase[i - 1], word));*/
-                    probability = addTwoSmoothingSmallBigram(suggestionPhrase[i - 1], word);
+                    probability = addNSmoothing(suggestionPhrase[i - 1], word, WORD_SMOOTHING_VALUE, BIGRAM_SMOOTHING_VALUE);
                 }
 
                 //if the word is not the original word, an error has been corrected.
@@ -233,7 +245,6 @@ public class SpellCorrector {
             /*if (Double.isInfinite(Math.log(probability))) {
                 probability = Double.MIN_VALUE;
             }*/
-
             //return the logarithm of the probability.
             return Math.log(probability);
         }
@@ -246,7 +257,7 @@ public class SpellCorrector {
     public double addTwoSmoothing(String previous, String current) {
         return addNSmoothing(previous, current, 2, 2);
     }
-    
+
     public double addOneSmoothingNoBigram(String previous, String current) {
         return addNSmoothing(previous, current, 1, 0);
     }
@@ -282,7 +293,7 @@ public class SpellCorrector {
         } else {
             //N1
             temp = cr.getFrequencyOfFrequency(1);
-            
+
         }
 
         temp *= cr.getGoodTuringNDiv();
