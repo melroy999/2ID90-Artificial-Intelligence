@@ -215,7 +215,8 @@ public class SpellCorrector {
                     probability = 1d;
                 } else {
                     //calculate the probability of P(vw|v). Use smoothening for this.
-                    probability = addNSmoothing(suggestionPhrase[i - 1], word, 1, 0);
+                    //probability = addNSmoothing(suggestionPhrase[i - 1], word, 1, 0);
+                    probability = addTwoSmoothingNoBigram(suggestionPhrase[i - 1], word);
                 }
 
                 //if the word is not the original word, an error has been corrected.
@@ -235,25 +236,48 @@ public class SpellCorrector {
             return Math.log(probability);
         }
     }
-    
-    public double addOneSmoothing(String previous, String current){
+
+    public double addOneSmoothing(String previous, String current) {
         return addNSmoothing(previous, current, 1, 1);
     }
-    
-    public double addTwoSmoothing(String previous, String current){
+
+    public double addTwoSmoothing(String previous, String current) {
         return addNSmoothing(previous, current, 2, 2);
     }
-    
-    public double addOneSmoothingNoBigram(String previous, String current){
+
+    public double addOneSmoothingNoBigram(String previous, String current) {
         return addNSmoothing(previous, current, 1, 0);
     }
-    
-    public double addTwoSmoothingNoBigram(String previous, String current){
+
+    public double addTwoSmoothingNoBigram(String previous, String current) {
         return addNSmoothing(previous, current, 2, 0);
     }
-    
-    public double addNSmoothing(String previous, String current, int n, int b){
+
+    public double addNSmoothing(String previous, String current, int n, int b) {
         return (cr.getSmoothedCount(previous + " " + current, n, b)) / (cr.getSmoothedCount(previous) + n * cr.getNGramCount());
+    }
+
+    public double getGTSmoothing(String previous, String current) {
+        int c = cr.getNGramCount(previous + " " + current);
+
+        double temp = 0;
+        if (c > 0) {
+            //Nc
+            double nc = cr.getFrequencyOfFrequency(c);
+
+            //Nc+1
+            double ncp = cr.getFrequencyOfFrequency(c + 1);
+
+            temp = (c + 1) * ((ncp + 1) / (nc + 1));
+        } else {
+            //N1
+            temp = cr.getFrequencyOfFrequency(1);
+            
+        }
+
+        temp *= cr.getGoodTuringNDiv();
+
+        return temp;
     }
 
     /**
@@ -327,7 +351,7 @@ public class SpellCorrector {
         }
 
         //we don't want to suggest the problem as a solution, obviously.
-            candidates.remove(word);
+        candidates.remove(word);
 
         return candidates;
     }

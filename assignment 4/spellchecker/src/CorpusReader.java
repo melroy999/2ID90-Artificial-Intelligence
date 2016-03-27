@@ -17,7 +17,9 @@ public class CorpusReader {
     private Set<String> vocabulary;
 
     private int totalWords = 0;
-    private int totalBigrams = 0;
+    private final HashMap<Integer, Integer> frequencyOfFrequencies = new HashMap<>();
+    private final int goodTuringN;
+    private final double goodTuringNDiv;
 
     public CorpusReader() throws IOException {
         readNGrams();
@@ -26,6 +28,13 @@ public class CorpusReader {
         for (String key : vocabulary) {
             totalWords += getNGramCount(key);
         }
+        
+        int n = 0;
+        for(int key : frequencyOfFrequencies.keySet()){
+            n += key * frequencyOfFrequencies.get(key);
+        }
+        goodTuringN = n;
+        goodTuringNDiv = 1 / (double) n;
     }
 
     /**
@@ -63,8 +72,10 @@ public class CorpusReader {
             try {
                 count = Integer.parseInt(s1);
                 ngrams.put(s2, count);
-                if(s2.indexOf(' ') != -1){
-                    totalBigrams++;
+                if(s2.indexOf(' ') == -1){
+                    //get the frequency of the frequencies.
+                    int frequency = frequencyOfFrequencies.getOrDefault(count, 0);
+                    frequencyOfFrequencies.put(count, frequency + 1);
                 }
             } catch (NumberFormatException nfe) {
                 throw new NumberFormatException("NumberformatError: " + s1);
@@ -116,19 +127,38 @@ public class CorpusReader {
     /**
      * Get the total amount of bigrams encountered.
      * 
-     * @return totalWords
-     */
-    public int getBigramCount() {
-        return totalBigrams;
-    }
-    
-    /**
-     * Get the total amount of bigrams encountered.
-     * 
-     * @return totalWords
+     * @return ngrams.size()
      */
     public int getNGramCount() {
         return ngrams.size();
+    }
+    
+    /**
+     * Get the large N needed for good turing smoothing.
+     * 
+     * @return totalWords
+     */
+    public int getGoodTuringN(){
+        return goodTuringN;
+    }
+    
+    /**
+     * Get 1/N.
+     * 
+     * @return totalWords
+     */
+    public double getGoodTuringNDiv(){
+        return goodTuringNDiv;
+    }
+    
+    /**
+     * Returns the frequency of a frequency.
+     * 
+     * @param count: Frequency you want to fetch.
+     * @return frequencyOfFrequencies.get(count)
+     */
+    public int getFrequencyOfFrequency(int count){
+        return frequencyOfFrequencies.getOrDefault(count, 0);
     }
 
     /**
