@@ -216,7 +216,9 @@ public class SpellCorrector {
                 } else {
                     //calculate the probability of P(vw|v). Use smoothening for this.
                     //probability = addNSmoothing(suggestionPhrase[i - 1], word, 1, 0);
-                    probability = addTwoSmoothingNoBigram(suggestionPhrase[i - 1], word);
+                    /*System.out.println("Original: " + addTwoSmoothingNoBigram(suggestionPhrase[i - 1], word));
+                    System.out.println("New: " + getGTSmoothing(suggestionPhrase[i - 1], word));*/
+                    probability = addTwoSmoothingSmallBigram(suggestionPhrase[i - 1], word);
                 }
 
                 //if the word is not the original word, an error has been corrected.
@@ -228,9 +230,9 @@ public class SpellCorrector {
 
             //we try to avoid infinity at any cost in our answers. 
             //So if infinite, change it to the minimal value of a double.
-            if (Double.isInfinite(Math.log(probability))) {
+            /*if (Double.isInfinite(Math.log(probability))) {
                 probability = Double.MIN_VALUE;
-            }
+            }*/
 
             //return the logarithm of the probability.
             return Math.log(probability);
@@ -244,7 +246,7 @@ public class SpellCorrector {
     public double addTwoSmoothing(String previous, String current) {
         return addNSmoothing(previous, current, 2, 2);
     }
-
+    
     public double addOneSmoothingNoBigram(String previous, String current) {
         return addNSmoothing(previous, current, 1, 0);
     }
@@ -253,7 +255,15 @@ public class SpellCorrector {
         return addNSmoothing(previous, current, 2, 0);
     }
 
-    public double addNSmoothing(String previous, String current, int n, int b) {
+    public double addOneSmoothingSmallBigram(String previous, String current) {
+        return addNSmoothing(previous, current, 1, 0.00001d);
+    }
+
+    public double addTwoSmoothingSmallBigram(String previous, String current) {
+        return addNSmoothing(previous, current, 2, 0.00002d);
+    }
+
+    public double addNSmoothing(String previous, String current, int n, double b) {
         return (cr.getSmoothedCount(previous + " " + current, n, b)) / (cr.getSmoothedCount(previous) + n * cr.getNGramCount());
     }
 
