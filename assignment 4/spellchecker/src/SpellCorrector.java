@@ -214,8 +214,8 @@ public class SpellCorrector {
                     //nothing to multiply with, so make it 1.
                     probability = 1d;
                 } else {
-                    //calculate the probability of P(vw|v).
-                    probability = cr.getSmoothedCount(suggestionPhrase[i - 1] + " " + word) / cr.getSmoothedCount(suggestionPhrase[i - 1]);
+                    //calculate the probability of P(vw|v). Use smoothening for this.
+                    probability = addNSmoothing(suggestionPhrase[i - 1], word, 1, 0);
                 }
 
                 //if the word is not the original word, an error has been corrected.
@@ -234,6 +234,26 @@ public class SpellCorrector {
             //return the logarithm of the probability.
             return Math.log(probability);
         }
+    }
+    
+    public double addOneSmoothing(String previous, String current){
+        return addNSmoothing(previous, current, 1, 1);
+    }
+    
+    public double addTwoSmoothing(String previous, String current){
+        return addNSmoothing(previous, current, 2, 2);
+    }
+    
+    public double addOneSmoothingNoBigram(String previous, String current){
+        return addNSmoothing(previous, current, 1, 0);
+    }
+    
+    public double addTwoSmoothingNoBigram(String previous, String current){
+        return addNSmoothing(previous, current, 2, 0);
+    }
+    
+    public double addNSmoothing(String previous, String current, int n, int b){
+        return (cr.getSmoothedCount(previous + " " + current, n, b)) / (cr.getSmoothedCount(previous) + n * cr.getNGramCount());
     }
 
     /**
@@ -308,10 +328,6 @@ public class SpellCorrector {
 
         //we don't want to suggest the problem as a solution, obviously.
             candidates.remove(word);
-        
-       // if (candidates.size()==1) {
-       //    candidates.put((String) candidates.keySet().toArray()[0],1000d);
-       // }
 
         return candidates;
     }

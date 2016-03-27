@@ -17,6 +17,7 @@ public class CorpusReader {
     private Set<String> vocabulary;
 
     private int totalWords = 0;
+    private int totalBigrams = 0;
 
     public CorpusReader() throws IOException {
         readNGrams();
@@ -62,6 +63,9 @@ public class CorpusReader {
             try {
                 count = Integer.parseInt(s1);
                 ngrams.put(s2, count);
+                if(s2.indexOf(' ') != -1){
+                    totalBigrams++;
+                }
             } catch (NumberFormatException nfe) {
                 throw new NumberFormatException("NumberformatError: " + s1);
             }
@@ -108,6 +112,24 @@ public class CorpusReader {
     public int getTotalWords() {
         return totalWords;
     }
+    
+    /**
+     * Get the total amount of bigrams encountered.
+     * 
+     * @return totalWords
+     */
+    public int getBigramCount() {
+        return totalBigrams;
+    }
+    
+    /**
+     * Get the total amount of bigrams encountered.
+     * 
+     * @return totalWords
+     */
+    public int getNGramCount() {
+        return ngrams.size();
+    }
 
     /**
      * Returns the subset of words in set that are in the vocabulary
@@ -126,16 +148,20 @@ public class CorpusReader {
     }
 
     public double getSmoothedCount(String NGram) {
+        return getSmoothedCount(NGram, 1, 1);
+    }
+    
+    public double getSmoothedCount(String NGram, double weight, double bigramWeight) {
         if (NGram == null || NGram.length() == 0) {
             throw new IllegalArgumentException("NGram must be non-empty.");
         }
 
         if(NGram.indexOf(' ') == -1){
             //Single word. Using add-one smoothing.
-            return getNGramCount(NGram) + 1d;
+            return getNGramCount(NGram) + weight;
         } else {
             //Bigram.  We don't want to overweight bigrams, so make it worth less.
-            return getNGramCount(NGram) + 0.01d;
+            return getNGramCount(NGram) + bigramWeight;
         }
     }
 }
