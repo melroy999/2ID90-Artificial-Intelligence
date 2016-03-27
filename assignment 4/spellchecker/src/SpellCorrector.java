@@ -12,19 +12,25 @@ public class SpellCorrector {
 
     public final int WORD_SMOOTHING_VALUE;
     public final double BIGRAM_SMOOTHING_VALUE;
+    public final double WORD_WEIGHT;
+    public final double WORD_WEIGHT_TRANSPOSE;
 
     public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr) {
         this.cr = cr;
         this.cmr = cmr;
         WORD_SMOOTHING_VALUE = 2;
         BIGRAM_SMOOTHING_VALUE = 0.00002d;
+        WORD_WEIGHT = 0.66;
+        WORD_WEIGHT_TRANSPOSE = 1 / WORD_WEIGHT;
     }
 
-    public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr, int wordSmoothingValue, double bigramSmoothingValue) {
+    public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr, int wordSmoothingValue, double bigramSmoothingValue, double wordWeight) {
         this.cr = cr;
         this.cmr = cmr;
         WORD_SMOOTHING_VALUE = wordSmoothingValue;
         BIGRAM_SMOOTHING_VALUE = bigramSmoothingValue;
+        WORD_WEIGHT = wordWeight;
+        WORD_WEIGHT_TRANSPOSE = 1 / WORD_WEIGHT;
     }
 
     /**
@@ -228,14 +234,14 @@ public class SpellCorrector {
                 } else {
                     //calculate the probability of P(vw|v). Use smoothening for this.
                     //Also take the logarithm, so that we can use addition.
-                    probability = Math.log(addNSmoothing(suggestionPhrase[i - 1], word, WORD_SMOOTHING_VALUE, BIGRAM_SMOOTHING_VALUE));
+                    probability = WORD_WEIGHT_TRANSPOSE * Math.log(addNSmoothing(suggestionPhrase[i - 1], word, WORD_SMOOTHING_VALUE, BIGRAM_SMOOTHING_VALUE));
                 }
 
                 //if the word is not the original word, an error has been corrected.
                 if (!word.equals(originalPhrase[i])) {
                     //so multiply by that error chance.
                     //Also take the logarithm, so that we can use addition.
-                    probability += Math.log(candidates.get(i).get(word));
+                    probability += WORD_WEIGHT * Math.log(candidates.get(i).get(word));
                 }
             }
 

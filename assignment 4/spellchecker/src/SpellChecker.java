@@ -22,14 +22,21 @@ public class SpellChecker {
                 PrintWriter log = new PrintWriter("testResults.txt", "UTF-8");
                 writer.println("sep=;");
 
-                for (int i = 0; i < 10; i++) {
+                /*for (int i = 0; i < 5; i++) {
                     for (double j = 1; j < Math.pow(2, 18); j *= 2) {
-                        CorpusReader cr = new CorpusReader();
-                        ConfusionMatrixReader cmr = new ConfusionMatrixReader();
-                        SpellCorrector sc = new SpellCorrector(cr, cmr, i, 1 / j);
-                        nonPeachTest(sc, writer, log);
+                        for (double z = 0.1d; z < 10d; z = z < 1 ? z + 0.1d : z + 1d) {
+                            CorpusReader cr = new CorpusReader();
+                            ConfusionMatrixReader cmr = new ConfusionMatrixReader();
+                            SpellCorrector sc = new SpellCorrector(cr, cmr, i, 1 / j, z);
+                            nonPeachTest(sc, writer, log);
+                        }
                     }
-                }
+                }*/
+                
+                CorpusReader cr = new CorpusReader();
+                ConfusionMatrixReader cmr = new ConfusionMatrixReader();
+                SpellCorrector sc = new SpellCorrector(cr, cmr);
+                nonPeachTest(sc, writer, log);
 
                 writer.close();
 
@@ -132,15 +139,15 @@ public class SpellChecker {
             }
         }
 
-        writer.print("Score: " + counter + "/" + sentences.length + "; With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + ";");
+        writer.print("Score: " + counter + "/" + sentences.length + "; With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.WORD_WEIGHT + ";");
         writer.print("\n");
-        
+
         log.println("##################################################################");
-        log.println("Score: " + counter + "/" + sentences.length + "; With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + ";");
+        log.println("Score: " + counter + "/" + sentences.length + " With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.WORD_WEIGHT);
         log.println(resultInfo);
-        
+
         System.out.println("##################################################################");
-        System.out.println("Score: " + counter + "/" + sentences.length + " With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE);
+        System.out.println("Score: " + counter + "/" + sentences.length + " With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.WORD_WEIGHT);
         System.out.println(resultInfo);
     }
 
