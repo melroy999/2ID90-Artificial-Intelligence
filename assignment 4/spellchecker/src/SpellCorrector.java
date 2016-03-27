@@ -234,6 +234,9 @@ public class SpellCorrector {
                 } else {
                     //calculate the probability of P(vw|v). Use smoothening for this.
                     //Also take the logarithm, so that we can use addition.
+                    //Next to that we multiply the logarithm by another weight,
+                    //to simulate a different ratio between the bigram and the
+                    //word probability.
                     probability = WORD_WEIGHT_TRANSPOSE * Math.log(addNSmoothing(suggestionPhrase[i - 1], word, WORD_SMOOTHING_VALUE, BIGRAM_SMOOTHING_VALUE));
                 }
 
@@ -241,48 +244,105 @@ public class SpellCorrector {
                 if (!word.equals(originalPhrase[i])) {
                     //so multiply by that error chance.
                     //Also take the logarithm, so that we can use addition.
+                    //Next to that we multiply the logarithm by another weight,
+                    //to simulate a different ratio between the bigram and the
+                    //word probability.
                     probability += WORD_WEIGHT * Math.log(candidates.get(i).get(word));
                 }
             }
 
-            //we try to avoid infinity at any cost in our answers. 
-            //So if infinite, change it to the minimal value of a double.
-            /*if (Double.isInfinite(Math.log(probability))) {
-                probability = Double.MIN_VALUE;
-            }*/
             //return the likelihood.
             return probability;
         }
     }
 
+    /**
+     * Smoothing.
+     * 
+     * @param previous: The previous word.
+     * @param current: The next word.
+     * @return connected probability.
+     */
     public double addOneSmoothing(String previous, String current) {
         return addNSmoothing(previous, current, 1, 1);
     }
 
+    /**
+     * Smoothing.
+     * 
+     * @param previous: The previous word.
+     * @param current: The next word.
+     * @return connected probability.
+     */
     public double addTwoSmoothing(String previous, String current) {
         return addNSmoothing(previous, current, 2, 2);
     }
 
+    /**
+     * Smoothing.
+     * 
+     * @param previous: The previous word.
+     * @param current: The next word.
+     * @return connected probability.
+     */
     public double addOneSmoothingNoBigram(String previous, String current) {
         return addNSmoothing(previous, current, 1, 0);
     }
 
+    /**
+     * Smoothing.
+     * 
+     * @param previous: The previous word.
+     * @param current: The next word.
+     * @return connected probability.
+     */
     public double addTwoSmoothingNoBigram(String previous, String current) {
         return addNSmoothing(previous, current, 2, 0);
     }
 
+    /**
+     * Smoothing.
+     * 
+     * @param previous: The previous word.
+     * @param current: The next word.
+     * @return connected probability.
+     */
     public double addOneSmoothingSmallBigram(String previous, String current) {
         return addNSmoothing(previous, current, 1, 0.00001d);
     }
 
+    /**
+     * Smoothing.
+     * 
+     * @param previous: The previous word.
+     * @param current: The next word.
+     * @return connected probability.
+     */
     public double addTwoSmoothingSmallBigram(String previous, String current) {
         return addNSmoothing(previous, current, 2, 0.00002d);
     }
 
+    /**
+     * Smoothing, that accepts more parameters to adjust it.
+     * 
+     * @param previous: The previous word.
+     * @param current: The next word.
+     * @param n: The smoothing value for single words.
+     * @param b: The smoothing value for bigrams.
+     * @return connected probability.
+     */
     public double addNSmoothing(String previous, String current, int n, double b) {
         return (cr.getSmoothedCount(previous + " " + current, n, b)) / (cr.getSmoothedCount(previous) + n * cr.getNGramCount());
     }
 
+    /**
+     * Good Turing Smoothing.
+     * 
+     * @param previous: The previous word.
+     * @param current: The next word.
+     * @return connected probability.
+     * @deprecated Not working correctly, or applied wrongly.
+     */
     public double getGTSmoothing(String previous, String current) {
         int c = cr.getNGramCount(previous + " " + current);
 
