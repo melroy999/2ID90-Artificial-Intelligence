@@ -139,15 +139,15 @@ public class SpellChecker {
             }
         }
 
-        writer.print("Score: " + counter + "/" + sentences.length + "; With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.WORD_WEIGHT + ";");
+        writer.print("Score: " + counter + "/" + sentences.length + "; With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.ERROR_WEIGHT + ";");
         writer.print("\n");
 
         log.println("##################################################################");
-        log.println("Score: " + counter + "/" + sentences.length + " With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.WORD_WEIGHT);
+        log.println("Score: " + counter + "/" + sentences.length + " With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.ERROR_WEIGHT);
         log.println(resultInfo);
 
         System.out.println("##################################################################");
-        System.out.println("Score: " + counter + "/" + sentences.length + " With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.WORD_WEIGHT);
+        System.out.println("Score: " + counter + "/" + sentences.length + " With: WS: " + sc.WORD_SMOOTHING_VALUE + " and BS: " + sc.BIGRAM_SMOOTHING_VALUE + " and GAMMA: " + sc.ERROR_WEIGHT);
         System.out.println(resultInfo);
     }
 

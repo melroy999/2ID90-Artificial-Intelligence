@@ -10,27 +10,41 @@ public class SpellCorrector {
 
     final char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz'".toCharArray();
 
+    //the smoothing weight connected to single words.
     public final int WORD_SMOOTHING_VALUE;
+    //the smoothing weight connected to bigrams.
     public final double BIGRAM_SMOOTHING_VALUE;
-    public final double WORD_WEIGHT;
-    public final double WORD_WEIGHT_TRANSPOSE;
+    
+    //the weight of the error probability in the final result.
+    public final double ERROR_WEIGHT;
+    //the weight of the bigram probability in the final result.
+    public final double BIGRAM_WEIGHT;
 
     public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr) {
         this.cr = cr;
         this.cmr = cmr;
+        
+        //Parameters deemed best after testing.
         WORD_SMOOTHING_VALUE = 2;
         BIGRAM_SMOOTHING_VALUE = 0.00002d;
-        WORD_WEIGHT = 0.66;
-        WORD_WEIGHT_TRANSPOSE = 1 / WORD_WEIGHT;
+        ERROR_WEIGHT = 0.66;
+        
+        //make sure that ERROR_WEIGHT * BIGRAM_WEIGHT = 1
+        BIGRAM_WEIGHT = 1 / ERROR_WEIGHT;
     }
 
+    /**
+     * Constructor used for automated testing.
+     */
     public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr, int wordSmoothingValue, double bigramSmoothingValue, double wordWeight) {
         this.cr = cr;
         this.cmr = cmr;
         WORD_SMOOTHING_VALUE = wordSmoothingValue;
         BIGRAM_SMOOTHING_VALUE = bigramSmoothingValue;
-        WORD_WEIGHT = wordWeight;
-        WORD_WEIGHT_TRANSPOSE = 1 / WORD_WEIGHT;
+        ERROR_WEIGHT = wordWeight;
+        
+        //make sure that ERROR_WEIGHT * BIGRAM_WEIGHT = 1
+        BIGRAM_WEIGHT = 1 / ERROR_WEIGHT;
     }
 
     /**
@@ -236,8 +250,8 @@ public class SpellCorrector {
                     //Also take the logarithm, so that we can use addition.
                     //Next to that we multiply the logarithm by another weight,
                     //to simulate a different ratio between the bigram and the
-                    //word probability.
-                    probability = WORD_WEIGHT_TRANSPOSE * Math.log(addNSmoothing(suggestionPhrase[i - 1], word, WORD_SMOOTHING_VALUE, BIGRAM_SMOOTHING_VALUE));
+                    //error probability.
+                    probability = BIGRAM_WEIGHT * Math.log(addNSmoothing(suggestionPhrase[i - 1], word, WORD_SMOOTHING_VALUE, BIGRAM_SMOOTHING_VALUE));
                 }
 
                 //if the word is not the original word, an error has been corrected.
@@ -246,8 +260,8 @@ public class SpellCorrector {
                     //Also take the logarithm, so that we can use addition.
                     //Next to that we multiply the logarithm by another weight,
                     //to simulate a different ratio between the bigram and the
-                    //word probability.
-                    probability += WORD_WEIGHT * Math.log(candidates.get(i).get(word));
+                    //error probability.
+                    probability += ERROR_WEIGHT * Math.log(candidates.get(i).get(word));
                 }
             }
 
